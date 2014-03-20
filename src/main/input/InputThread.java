@@ -10,6 +10,12 @@ import org.apache.log4j.Logger;
 import main.input.command.ApplicationCommandList;
 import main.input.parser.CommandParser;
 
+/***
+ * 
+ * @author F
+ *
+ */
+
 public class InputThread extends Thread{
 	
 	private BufferedReader reader;

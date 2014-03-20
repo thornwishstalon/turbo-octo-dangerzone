@@ -20,8 +20,11 @@ import org.apache.log4j.Logger;
 public class ApplicationSetup {
 	
 	private final String CONFIG_FILE="config.properties";
+	
 	private final String CONFIG_ID_CORPORA_PATH = "corpora_path";
+	private final String CONFIG_ID_TOPIC_PATH = "topic_path";
 	private final String CONFIG_ID_USE_STEMMER = "stemmer";
+	private final String CONFIG_ID_USE_STOPWORDS = "stopwords";
 	//.... more to come
 	
 	private static ApplicationSetup instance=null;
@@ -73,10 +76,25 @@ public class ApplicationSetup {
 		}
 	}
 	
-	public void store()
+	private String getValue(String key)
+	{
+		if(props!=null)
+			return (String) props.get(key);
+		else return "";
+	}
+	
+	private void setValue(String key, String value)
 	{
 		if(props!=null)
 		{
+			props.setProperty(CONFIG_ID_CORPORA_PATH, value);
+			store();
+		}
+		
+	}
+	
+	private void store() {
+		if(props!=null){
 			OutputStream output = null;
 			
 			try {
@@ -89,28 +107,28 @@ public class ApplicationSetup {
 		}
 	}
 	
-	public String getInfo()
-	{
+	public String getInfo()	{
 		String s= CONFIG_ID_CORPORA_PATH +": "+ getCorporaPath() +"\n";
 		
 		return s;
 	}
 	
-	public String getCorporaPath()
-	{
-		if(props!=null)
-			return (String) props.get(CONFIG_ID_CORPORA_PATH);
-		else return "";
+	public String getTopicFilePath() {
+		return getValue(CONFIG_ID_TOPIC_PATH);
 	}
 	
-	public void setCorporaPath(String value)
-	{
-		if(props!=null)
-		{
-			props.setProperty(CONFIG_ID_CORPORA_PATH, value);
-			store();
-		}
-		
+	public void setTopicFilePath(String value) {
+		setValue(CONFIG_ID_TOPIC_PATH, value);
 	}
+	
+	public String getCorporaPath()	{
+		return getValue(CONFIG_ID_CORPORA_PATH);
+	}
+	
+	public void setCorporaPath(String value)	{
+		setValue(CONFIG_ID_CORPORA_PATH, value);
+	}
+	
+	
 	
 }

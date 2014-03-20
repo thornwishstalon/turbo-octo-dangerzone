@@ -1,4 +1,8 @@
-package utilities;
+package index;
+
+import index.entities.Posting;
+import index.entities.PostingList;
+import index.entities.Token;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,24 +15,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import utilities.entities.Posting;
-import utilities.entities.PostingList;
-import utilities.entities.Token;
-
 /**
  * @author F
  *
  */
 public class SPMIInvert extends AbstractBlockedIndexCreator{
-
-
 	
 	private File doSPIMIInvert(Object tokenStream){ //TODO TOKENSTREAM as input!!
 
 		//token = (term,docID)
-
-
-
 		File outputfile= new File(""); //TODO add filename for block
 		HashMap<String, PostingList> dictionary= new HashMap<>();
 
@@ -82,20 +77,33 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 
 	private File writeBlockToDisk(File file, Set<String> sortedTerms, HashMap<String, PostingList> dictionary){
 
-		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)))) {
+		PrintWriter out=null;
+		try{
+			out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+		
 
 			Iterator<String> it= sortedTerms.iterator();
 			String term;
+			String s="";
 			while(it.hasNext()){
-				//out.println("the text");
+
 				term= it.next();
-				System.out.println("{"+term+ dictionary.get(term).toString()+"}\n");
+				s="{"+term+ dictionary.get(term).toString()+"}\n";
+				//for debug reason currently
+				System.out.println(s);
+				
+				//out.println(s); //append to files
 			}
 
 		}catch (IOException e) {
 			//exception handling left as an exercise for the reader
 		}
-
+		finally
+		{
+			if(out!=null){
+				out.close();
+			}
+		}
 		//mark for future merge
 		pushBlockForMerge(file.getName());
 

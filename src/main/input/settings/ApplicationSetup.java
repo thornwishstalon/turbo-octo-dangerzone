@@ -25,6 +25,8 @@ public class ApplicationSetup {
 	private final String CONFIG_ID_TOPIC_PATH = "topic_path";
 	private final String CONFIG_ID_USE_STEMMER = "stemmer";
 	private final String CONFIG_ID_USE_STOPWORDS = "stopwords";
+	private final String CONFIG_ID_DOCUMENTLOOKUPTABLE_PATH = "document_lookup_table_path";
+	
 	//.... more to come
 	
 	private static ApplicationSetup instance=null;
@@ -127,6 +129,16 @@ public class ApplicationSetup {
 	
 	public void setCorporaPath(String value)	{
 		setValue(CONFIG_ID_CORPORA_PATH, value);
+	}
+	
+	public String getDocumentLookupTablePath()
+	{
+		return getValue(CONFIG_ID_DOCUMENTLOOKUPTABLE_PATH);
+	}
+	
+	public void setDocumentLookupTablePath(String value)
+	{
+		setValue(CONFIG_ID_DOCUMENTLOOKUPTABLE_PATH,value);
 	}
 	
 	

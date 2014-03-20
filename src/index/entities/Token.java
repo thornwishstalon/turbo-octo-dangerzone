@@ -1,4 +1,4 @@
-package utilities.entities;
+package index.entities;
 
 /**
  * 

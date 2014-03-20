@@ -1,6 +1,9 @@
-package utilities;
+package index;
 
+import java.io.File;
 import java.util.ArrayList;
+
+
 
 /***
  * 
@@ -30,7 +33,17 @@ public abstract class AbstractBlockedIndexCreator {
 	
 	protected void mergeBlocks()
 	{
-		//binary merging?
+		
+		
+	}
+	
+	private void mergeBlock(String n, String m)
+	{
+		//load M and N from disk
+		
+		//merge M and N to U
+		
+		//write U to disk
 		
 	}
 	

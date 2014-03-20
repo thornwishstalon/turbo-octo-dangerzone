@@ -22,11 +22,21 @@ public class DocumentProcessor {
 			Path path = Paths.get(file.getAbsolutePath());
 			try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 				String line = null;
+				boolean firstBlankLineFound = false;
+			    while ((line = reader.readLine()) != null && !firstBlankLineFound) {
+			        //read until the first empty line
+	    			if (line.isEmpty() || line.trim().equals("") || line.trim().equals("\n"))
+	    				firstBlankLineFound = true;
+			    }
 			    while ((line = reader.readLine()) != null) {
-			        if (!line.contains(":"))
-			        	text += line;
-			    }      
-			    //System.out.println(text);
+			    	// read important text - ignoring lines starting with '<' and empty lines
+			    	// until eof or ---
+			    	if (!line.startsWith(">") && !line.startsWith("-") && 
+		    			!(line.isEmpty() || line.trim().equals("") || line.trim().equals("\n")))
+			    		text += line;
+			    }
+			    
+			    System.out.println(text);
 		    } catch (IOException ex) {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();

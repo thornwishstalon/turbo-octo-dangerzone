@@ -4,10 +4,13 @@ import index.entities.Posting;
 import index.entities.PostingList;
 import index.entities.Token;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,43 +23,67 @@ import java.util.TreeMap;
  *
  */
 public class SPMIInvert extends AbstractBlockedIndexCreator{
+	private HashMap<String, PostingList> dictionary;
 	
-	private File doSPIMIInvert(Object tokenStream){ //TODO TOKENSTREAM as input!!
+	
+	public SPMIInvert()
+	{
+		super();
+	}
 
+	private File doSPIMIInvert(PipedReader reader){ 
+
+		System.out.println("SPIMIInvert");
 		//token = (term,docID)
-		File outputfile= new File(""); //TODO add filename for block
-		HashMap<String, PostingList> dictionary= new HashMap<>();
+		File outputfile= new File("./dictionary/1.txt"); //TODO add filename for block
+		
+		dictionary= new HashMap<>();
 
 		Token token=null;
 		PostingList list=null;
 		Posting posting= null;
+		BufferedReader bufferedReader = new BufferedReader(reader);
 
-		while(memoryIsFree())
-		{
-
-			token= new Token(1); //TODO read item from tokenStream 
-			posting =  new Posting(token.getDocID());
-
-			if(!dictionary.containsKey(token.getTerm()))
+		//while(memoryIsFree()){
+			try {
+				String in=null;
+				
+				while((in = bufferedReader.readLine() )!=null){
+					
+					token= new Token(in);
+					System.out.println("received: "+token.toString());
+					posting =  new Posting(token.getDocID());
+					System.out.println("posting: "+ posting.toString());
+					
+					if(!dictionary.containsKey(token.getTerm()))
+					{
+						System.out.println("term not in dictionary");
+						list=new PostingList();
+						dictionary.put(token.getTerm(), list );
+					}else{
+						System.out.println("term already in dictionary");
+						list= dictionary.get(token.getTerm());					
+					}
+					
+					list.addToList(posting);
+					System.out.println("posting list: "+list.toString());
+				}
+				
+			} catch (IOException e) 
 			{
-				list=new PostingList();
-				dictionary.put(token.getTerm(), list );
-			}else{
-				list= dictionary.get(token.getTerm());					
-			}
-
-			list.addToList(posting);
-
-
-		}
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				//break;
+			} //TODO read item from tokenStream
+		//}
 		//sortTerms(dictionary)
 		//WRITEBLOCKTODISK
 
 		return  writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
 
-		
 	}
 
+	
 
 	private boolean memoryIsFree() {
 		// TODO Auto-generated method stub
@@ -79,8 +106,8 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 
 		PrintWriter out=null;
 		try{
-			out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
-		
+			out = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
+
 
 			Iterator<String> it= sortedTerms.iterator();
 			String term;
@@ -88,15 +115,17 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 			while(it.hasNext()){
 
 				term= it.next();
-				s="{"+term+ dictionary.get(term).toString()+"}\n";
+				s="{"+term+ dictionary.get(term).toString()+"}";
 				//for debug reason currently
-				System.out.println(s);
-				
+				//System.out.println(s);
+
 				//out.println(s); //append to files
+				out.println(s);
 			}
 
 		}catch (IOException e) {
 			//exception handling left as an exercise for the reader
+			e.printStackTrace();
 		}
 		finally
 		{
@@ -112,9 +141,13 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 
 
 	@Override
-	protected void buildIndexForBlock(Object tokenStream) {
-		doSPIMIInvert(tokenStream);
-
+	protected void buildIndexForBlock(PipedReader reader) {
+		//
+		System.out.println("building index");
+		doSPIMIInvert(reader);
+		//
+		System.out.println("done");
+		done();
 	}
 
 

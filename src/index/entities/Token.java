@@ -9,10 +9,14 @@ public class Token {
 	private String term;
 	private int docID;
 	
-	public Token(int read) {
-		// TODO Auto-generated constructor stub
-	}
 	
+	public Token(String readLine) {
+		// TODO Auto-generated constructor stub
+		String[] tmp = readLine.split("_");
+		term= tmp[0];
+		docID= Integer.valueOf(tmp[1]);
+	}
+
 	public String getTerm() {
 		return term;
 	}
@@ -20,6 +24,10 @@ public class Token {
 		return docID;
 	}
 	
+	public String toString()
+	{
+		return term+"_"+docID;
+	}
 	
 	
 }

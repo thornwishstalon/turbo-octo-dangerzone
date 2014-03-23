@@ -3,7 +3,7 @@ package main.input.command.commands;
 import java.io.File;
 import java.util.ArrayList;
 
-import processor.Document;
+import processor.TextDocument;
 import processor.DocumentProcessor;
 import reader.Reader;
 import main.input.command.ICommand;
@@ -33,10 +33,10 @@ public class Process implements ICommand {
 			
 			//test read - just 1 file
 			DocumentProcessor documentProcessor = new DocumentProcessor();
-			String text = documentProcessor.readDocument(documents.get(0));
+			//String text = documentProcessor.readDocument(documents.get(0));
 			//save index as documentID
 			//text holds information for later use - to be discussed 
-			Document doc = new Document(0, text);
+			//Document doc = new Document(0, text);
 		}
 		catch (Exception ex){
 			System.out.println(ex.getMessage());

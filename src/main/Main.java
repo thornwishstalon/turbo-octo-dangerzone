@@ -3,8 +3,9 @@ package main;
 import java.io.File;
 import java.lang.Exception;
 import java.util.ArrayList;
+import java.util.List;
 
-import processor.Document;
+import processor.TextDocument;
 import processor.DocumentProcessor;
 import reader.Reader;
 
@@ -24,14 +25,13 @@ public class Main {
 			
 			//stores all files in the arrayList
 			reader.readFiles(documents);
-			//System.out.println(documents.get(0).getName() + "," + documents.get(0).getParent());
 			
 			//test read - just 1 file
+			List<TextDocument> documentList = new ArrayList<TextDocument>();
 			DocumentProcessor documentProcessor = new DocumentProcessor();
-			String text = documentProcessor.readDocument(documents.get(0));
-			//save index as documentID
-			//text holds information for later use - to be discussed 
-			Document doc = new Document(0, text);
+			documentProcessor.process(documents, documentList);
+			
+			System.out.println("Total number of documents to be processed: " + documentList.size());
 		}
 		catch (Exception ex){
 			System.out.println(ex.getMessage());

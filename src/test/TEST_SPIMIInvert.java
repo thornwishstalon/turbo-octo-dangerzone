@@ -19,7 +19,9 @@ public class TEST_SPIMIInvert {
 		IndexFeeder feeder= new IndexFeeder(index);
 		
 		index.start();
+		feeder.start();
 		
+		System.out.println("feeding index");
 		
 		feeder.feedIndex("friends_1\n");
 		feeder.feedIndex("friends_1\n");

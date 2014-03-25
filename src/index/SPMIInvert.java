@@ -18,13 +18,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 /**
  * @author F
  *
  */
 public class SPMIInvert extends AbstractBlockedIndexCreator{
 	private HashMap<String, PostingList> dictionary;
-	
+	private static Logger logger = LogManager.getLogger("SPIMIInvert");
 	
 	public SPMIInvert()
 	{
@@ -51,28 +54,31 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 				while((in = bufferedReader.readLine() )!=null){
 					
 					token= new Token(in);
-					System.out.println("received: "+token.toString());
+					logger.info("received: "+token.toString());
 					posting =  new Posting(token.getDocID());
-					System.out.println("posting: "+ posting.toString());
+					logger.info("posting: "+ posting.toString());
 					
 					if(!dictionary.containsKey(token.getTerm()))
 					{
-						System.out.println("term not in dictionary");
+						logger.info("term not in dictionary");
 						list=new PostingList();
 						dictionary.put(token.getTerm(), list );
 					}else{
-						System.out.println("term already in dictionary");
-						list= dictionary.get(token.getTerm());					
+						logger.info("term already in dictionary");
+						list= dictionary.get(token.getTerm());
+						//update df / tf
+						
 					}
 					
 					list.addToList(posting);
-					System.out.println("posting list: "+list.toString());
+					logger.info("posting list: "+list.toString());
 				}
 				
 			} catch (IOException e) 
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				logger.error(e.getMessage());
 				//break;
 			} //TODO read item from tokenStream
 		//}

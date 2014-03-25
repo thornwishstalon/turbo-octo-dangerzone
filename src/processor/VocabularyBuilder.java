@@ -32,12 +32,14 @@ public class VocabularyBuilder {
 		ArrayList<String> stopWords = getStopWords();
 		
 		//remove special characters
+		/*
 		Pattern pt = Pattern.compile("[^a-z]");
 		Matcher match = pt.matcher(completeText);
 		while (match.find()) {
 			String s = match.group();
 			s = s.replaceAll("\\"+s, "");
-		}
+		}*/
+		completeText = completeText.replaceAll("[^a-z]", " ");
 		
 		//split by space
 		String[] tokens = completeText.split(" ");

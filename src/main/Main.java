@@ -7,6 +7,7 @@ import java.util.List;
 
 import processor.TextDocument;
 import processor.DocumentProcessor;
+import processor.VocabularyBuilder;
 import reader.Reader;
 
 public class Main {
@@ -19,6 +20,7 @@ public class Main {
 		
 		try {
 			//arrayList will hold all documents
+			
 			ArrayList<File> documents = new ArrayList<>();
 			System.out.println("Reading directory: " + NEWSGROUP_PATH);
 			Reader reader = new Reader(NEWSGROUP_PATH);
@@ -29,9 +31,14 @@ public class Main {
 			//test read - just 1 file
 			List<TextDocument> documentList = new ArrayList<TextDocument>();
 			DocumentProcessor documentProcessor = new DocumentProcessor();
-			documentProcessor.process(documents, documentList);
+			String completeText = documentProcessor.process(documents, documentList);
 			
 			System.out.println("Total number of documents to be processed: " + documentList.size());
+			
+			//build Vocabulary
+			VocabularyBuilder vocabularyBuilder = new VocabularyBuilder(completeText);
+			vocabularyBuilder.build();
+			
 		}
 		catch (Exception ex){
 			System.out.println(ex.getMessage());

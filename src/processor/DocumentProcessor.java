@@ -20,7 +20,9 @@ public class DocumentProcessor {
 		
 	}
 	
-	public void process(ArrayList<File> documents, List<TextDocument> documentList) {
+	public String process(ArrayList<File> documents, List<TextDocument> documentList) {
+		String completeText = "";
+		
 		if (documents != null) {
 			for (File file : documents) {
 				
@@ -38,11 +40,14 @@ public class DocumentProcessor {
 					//create Document
 					TextDocument doc = new TextDocument(id, fileText, parentName);
 					documentList.add(doc);
+					
+					//store text
+					completeText += fileText;
 				}
 			}
-			
-			System.out.println("first Doc: \n" + documentList.get(0).toString());
 		}
+		
+		return completeText;
 	}
 	
 	
@@ -65,7 +70,7 @@ public class DocumentProcessor {
 			    	// until eof or ---
 			    	if (!line.startsWith(">") && !line.startsWith("-") && 
 		    			!(line.isEmpty() || line.trim().equals("") || line.trim().equals("\n")))
-			    		text += line;
+			    		text = text + line + " ";
 			    }
 			    
 			    //System.out.println(text);

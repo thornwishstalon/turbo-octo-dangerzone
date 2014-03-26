@@ -1,8 +1,8 @@
 package processor;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -12,6 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.lang.Math;
+
+import stemming.SnowballStemmerWrapper;
 
 public class VocabularyBuilder {
 
@@ -31,37 +34,47 @@ public class VocabularyBuilder {
 		//read stop words from file
 		ArrayList<String> stopWords = getStopWords();
 		
-		//remove special characters
-		/*
-		Pattern pt = Pattern.compile("[^a-z]");
-		Matcher match = pt.matcher(completeText);
-		while (match.find()) {
-			String s = match.group();
-			s = s.replaceAll("\\"+s, "");
-		}*/
-		completeText = completeText.replaceAll("[^a-z]", " ");
+		//stemming
+		SnowballStemmerWrapper stemmerWrapper = new SnowballStemmerWrapper(completeText);
+		completeText = stemmerWrapper.runStringInput();
 		
 		//split by space
 		String[] tokens = completeText.split(" ");
 		System.out.println("Number of tokens: " + tokens.length);
+				
+		//remove stop words
+		ArrayList<String> vocsAll = new ArrayList<>();
+		int step = 10000;
+		int count = 0;
+		for (int i = count*step; i < Math.min((count+1)*step, tokens.length); i++) {
+			String token = tokens[i];
+			boolean isStopWord = false; 
+			for (String stopWord : stopWords) {
+				if (token.equals(stopWord)) {
+					isStopWord = true;
+					break;
+				}
+			}
+			if (!isStopWord) {
+				//remove special characters
+				//token = token.replaceAll("[^a-z]", "");
+				token = token.replaceAll("[\\W]", "");
+				token = token.trim();
+				vocsAll.add(token);
+			}
+			count++;
+		}
+		System.out.println("Number of total vocs: " + vocsAll.size());
 		
 		//get unique values
-		ArrayList<String> vocsFull = new ArrayList<>();
-		for (String token : tokens) {
-			if (!vocsFull.contains(token))
-				vocsFull.add(token);
-		}
-		System.out.println("Number of vocs: " + vocsFull.size());
-		
-		//remove stop words
 		ArrayList<String> vocs = new ArrayList<>();
-		for (String singleVoc : vocsFull) {
-			if (!stopWords.contains(singleVoc))
-				vocs.add(singleVoc);
+		for (String voc : vocsAll) {
+			if (!vocs.contains(voc))
+				vocs.add(voc);
 		}
-		System.out.println("Number of vocs without stop words: " + vocs.size());
+		System.out.println("Number of vocs: " + vocs.size());
 		
-		//wite Vocabulary to file
+		//write Vocabulary to file
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(vocabularyPath));
 			for (String voc : vocs) {

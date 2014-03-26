@@ -2,12 +2,14 @@ package stemming;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.lang.Exception;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.StringTokenizer;
 
+import org.junit.runner.RunWith;
 import org.tartarus.snowball.SnowballStemmer;
 import org.tartarus.snowball.ext.englishStemmer;
 
@@ -15,11 +17,28 @@ import sun.util.locale.StringTokenIterator;
 
 public class SnowballStemmerWrapper extends Thread {
 
-
+	private String input;
 	private SnowballStemmer stemmer;
 	private BufferedReader reader;
 	private OutputStream outstream;
 
+	public SnowballStemmerWrapper(String input) {
+		this.input = input;
+		
+		stemmer= new englishStemmer();
+		Class stemClass=null;
+		try {
+			stemClass = Class.forName("org.tartarus.snowball.ext.englishStemmer"); //english only!!
+			stemmer = (SnowballStemmer) stemClass.newInstance();
+		
+			//runStringInput();
+		
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
 	public SnowballStemmerWrapper(BufferedReader reader, OutputStream outstream)
 	{
 		stemmer= new englishStemmer();
@@ -82,6 +101,22 @@ public class SnowballStemmerWrapper extends Thread {
 			}
 		}
 	}
-
+	
+	public String runStringInput() {
+		String output = "";
+		
+		try {
+			if (input != null) {
+				stemmer.setCurrent(input);
+				stemmer.stem();
+				output = stemmer.getCurrent();
+			}
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return output;
+	}
 
 }

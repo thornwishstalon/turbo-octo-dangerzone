@@ -2,6 +2,7 @@ package main.input.command;
 
 import java.util.HashMap;
 
+import main.input.command.commands.BuildVoc;
 import main.input.command.commands.Print;
 import main.input.command.commands.SetupInfo;
 import main.input.command.commands.SetupSetPath;
@@ -23,7 +24,8 @@ public class ApplicationCommandList implements ICommandList {
 		commands.put("!setPath", new SetupSetPath());
 		commands.put("!print", new Print());
 		
-		commands.put("!process", new main.input.command.commands.Process());
+		//commands.put("!process", new main.input.command.commands.Process());
+		commands.put("!buildVoc", new BuildVoc());
 		
 	}
 

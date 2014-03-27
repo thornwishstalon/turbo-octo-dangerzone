@@ -6,3 +6,5 @@
 *.ear
 /bin
 .classpath
+logs/log.log
+dictionary/1.txt

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -30,13 +31,14 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 	private static Logger logger = LogManager.getLogger("SPIMIInvert");
 	
 	public SPMIInvert()
-	{
+	{		
 		super();
+		//BasicConfigurator.configure();
 	}
 
 	private File doSPIMIInvert(PipedReader reader){ 
 
-		System.out.println("SPIMIInvert");
+		//System.out.println("SPIMIInvert");
 		//token = (term,docID)
 		File outputfile= new File("./dictionary/1.txt"); //TODO add filename for block
 		
@@ -65,9 +67,7 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 						dictionary.put(token.getTerm(), list );
 					}else{
 						logger.info("term already in dictionary");
-						list= dictionary.get(token.getTerm());
-						//update df / tf
-						
+						list= dictionary.get(token.getTerm());						
 					}
 					
 					list.addToList(posting);
@@ -109,7 +109,7 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 	}
 
 	private File writeBlockToDisk(File file, Set<String> sortedTerms, HashMap<String, PostingList> dictionary){
-
+		//System.out.println("write to blocl");
 		PrintWriter out=null;
 		try{
 			out = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
@@ -149,10 +149,10 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 	@Override
 	protected void buildIndexForBlock(PipedReader reader) {
 		//
-		System.out.println("building index");
+		//System.out.println("building index");
 		doSPIMIInvert(reader);
 		//
-		System.out.println("done");
+		//System.out.println("done");
 		done();
 	}
 

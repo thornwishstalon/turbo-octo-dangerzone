@@ -3,7 +3,7 @@ package index;
 import java.io.IOException;
 import java.io.PipedWriter;
 
-public class IndexFeeder implements Runnable  {
+public class IndexFeeder extends Thread{
 	//private AbstractBlockedIndexCreator index;
 	private PipedWriter writer;
 
@@ -11,7 +11,9 @@ public class IndexFeeder implements Runnable  {
 	{
 		//this.index= index;
 		try {
-			writer = new PipedWriter(index.getReader());
+			writer = new PipedWriter();
+			writer.connect(index.getReader());
+		
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -22,12 +24,11 @@ public class IndexFeeder implements Runnable  {
 	
 	public void feedIndex(String token)
 	{
-		if(writer==null)
-			return;
 		
 		try {
 			if(token!=null && token.length() > 0){
-				writer.write(token);
+				writer.write(token, 0, token.length());
+				
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -40,6 +41,7 @@ public class IndexFeeder implements Runnable  {
 		if(writer!= null){
 			try {
 				writer.close();
+				writer= null;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -50,9 +52,9 @@ public class IndexFeeder implements Runnable  {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while(true)
-		{
-			//
+		while(writer!=null){
+			
+			//do stuff
 		}
 	}
 

@@ -80,7 +80,7 @@ public class SnowballStemmerWrapper extends Thread {
 				stemmer.setCurrent(input);
 				stemmer.stem();
 				
-				output.write(stemmer.getCurrent().toLowerCase()+"\n"); //write line holding the stemmed and to lowercase transformed word
+				output.write(stemmer.getCurrent()+"\n"); //write line holding the stemmed and to lowercase transformed word
 				
 			}
 			output.flush();

@@ -9,6 +9,12 @@ public class Token {
 	private String term;
 	private int docID;
 	
+	public Token(String term, String docID)
+	{
+		this.term= term;
+		this.docID= Integer.valueOf(docID);
+		
+	}
 	
 	public Token(String readLine) {
 		// TODO Auto-generated constructor stub

@@ -29,19 +29,20 @@ import org.apache.log4j.Logger;
 public class SPMIInvert extends AbstractBlockedIndexCreator{
 	private HashMap<String, PostingList> dictionary;
 	private static Logger logger = LogManager.getLogger("SPIMIInvert");
+	private PipedReader reader=null;
 	
-	public SPMIInvert()
+	public SPMIInvert(PipedReader reader)
 	{		
 		super();
+		this.reader= reader;
 		//BasicConfigurator.configure();
 	}
 
-	private File doSPIMIInvert(PipedReader reader){ 
+	public void doSPIMIInvert( String ID){ 
 
-		//System.out.println("SPIMIInvert");
+		System.out.println("SPIMIInvert");
 		//token = (term,docID)
-		File outputfile= new File("./dictionary/1.txt"); //TODO add filename for block
-		
+	
 		dictionary= new HashMap<>();
 
 		Token token=null;
@@ -55,7 +56,8 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 				
 				while((in = bufferedReader.readLine() )!=null){
 					
-					token= new Token(in);
+					token= new Token(in, ID);
+					
 					logger.info("received: "+token.toString());
 					posting =  new Posting(token.getDocID());
 					logger.info("posting: "+ posting.toString());
@@ -84,11 +86,16 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 		//}
 		//sortTerms(dictionary)
 		//WRITEBLOCKTODISK
-
-		return  writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
-
 	}
+	
+	
 
+	public void safe()
+	{
+		File outputfile= new File("./dictionary/1.txt"); //TODO add filename for block
+		writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
+		
+	}
 	
 
 	private boolean memoryIsFree() {
@@ -145,7 +152,15 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 		return file;
 	}
 
+	@Override
+	protected void buildIndexForBlock(PipedReader tokenstream) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	
+	
+/*
 	@Override
 	protected void buildIndexForBlock(PipedReader reader) {
 		//
@@ -155,7 +170,7 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 		//System.out.println("done");
 		done();
 	}
-
+*/
 
 
 

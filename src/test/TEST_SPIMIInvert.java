@@ -1,21 +1,20 @@
 package test;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.io.PipedWriter;
-
-import index.AbstractBlockedIndexCreator;
-import index.IndexFeeder;
-import index.SPMIInvert;
-
+import org.apache.log4j.BasicConfigurator;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TEST_SPIMIInvert {
 
+	@Before
+	public void setup()
+	{
+		BasicConfigurator.configure();
+	}
+	
 	@Test
 	public void test() {
-
+		/*
 		//pretty useless automatic test. for manual testing only ;)
 		AbstractBlockedIndexCreator index= new SPMIInvert();
 
@@ -48,7 +47,7 @@ public class TEST_SPIMIInvert {
 			e.printStackTrace();
 		}
 
-
+		 */
 
 
 	}

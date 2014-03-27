@@ -12,7 +12,7 @@ public class CaseFolding extends AbstractPipeStage {
 
 	@Override
 	public String process(String input) {
-		System.out.println("folding processing: "+input);
+		//System.out.println("folding processing: "+input);
 		return input.toLowerCase();
 	}
 

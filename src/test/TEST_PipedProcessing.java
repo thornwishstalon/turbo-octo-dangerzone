@@ -33,8 +33,6 @@ public class TEST_PipedProcessing {
 		
 		try {
 			
-			OutputStream out = new FileOutputStream("testData/pipedTestResult.txt");
-			
 			
 			PipedWriter writer= new PipedWriter();
 			
@@ -82,9 +80,7 @@ public class TEST_PipedProcessing {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-		}catch(FileNotFoundException e)
-		{
+		
 			//
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

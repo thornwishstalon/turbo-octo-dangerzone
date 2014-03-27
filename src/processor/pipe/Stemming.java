@@ -47,7 +47,7 @@ public class Stemming extends AbstractPipeStage {
 			stemmer.setCurrent(input);
 			stemmer.stem();
 			out= stemmer.getCurrent();
-			System.out.println("stemmer processing : "+ out);
+			//System.out.println("stemmer processing : "+ out);
 			return out;
 		}
 		else return "";

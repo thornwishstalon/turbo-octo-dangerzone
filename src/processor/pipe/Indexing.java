@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import main.ApplicationStatus;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -45,7 +47,7 @@ public class Indexing extends AbstractPipeStage {
 	@Override
 	public String process(String input) {		
 		//index.doSPIMIInvert(currentDocID);
-		System.out.println("indexing processing: "+ input);
+		//System.out.println("indexing processing: "+ input+ " _ ID: " + currentDocID);
 		
 		PostingList list=null;
 		Posting posting= null;
@@ -77,8 +79,11 @@ public class Indexing extends AbstractPipeStage {
 	public void backup(){
 		
 		System.out.println("BACKUP");
-		File outputfile= new File("./dictionary/1.txt"); //TODO add filename for block
+		File outputfile= new File("./dictionary/index.txt"); //TODO add filename for block
 		writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
+		
+		ApplicationStatus.getInstance().setIndex(dictionary);
+		
 		
 	}
 	
@@ -91,7 +96,7 @@ public class Indexing extends AbstractPipeStage {
 	}
 
 	private void writeBlockToDisk(File file, Set<String> sortedTerms, HashMap<String, PostingList> dictionary){
-		//System.out.println("write to blocl");
+		System.out.println("write to blocl");
 		PrintWriter out=null;
 		try{
 			out = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));

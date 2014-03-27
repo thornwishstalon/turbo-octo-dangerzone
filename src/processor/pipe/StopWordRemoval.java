@@ -28,7 +28,7 @@ public class StopWordRemoval extends AbstractPipeStage {
 
 	@Override
 	public String process(String input) {
-		System.out.println("stopword processing: "+input);
+		//System.out.println("stopword processing: "+input);
 		if(isStopword(input))
 			return "";
 		else return input;

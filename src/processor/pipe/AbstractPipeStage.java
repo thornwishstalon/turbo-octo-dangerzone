@@ -51,10 +51,12 @@ public abstract class AbstractPipeStage extends Thread {
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());
+			e.printStackTrace();
 		}finally
 		{
 			try {
-				out.close();
+				if(out!=null)
+					out.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

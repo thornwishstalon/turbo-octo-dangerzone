@@ -47,7 +47,7 @@ public class Indexing extends AbstractPipeStage {
 	@Override
 	public String process(String input) {		
 		//index.doSPIMIInvert(currentDocID);
-		//System.out.println("indexing processing: "+ input+ " _ ID: " + currentDocID);
+		System.out.println("indexing processing: "+ input+ " _ ID: " + currentDocID);
 		
 		PostingList list=null;
 		Posting posting= null;

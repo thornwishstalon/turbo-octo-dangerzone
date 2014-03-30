@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 public abstract class AbstractPipeStage extends Thread {
 	protected PipedReader in;
 	protected PipedWriter out;
+	protected AbstractPipeStage waitingFor= null;
+	protected boolean isDone=false;
 	
 	private static Logger logger = LogManager.getLogger("AbstractPipeStage");
 
@@ -49,11 +51,18 @@ public abstract class AbstractPipeStage extends Thread {
 					}
 				}
 			}
+			
+			isDone=true;
+			
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}finally
 		{
+			while(!waitingFor.isDone())
+			{
+				//waiting
+			}
 			try {
 				if(out!=null)
 					out.close();
@@ -64,6 +73,16 @@ public abstract class AbstractPipeStage extends Thread {
 			
 			backup();
 		}
+	}
+	public void setWaitingFor(AbstractPipeStage a)
+	{
+		this.waitingFor=a;
+	}
+	
+	
+	protected boolean isDone()
+	{
+		return isDone;
 	}
 
 	protected void backup() {

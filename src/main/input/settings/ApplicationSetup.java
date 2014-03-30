@@ -26,6 +26,7 @@ public class ApplicationSetup {
 	private final String CONFIG_ID_STOPWORDS_PATH = "stopwords_path";
 	private final String CONFIG_ID_USE_STEMMER = "use_stemmer";
 	private final String CONFIG_ID_USE_STOPWORDS = "use_stopwords";
+	private final String CONFIG_ID_USE_BIGRAMS = "use_bigrams";
 	private final String CONFIG_ID_DOCUMENTLOOKUPTABLE_PATH = "document_lookup_table_path";
 	
 	//.... more to come
@@ -152,6 +153,34 @@ public class ApplicationSetup {
 		setValue(CONFIG_ID_STOPWORDS_PATH, value);
 	}
 	
+	public boolean getUseBigrams()
+	{
+		return Boolean.getBoolean(getValue(CONFIG_ID_USE_BIGRAMS));
+	}
 	
+	public void setUseBigrams(boolean value)
+	{
+		setValue(CONFIG_ID_USE_BIGRAMS, Boolean.toString(value));
+	}
+	
+	public boolean getUseStopwords()
+	{
+		return Boolean.getBoolean(getValue(CONFIG_ID_USE_STOPWORDS));
+	}
+	
+	public void setUseStopwords(boolean value)
+	{
+		setValue(CONFIG_ID_USE_STOPWORDS, Boolean.toString(value));
+	}
+	
+	public boolean getUseStemmer()
+	{
+		return Boolean.getBoolean(getValue(CONFIG_ID_USE_STEMMER));
+	}
+	
+	public void setUseStemmer(boolean value)
+	{
+		setValue(CONFIG_ID_USE_STEMMER, Boolean.toString(value));
+	}
 	
 }

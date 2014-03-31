@@ -47,7 +47,7 @@ public class StopWordRemoval extends AbstractPipeStage {
 	private void initStopwords()
 	{
 		String docPath= ApplicationSetup.getInstance().getStopwordsPath();
-		System.out.println(docPath);
+	//	System.out.println(docPath);
 		try {
 			Path path = Paths.get(docPath);
 			BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);

@@ -29,7 +29,7 @@ public class Indexing extends AbstractPipeStage {
 	//private SPMIInvert index;
 	private String currentDocID;
 	private HashMap<String, PostingList> dictionary;
-	private static Logger logger = LogManager.getLogger("SPIMIInvert");
+	private static Logger logger = LogManager.getLogger("Index");
 	
 	
 	
@@ -47,7 +47,7 @@ public class Indexing extends AbstractPipeStage {
 	@Override
 	public String process(String input) {		
 		//index.doSPIMIInvert(currentDocID);
-		System.out.println("indexing processing: "+ input+ " _ ID: " + currentDocID);
+		//System.out.println("indexing processing: "+ input+ " _ ID: " + currentDocID);
 		
 		PostingList list=null;
 		Posting posting= null;

@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import main.input.settings.ApplicationSetup;
 import reader.Reader;
 
@@ -19,6 +22,7 @@ public class ProcessPipe extends Thread {
 	private boolean isRunning=false;
 	private ArrayList<AbstractPipeStage> stages;
 	private Indexing indexing; 
+	private static Logger logger = LogManager.getLogger("ProcessPipe");
 	
 	public ProcessPipe() {
 		
@@ -28,24 +32,35 @@ public class ProcessPipe extends Thread {
 	
 	private void init(PipedWriter inputStart) throws IOException
 	{
-		int index=0;
-		stages.add(new CaseFolding(new PipedReader(inputStart), new PipedWriter()));
+		logger.info("init pipe");
+		
+		if(!stages.isEmpty())
+		{
+			stages.removeAll(stages);
+		}
+		
+		//int index=0;
+		stages.add(new Filter(new PipedReader(inputStart), new PipedWriter()));
+		
+		stages.add(new CaseFolding(new PipedReader(stages.get(stages.size()-1).getOut()), new PipedWriter()));
+		//stages.add(new CaseFolding(new PipedReader(inputStart), new PipedWriter()));
+		
+		
 		if(ApplicationSetup.getInstance().getUseStopwords())
 		{
-			stages.add(new StopWordRemoval(new PipedReader(stages.get(index).getOut()), new PipedWriter()));
-			index++;
+			stages.add(new StopWordRemoval(new PipedReader(stages.get(stages.size()-1).getOut()), new PipedWriter()));
 		}
 		if(ApplicationSetup.getInstance().getUseStemmer())
 		{
-			stages.add(new Stemming(new PipedReader(stages.get(index).getOut()), new PipedWriter()));
-			index++;
+			stages.add(new Stemming(new PipedReader(stages.get(stages.size()-1).getOut()), new PipedWriter()));
+			
 		}
 		if(ApplicationSetup.getInstance().getUseBigrams())
 		{
-			stages.add(new BigramBufferStage(new PipedReader(stages.get(index).getOut()), new PipedWriter()));
-			index++;
+			stages.add(new BigramBufferStage(new PipedReader(stages.get(stages.size()-1).getOut()), new PipedWriter()));
 		}
-		indexing= new Indexing(new PipedReader(stages.get(index).getOut()), new PipedWriter());
+		
+		indexing= new Indexing(new PipedReader(stages.get(stages.size()-1).getOut()), new PipedWriter());
 		
 		stages.add(indexing);
 		
@@ -104,7 +119,7 @@ public class ProcessPipe extends Thread {
 			int id=0; //for testing
 			for(File f: documents)
 			{
-				//System.out.println("processing file :" +f.getAbsolutePath());
+				System.out.println("processing file :" +f.getAbsolutePath());
 				indexing.setCurrentDocID(""+id++);
 				br = new BufferedReader(new FileReader(f)); 
 				while((line = br.readLine())!=null)

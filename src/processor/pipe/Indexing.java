@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import main.ApplicationStatus;
+import main.input.settings.ApplicationSetup;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -29,7 +30,7 @@ public class Indexing extends AbstractPipeStage {
 	//private SPMIInvert index;
 	private String currentDocID;
 	private HashMap<String, PostingList> dictionary;
-	private static Logger logger = LogManager.getLogger("SPIMIInvert");
+	private static Logger logger = LogManager.getLogger("Index");
 	
 	
 	
@@ -78,8 +79,16 @@ public class Indexing extends AbstractPipeStage {
 	@Override
 	public void backup(){
 		
-		System.out.println("BACKUP");
-		File outputfile= new File("./dictionary/index.txt"); //TODO add filename for block
+		//System.out.println("\n BACKUP!!!++++++++++++\n");
+		logger.info("writing to disk!");
+		
+		String filename;
+		if(ApplicationSetup.getInstance().getUseBigrams())
+		{
+			filename= "./dictionary/bigram_index.txt";
+		}else filename= "./dictionary/index.txt";
+		
+		File outputfile= new File(filename); 
 		writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
 		
 		ApplicationStatus.getInstance().setIndex(dictionary);
@@ -89,6 +98,8 @@ public class Indexing extends AbstractPipeStage {
 	
 	private Set<String> sortTerms(HashMap<String, PostingList> dictionary)
 	{
+		logger.info("sorting");
+		//System.out.println("sorting");
 		Map<String, PostingList> copy= new TreeMap<String, PostingList>(dictionary);
 
 		return copy.keySet();
@@ -96,7 +107,7 @@ public class Indexing extends AbstractPipeStage {
 	}
 
 	private void writeBlockToDisk(File file, Set<String> sortedTerms, HashMap<String, PostingList> dictionary){
-		System.out.println("write to blocl");
+		//System.out.println("write to block");
 		PrintWriter out=null;
 		try{
 			out = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
@@ -130,6 +141,13 @@ public class Indexing extends AbstractPipeStage {
 		//pushBlockForMerge(file.getName());
 
 		//return file;
+	}
+	
+	@Override
+	protected void success() {
+		super.success();
+		System.out.println("indexing done");
+		
 	}
 
 }

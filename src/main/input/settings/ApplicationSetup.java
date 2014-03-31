@@ -26,6 +26,7 @@ public class ApplicationSetup {
 	private final String CONFIG_ID_STOPWORDS_PATH = "stopwords_path";
 	private final String CONFIG_ID_USE_STEMMER = "use_stemmer";
 	private final String CONFIG_ID_USE_STOPWORDS = "use_stopwords";
+	private final String CONFIG_ID_USE_BIGRAMS = "use_bigrams";
 	private final String CONFIG_ID_DOCUMENTLOOKUPTABLE_PATH = "document_lookup_table_path";
 	
 	//.... more to come
@@ -90,7 +91,7 @@ public class ApplicationSetup {
 	{
 		if(props!=null)
 		{
-			props.setProperty(CONFIG_ID_CORPORA_PATH, value);
+			props.setProperty(key, value);
 			store();
 		}
 		
@@ -111,7 +112,14 @@ public class ApplicationSetup {
 	}
 	
 	public String getInfo()	{
-		String s= CONFIG_ID_CORPORA_PATH +": "+ getCorporaPath() +"\n";
+		String s= CONFIG_ID_CORPORA_PATH +": "+ getCorporaPath() +"\n"+
+				  CONFIG_ID_STOPWORDS_PATH+": "+getStopwordsPath()+"\n"+
+				  CONFIG_ID_TOPIC_PATH+": "+getTopicFilePath()+"\n";
+				  
+		s+= "****STAGES\n"+
+				CONFIG_ID_USE_STOPWORDS +" "+ getUseStopwords() + "\n"+
+				CONFIG_ID_USE_STEMMER + " "+ getUseStemmer() +"\n"+
+				CONFIG_ID_USE_BIGRAMS +" "+ getUseBigrams() +"\n";
 		
 		return s;
 	}
@@ -152,6 +160,34 @@ public class ApplicationSetup {
 		setValue(CONFIG_ID_STOPWORDS_PATH, value);
 	}
 	
+	public boolean getUseBigrams()
+	{
+		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_BIGRAMS));
+	}
 	
+	public void setUseBigrams(boolean value)
+	{
+		setValue(CONFIG_ID_USE_BIGRAMS, Boolean.toString(value));
+	}
+	
+	public boolean getUseStopwords()
+	{
+		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_STOPWORDS));
+	}
+	
+	public void setUseStopwords(boolean value)
+	{
+		setValue(CONFIG_ID_USE_STOPWORDS, Boolean.toString(value));
+	}
+	
+	public boolean getUseStemmer()
+	{
+		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_STEMMER));
+	}
+	
+	public void setUseStemmer(boolean value)
+	{
+		setValue(CONFIG_ID_USE_STEMMER, Boolean.toString(value));
+	}
 	
 }

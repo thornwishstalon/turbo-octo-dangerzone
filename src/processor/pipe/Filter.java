@@ -40,5 +40,12 @@ public class Filter extends AbstractPipeStage {
 	       log.info(start+ "->"+input);
 		return input.trim();
 	}
+	
+	@Override
+	protected void success() {
+		
+		super.success();
+		System.out.println("Filter DONE");
+	}
 
 }

@@ -1,6 +1,5 @@
 package main.input.command.commands;
 
-import processor.VocabularyBuilder;
 import processor.pipe.ProcessPipe;
 import main.input.command.ICommand;
 
@@ -24,7 +23,8 @@ public class BuildVoc implements ICommand {
 		if(pipe.isRunning())
 		return "!print Still processing! have some patience!";
 		else
-		{
+		{	
+			pipe = new ProcessPipe();
 			pipe.start();
 			return "!print building index....";
 		}

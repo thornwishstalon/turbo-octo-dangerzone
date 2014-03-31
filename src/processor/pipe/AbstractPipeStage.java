@@ -54,15 +54,26 @@ public abstract class AbstractPipeStage extends Thread {
 			
 			isDone=true;
 			
+			
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}finally
 		{
+			success();
 			while(!waitingFor.isDone())
 			{
 				//waiting
+				try {
+					sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+			
+			backup();
+			
 			try {
 				if(out!=null)
 					out.close();
@@ -71,9 +82,14 @@ public abstract class AbstractPipeStage extends Thread {
 				e.printStackTrace();
 			}
 			
-			backup();
+			
 		}
 	}
+	protected void success()
+	{
+		//
+	}
+	
 	public void setWaitingFor(AbstractPipeStage a)
 	{
 		this.waitingFor=a;

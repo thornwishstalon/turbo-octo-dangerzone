@@ -142,7 +142,7 @@ public class VocabularyBuilder {
 			int id=0; //for testing
 			for(File f: documents)
 			{
-				//System.out.println("processing file :" +f.getAbsolutePath());
+				//System.out.println(f.getAbsolutePath());
 				indexing.setCurrentDocID(""+id++);
 				br = new BufferedReader(new FileReader(f)); 
 				while((line = br.readLine())!=null)

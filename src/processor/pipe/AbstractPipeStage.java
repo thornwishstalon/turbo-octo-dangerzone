@@ -33,9 +33,7 @@ public abstract class AbstractPipeStage extends Thread {
 		
 		try {
 			
-			
 			BufferedReader reader= new BufferedReader(in);
-			//PrintWriter writer = new PrintWriter(out);
 			
 			while((input= reader.readLine())!=null)
 			{
@@ -55,8 +53,9 @@ public abstract class AbstractPipeStage extends Thread {
 		}finally
 		{
 			try {
-				if(out!=null)
+				if(out!=null){
 					out.close();
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -67,7 +66,7 @@ public abstract class AbstractPipeStage extends Thread {
 	}
 
 	protected void backup() {
-		
+		//backup hook
 	}
 
 	public abstract String process(String input);

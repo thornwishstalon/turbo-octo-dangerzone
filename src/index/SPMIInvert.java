@@ -65,7 +65,7 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 					if(!dictionary.containsKey(token.getTerm()))
 					{
 						logger.info("term not in dictionary");
-						list=new PostingList();
+						list=new PostingList(token.getTerm());
 						dictionary.put(token.getTerm(), list );
 					}else{
 						logger.info("term already in dictionary");

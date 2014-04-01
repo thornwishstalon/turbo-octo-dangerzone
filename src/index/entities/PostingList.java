@@ -3,21 +3,25 @@ package index.entities;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.json.JSONObject;
+import org.json.JSONString;
+
 
 /***
  * 
  * @author F
  *
  */
-public class PostingList {
+public class PostingList implements JSONString{
 	private int SIZE= 1024;
 	private int currentPosition=0;
 	private int overallFrequency=0;
-	
+	private String term;
 	private Posting[] postingList;
 	
 	
-	public PostingList(){
+	public PostingList(String term){
+		this.term = term;
 		postingList= new Posting[SIZE];
 	}
 	
@@ -25,8 +29,8 @@ public class PostingList {
 	{
 		//System.out.println("added "+p.toString()+"to dictionary");
 		
-		if(currentPosition >= SIZE)
-			doublePostingList();
+//		if(currentPosition >= SIZE)
+//			doublePostingList();
 		
 		if(currentPosition > 0 ){
 			//check if documentID is already present and update documentfrequency
@@ -63,19 +67,6 @@ public class PostingList {
 	}
 	
 	
-	public void doublePostingList()
-	{
-		SIZE = 2*SIZE;
-		Posting[] tmp = new Posting[SIZE];
-		
-		//make a deep copy
-		for(int i=0; i< postingList.length;i++){
-			tmp[i]= postingList[i];
-		}
-		
-		postingList= tmp;
-		
-	}
 	
 	public String toString()
 	{
@@ -120,6 +111,24 @@ public class PostingList {
         System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
+
+	
+	@Override
+	public String toJSONString() {
+		JSONObject json= new JSONObject();
+		json.put("term", term);
+		json.put("overallFrequency", overallFrequency);
+		json.put("postings", postingList);
+		
+		return json.toString();
+//		String json ="{\"term\":"+term+"\", \"overallFrequency\":"+overallFrequency+"\"postings\": [";
+//		for(Posting p: postingList)
+//		{
+//			json += p.toJSONString();
+//		}
+//		json += "]}";
+//		return json;
+	}
 
 
 

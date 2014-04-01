@@ -1,30 +1,13 @@
 package processor.pipe;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import index.InvertedIndex;
+
 import java.io.PipedReader;
 import java.io.PipedWriter;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import main.ApplicationStatus;
-import main.input.settings.ApplicationSetup;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
-import index.InvertedIndex;
-import index.SPMIInvert;
-import index.entities.Posting;
-import index.entities.PostingList;
-import index.entities.Token;
 
 public class Indexing extends AbstractPipeStage {
 	
@@ -77,20 +60,7 @@ public class Indexing extends AbstractPipeStage {
 //		
 //		
 	}
-	
-	private Set<String> sortTerms(HashMap<String, PostingList> dictionary)
-	{
-		logger.info("sorting");
-		//System.out.println("sorting");
-		Map<String, PostingList> copy= new TreeMap<String, PostingList>(dictionary);
 
-		return copy.keySet();
-
-	}
-
-	private void writeBlockToDisk(File file, Set<String> sortedTerms, HashMap<String, PostingList> dictionary){
-		
-	}
 	
 	@Override
 	protected void success() {

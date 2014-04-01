@@ -25,7 +25,7 @@ public class InvertedIndex {
 	private TreeMap<String, PostingList> currentIndex;
 	private int count=0;
 	private int block=0;
-	private final int MAX_SIZE=1024*8;
+	private final int MAX_SIZE=1024*16;
 	
 	public InvertedIndex()
 	{
@@ -48,7 +48,7 @@ public class InvertedIndex {
 		if(!currentIndex.containsKey(token.getTerm()))
 		{
 			logger.info("term not in dictionary");
-			list=new PostingList();
+			list=new PostingList(token.getTerm());
 			currentIndex.put(token.getTerm(), list );
 			count++;
 		}else{
@@ -98,7 +98,8 @@ public class InvertedIndex {
 					while(it.hasNext()){
 
 						term= it.next();
-						s="{"+term+ block.get(term).toString()+"}";
+						//s="{"+term+ block.get(term).toString()+"}";
+						s= block.get(term).toJSONString();
 						//for debug reason currently
 						//System.out.println(s);
 

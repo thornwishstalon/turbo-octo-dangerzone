@@ -1,11 +1,16 @@
 package index.entities;
 
+import org.json.JSONObject;
+import org.json.JSONString;
+
+
+
 /***
  * 
  * @author F
  *
  */
-public class Posting implements Comparable<Posting>{
+public class Posting implements Comparable<Posting>, JSONString {
 	private int docID;
 	private int documentFrequency=1;
 	
@@ -50,6 +55,16 @@ public class Posting implements Comparable<Posting>{
 			return 1;
 		else return -1;
 		
+	}
+
+	@Override
+	public String toJSONString() {
+		JSONObject json = new JSONObject();
+		json.put("docID", docID);
+		json.put("docFrequency", documentFrequency);
+		
+		//return "{\"docID\":\""+docID+"\", \"documentFrequency\":\""+documentFrequency+"\"}";
+		return json.toString();
 	}
 	
 }

@@ -13,3 +13,7 @@ dictionary/index.txt
 dictionary/bigram_index_b*
 logs/log.log.1
 config.properties.rej
+lib/JSON-java/org/json/*.java
+lib/JSON-java/org/json/zip/
+lib/JSON-java/org/json/MANIFEST.txt
+lib/JSON-java/org/json/README

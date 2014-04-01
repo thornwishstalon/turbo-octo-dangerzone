@@ -38,7 +38,9 @@ public class Filter extends AbstractPipeStage {
 	        }
 	        */
 	       log.info(start+ "->"+input);
-		return input.trim();
+	       if(input!=null)
+	    	   return input.trim();
+	       else return "";
 	}
 	
 	@Override

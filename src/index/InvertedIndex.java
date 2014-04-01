@@ -35,7 +35,7 @@ public class InvertedIndex {
 	
 	public void addTerm(String term, String docID)
 	{
-		
+		try{
 		PostingList list=null;
 		Posting posting= null;
 		
@@ -74,6 +74,10 @@ public class InvertedIndex {
 			
 			
 			//write to disk?
+		}
+		}catch(Exception e){
+			System.out.println("ERROR");
+			e.printStackTrace();
 		}
 	}
 	

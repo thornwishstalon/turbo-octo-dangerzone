@@ -5,7 +5,7 @@ import java.io.PipedWriter;
 
 public class BigramBufferStage extends AbstractPipeStage {
 
-	private String last=null;
+	private String last = null;
 	private String s;
 
 	public BigramBufferStage(PipedReader in, PipedWriter out) {
@@ -14,21 +14,17 @@ public class BigramBufferStage extends AbstractPipeStage {
 
 	@Override
 	public String process(String input) {
-		
-		
-		if(last==null)
-		{
-			last= input;
+
+		if (last == null) {
+			last = input;
 			return "";
 		}
-		
-		if(!input.equals(last)){
-			s= last +" "+input;
-			last=input;
+
+		if (!input.equals(last)) {
+			s = last + " " + input;
+			last = input;
 			return s;
-		}
-		else
-		{
+		} else {
 			return "";
 		}
 

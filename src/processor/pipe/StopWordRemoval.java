@@ -18,46 +18,46 @@ import main.input.settings.ApplicationSetup;
 
 public class StopWordRemoval extends AbstractPipeStage {
 	private HashSet<String> stopwords;
-	private static Logger logger= LogManager.getLogger("StopWordRemoval");
-	
+	private static Logger logger = LogManager.getLogger("StopWordRemoval");
+
 	public StopWordRemoval(PipedReader in, PipedWriter out) {
-		super(in,out);
+		super(in, out);
 		stopwords = new HashSet<>();
 		initStopwords();
 	}
 
 	@Override
 	public String process(String input) {
-		//System.out.println("stopword processing: "+input);
-		if(isStopword(input))
+		// System.out.println("stopword processing: "+input);
+		if (isStopword(input))
 			return "";
-		else return input;
+		else
+			return input;
 	}
-	
-	private boolean isStopword(String input)
-	{
-		if(stopwords.isEmpty())
+
+	private boolean isStopword(String input) {
+		if (stopwords.isEmpty())
 			return false;
-		
-		if(stopwords.contains(input))
+
+		if (stopwords.contains(input))
 			return true;
-		else return false;
+		else
+			return false;
 	}
-	
-	private void initStopwords()
-	{
-		String docPath= ApplicationSetup.getInstance().getStopwordsPath();
-	//	System.out.println(docPath);
+
+	private void initStopwords() {
+		String docPath = ApplicationSetup.getInstance().getStopwordsPath();
+		// System.out.println(docPath);
 		try {
 			Path path = Paths.get(docPath);
-			BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
+			BufferedReader reader = Files.newBufferedReader(path,
+					StandardCharsets.UTF_8);
 			String line = "";
 			while ((line = reader.readLine()) != null) {
 				if (!line.startsWith("?"))
 					stopwords.add(line);
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			ex.printStackTrace();
 		}

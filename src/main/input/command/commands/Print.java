@@ -1,10 +1,11 @@
 package main.input.command.commands;
 
 import main.input.command.ICommand;
+
 /**
  * 
  * @author f
- *
+ * 
  */
 public class Print implements ICommand {
 
@@ -17,7 +18,7 @@ public class Print implements ICommand {
 	@Override
 	public String execute(String[] params) {
 		System.out.println(params[0]);
-		
+
 		return "";
 	}
 

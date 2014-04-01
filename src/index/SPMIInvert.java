@@ -24,129 +24,122 @@ import org.apache.log4j.Logger;
 
 /**
  * @author F
- *
+ * 
  */
-public class SPMIInvert extends AbstractBlockedIndexCreator{
+public class SPMIInvert extends AbstractBlockedIndexCreator {
 	private HashMap<String, PostingList> dictionary;
 	private static Logger logger = LogManager.getLogger("SPIMIInvert");
-	private PipedReader reader=null;
-	
-	public SPMIInvert(PipedReader reader)
-	{		
+	private PipedReader reader = null;
+
+	public SPMIInvert(PipedReader reader) {
 		super();
-		this.reader= reader;
-		//BasicConfigurator.configure();
+		this.reader = reader;
+		// BasicConfigurator.configure();
 	}
 
-	public void doSPIMIInvert( String ID){ 
+	public void doSPIMIInvert(String ID) {
 
 		System.out.println("SPIMIInvert");
-		//token = (term,docID)
-	
-		dictionary= new HashMap<>();
+		// token = (term,docID)
 
-		Token token=null;
-		PostingList list=null;
-		Posting posting= null;
+		dictionary = new HashMap<>();
+
+		Token token = null;
+		PostingList list = null;
+		Posting posting = null;
 		BufferedReader bufferedReader = new BufferedReader(reader);
 
-		//while(memoryIsFree()){
-			try {
-				String in=null;
-				
-				while((in = bufferedReader.readLine() )!=null){
-					
-					token= new Token(in, ID);
-					
-					logger.info("received: "+token.toString());
-					posting =  new Posting(token.getDocID());
-					logger.info("posting: "+ posting.toString());
-					
-					if(!dictionary.containsKey(token.getTerm()))
-					{
-						logger.info("term not in dictionary");
-						list=new PostingList();
-						dictionary.put(token.getTerm(), list );
-					}else{
-						logger.info("term already in dictionary");
-						list= dictionary.get(token.getTerm());						
-					}
-					
-					list.addToList(posting);
-					logger.info("posting list: "+list.toString());
-				}
-				
-			} catch (IOException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				logger.error(e.getMessage());
-				//break;
-			} //TODO read item from tokenStream
-		//}
-		//sortTerms(dictionary)
-		//WRITEBLOCKTODISK
-	}
-	
-	
+		// while(memoryIsFree()){
+		try {
+			String in = null;
 
-	public void safe()
-	{
-		File outputfile= new File("./dictionary/1.txt"); //TODO add filename for block
-		writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
-		
+			while ((in = bufferedReader.readLine()) != null) {
+
+				token = new Token(in, ID);
+
+				logger.info("received: " + token.toString());
+				posting = new Posting(token.getDocID());
+				logger.info("posting: " + posting.toString());
+
+				if (!dictionary.containsKey(token.getTerm())) {
+					logger.info("term not in dictionary");
+					list = new PostingList();
+					dictionary.put(token.getTerm(), list);
+				} else {
+					logger.info("term already in dictionary");
+					list = dictionary.get(token.getTerm());
+				}
+
+				list.addToList(posting);
+				logger.info("posting list: " + list.toString());
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			// break;
+		} // TODO read item from tokenStream
+		// }
+		// sortTerms(dictionary)
+		// WRITEBLOCKTODISK
 	}
-	
+
+	public void safe() {
+		File outputfile = new File("./dictionary/1.txt"); // TODO add filename
+															// for block
+		writeBlockToDisk(outputfile, sortTerms(dictionary), dictionary);
+
+	}
 
 	private boolean memoryIsFree() {
 		// TODO Auto-generated method stub
-		long usableFreeMemory= Runtime.getRuntime().maxMemory()
-				-Runtime.getRuntime().totalMemory()
-				+Runtime.getRuntime().freeMemory();
+		long usableFreeMemory = Runtime.getRuntime().maxMemory()
+				- Runtime.getRuntime().totalMemory()
+				+ Runtime.getRuntime().freeMemory();
 
-		return usableFreeMemory > 0 ; //TODO not good solution
+		return usableFreeMemory > 0; // TODO not good solution
 	}
 
-	private Set<String> sortTerms(HashMap<String, PostingList> dictionary)
-	{
-		Map<String, PostingList> copy= new TreeMap<String, PostingList>(dictionary);
+	private Set<String> sortTerms(HashMap<String, PostingList> dictionary) {
+		Map<String, PostingList> copy = new TreeMap<String, PostingList>(
+				dictionary);
 
 		return copy.keySet();
 
 	}
 
-	private File writeBlockToDisk(File file, Set<String> sortedTerms, HashMap<String, PostingList> dictionary){
-		//System.out.println("write to blocl");
-		PrintWriter out=null;
-		try{
-			out = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
+	private File writeBlockToDisk(File file, Set<String> sortedTerms,
+			HashMap<String, PostingList> dictionary) {
+		// System.out.println("write to blocl");
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(new BufferedWriter(
+					new FileWriter(file, false)));
 
-
-			Iterator<String> it= sortedTerms.iterator();
+			Iterator<String> it = sortedTerms.iterator();
 			String term;
-			String s="";
-			while(it.hasNext()){
+			String s = "";
+			while (it.hasNext()) {
 
-				term= it.next();
-				s="{"+term+ dictionary.get(term).toString()+"}";
-				//for debug reason currently
-				//System.out.println(s);
+				term = it.next();
+				s = "{" + term + dictionary.get(term).toString() + "}";
+				// for debug reason currently
+				// System.out.println(s);
 
-				//out.println(s); //append to files
+				// out.println(s); //append to files
 				out.println(s);
 			}
 
-		}catch (IOException e) {
-			//exception handling left as an exercise for the reader
+		} catch (IOException e) {
+			// exception handling left as an exercise for the reader
 			e.printStackTrace();
-		}
-		finally
-		{
-			if(out!=null){
+		} finally {
+			if (out != null) {
 				out.close();
 			}
 		}
-		//mark for future merge
+		// mark for future merge
 		pushBlockForMerge(file.getName());
 
 		return file;
@@ -155,23 +148,13 @@ public class SPMIInvert extends AbstractBlockedIndexCreator{
 	@Override
 	protected void buildIndexForBlock(PipedReader tokenstream) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
-	
-/*
-	@Override
-	protected void buildIndexForBlock(PipedReader reader) {
-		//
-		//System.out.println("building index");
-		doSPIMIInvert(reader);
-		//
-		//System.out.println("done");
-		done();
-	}
-*/
-
-
+	/*
+	 * @Override protected void buildIndexForBlock(PipedReader reader) { //
+	 * //System.out.println("building index"); doSPIMIInvert(reader); //
+	 * //System.out.println("done"); done(); }
+	 */
 
 }

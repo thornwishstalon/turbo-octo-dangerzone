@@ -13,14 +13,11 @@ public class EnableStemmer implements ICommand {
 
 	@Override
 	public String execute(String[] params) {
-		ApplicationSetup setup= ApplicationSetup.getInstance();
-		if(setup.getUseStemmer())
-		{
+		ApplicationSetup setup = ApplicationSetup.getInstance();
+		if (setup.getUseStemmer()) {
 			setup.setUseStemmer(false);
 			return "!print disabled stemmer!";
-		}
-		else
-		{
+		} else {
 			setup.setUseStemmer(true);
 			return "!print enabled stemmer!";
 		}

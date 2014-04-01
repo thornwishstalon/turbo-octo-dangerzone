@@ -10,8 +10,6 @@ import java.io.Writer;
 import org.tartarus.snowball.SnowballStemmer;
 import org.tartarus.snowball.ext.englishStemmer;
 
-
-
 public class SnowballStemmerWrapper extends Thread {
 
 	private String input;
@@ -21,34 +19,35 @@ public class SnowballStemmerWrapper extends Thread {
 
 	public SnowballStemmerWrapper(String input) {
 		this.input = input;
-		
-		stemmer= new englishStemmer();
-		Class stemClass=null;
+
+		stemmer = new englishStemmer();
+		Class stemClass = null;
 		try {
-			stemClass = Class.forName("org.tartarus.snowball.ext.englishStemmer"); //english only!!
+			stemClass = Class
+					.forName("org.tartarus.snowball.ext.englishStemmer"); // english
+																			// only!!
 			stemmer = (SnowballStemmer) stemClass.newInstance();
-		
-			//runStringInput();
-		
-		}
-		catch (Exception ex) {
+
+			// runStringInput();
+
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
-	public SnowballStemmerWrapper(BufferedReader reader, OutputStream outstream)
-	{
-		stemmer= new englishStemmer();
-		
-		Class stemClass=null;
+
+	public SnowballStemmerWrapper(BufferedReader reader, OutputStream outstream) {
+		stemmer = new englishStemmer();
+
+		Class stemClass = null;
 		try {
-			stemClass = Class.forName("org.tartarus.snowball.ext.englishStemmer"); //english only!!
+			stemClass = Class
+					.forName("org.tartarus.snowball.ext.englishStemmer"); // english
+																			// only!!
 			stemmer = (SnowballStemmer) stemClass.newInstance();
-		
-			this.reader=reader;
-			this.outstream= outstream;
+
+			this.reader = reader;
+			this.outstream = outstream;
 			run();
-		
 
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -60,37 +59,37 @@ public class SnowballStemmerWrapper extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 	}
 
-	public void run()
-	{
+	public void run() {
 
 		Writer output = new OutputStreamWriter(outstream);
 		output = new BufferedWriter(output);
 
-		String input=null;
-		
-		try{
+		String input = null;
+
+		try {
 			while ((input = reader.readLine()) != null) {
-				
+
 				stemmer.setCurrent(input);
 				stemmer.stem();
-				
-				output.write(stemmer.getCurrent()+"\n"); //write line holding the stemmed and to lowercase transformed word
-				
+
+				output.write(stemmer.getCurrent() + "\n"); // write line holding
+															// the stemmed and
+															// to lowercase
+															// transformed word
+
 			}
 			output.flush();
-			//output.close();
-			
-		}catch(IOException e)
-		{
+			// output.close();
+
+		} catch (IOException e) {
 			e.printStackTrace();
-			//TODO
-		}
-		finally{
+			// TODO
+		} finally {
 			try {
-				if(output!=null)
+				if (output != null)
 					output.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -98,23 +97,21 @@ public class SnowballStemmerWrapper extends Thread {
 			}
 		}
 	}
-	
+
 	public String runStringInput() {
 		String output = "";
-		
+
 		try {
 			if (input != null) {
 				stemmer.setCurrent(input);
 				stemmer.stem();
 				output = stemmer.getCurrent();
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
+
 		return output;
 	}
 
 }
-

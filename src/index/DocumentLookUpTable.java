@@ -9,48 +9,47 @@ import java.util.ArrayList;
 
 import main.input.settings.ApplicationSetup;
 
-
 public class DocumentLookUpTable {
 	private ArrayList<String> lookup;
-	
-	public DocumentLookUpTable(){
+
+	public DocumentLookUpTable() {
 		lookup = new ArrayList<>();
 	}
-	
-	public void addDocument(String path)
-	{
+
+	public void addDocument(String path) {
 		lookup.add(path);
 	}
-	
-	public void storeToDisk(){
-		
-		PrintWriter writer=null;
+
+	public void storeToDisk() {
+
+		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(ApplicationSetup.getInstance().getDocumentLookupTablePath());
+			writer = new PrintWriter(ApplicationSetup.getInstance()
+					.getDocumentLookupTablePath());
 		} catch (FileNotFoundException e) {
-			
+
 			e.printStackTrace();
 		}
-		for(int i= 0; i< lookup.size(); i++){
-		
+		for (int i = 0; i < lookup.size(); i++) {
+
 			writer.println(lookup.get(i));
 
 		}
-		if(writer != null)
-			writer.close(); 
+		if (writer != null)
+			writer.close();
 	}
-	
-	public void loadFromDisk(){
-		BufferedReader reader=null;
-		
+
+	public void loadFromDisk() {
+		BufferedReader reader = null;
+
 		try {
-			
-			reader= new BufferedReader(new FileReader(ApplicationSetup.getInstance().getDocumentLookupTablePath()));
+
+			reader = new BufferedReader(new FileReader(ApplicationSetup
+					.getInstance().getDocumentLookupTablePath()));
 			String s;
-			while( (s = reader.readLine()) !=null)
-			{
+			while ((s = reader.readLine()) != null) {
 				lookup.add(s);
-				
+
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -58,9 +57,8 @@ public class DocumentLookUpTable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally
-		{
-			if(reader!=null){
+		} finally {
+			if (reader != null) {
 				try {
 					reader.close();
 				} catch (IOException e) {
@@ -70,5 +68,5 @@ public class DocumentLookUpTable {
 			}
 		}
 	}
-	
+
 }

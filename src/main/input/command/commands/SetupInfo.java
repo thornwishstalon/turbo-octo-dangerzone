@@ -6,9 +6,9 @@ import main.input.settings.ApplicationSetup;
 /**
  * 
  * @author f
- *
+ * 
  */
-public class SetupInfo implements ICommand{
+public class SetupInfo implements ICommand {
 
 	@Override
 	public int numberOfParams() {
@@ -17,7 +17,7 @@ public class SetupInfo implements ICommand{
 
 	@Override
 	public String execute(String[] params) {
-		return "!print "+ ApplicationSetup.getInstance().getInfo();
+		return "!print " + ApplicationSetup.getInstance().getInfo();
 	}
-	
+
 }

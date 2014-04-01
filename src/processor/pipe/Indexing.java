@@ -20,6 +20,7 @@ import main.input.settings.ApplicationSetup;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import index.InvertedIndex;
 import index.SPMIInvert;
 import index.entities.Posting;
 import index.entities.PostingList;
@@ -29,14 +30,14 @@ public class Indexing extends AbstractPipeStage {
 	
 	//private SPMIInvert index;
 	private String currentDocID;
-	private HashMap<String, PostingList> dictionary;
+	private InvertedIndex index;
 	private static Logger logger = LogManager.getLogger("Index");
 	
 	
 	
 	public Indexing(PipedReader in, PipedWriter out) {
 		super(in,out);
-		dictionary = new HashMap<>();
+		index= new InvertedIndex();
 		
 	}
 	
@@ -50,50 +51,31 @@ public class Indexing extends AbstractPipeStage {
 		//index.doSPIMIInvert(currentDocID);
 		//System.out.println("indexing processing: "+ input+ " _ ID: " + currentDocID);
 		
-		PostingList list=null;
-		Posting posting= null;
-		
-		Token token= new Token(input, currentDocID);
-		
-		logger.info("received: "+token.toString());
-		posting =  new Posting(token.getDocID());
-		logger.info("posting: "+ posting.toString());
-		
-		if(!dictionary.containsKey(token.getTerm()))
-		{
-			logger.info("term not in dictionary");
-			list=new PostingList();
-			dictionary.put(token.getTerm(), list );
-		}else{
-			logger.info("term already in dictionary");
-			list= dictionary.get(token.getTerm());						
-		}
-		
-		list.addToList(posting);
-		logger.info("posting list: "+list.toString());
-		
+		index.addTerm(input, currentDocID);
 		
 		return "";
 	}
 	
 	@Override
 	public void backup(){
-		
-		//System.out.println("\n BACKUP!!!++++++++++++\n");
-		logger.info("writing to disk!");
-		
-		String filename;
-		if(ApplicationSetup.getInstance().getUseBigrams())
-		{
-			filename= "./dictionary/bigram_index.txt";
-		}else filename= "./dictionary/index.txt";
-		
-		File outputfile= new File(filename); 
-		writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
-		
-		ApplicationStatus.getInstance().setIndex(dictionary);
-		
-		
+		System.out.println("BACKUP");
+		index.mergeIndices();
+//		
+//		//System.out.println("\n BACKUP!!!++++++++++++\n");
+//		logger.info("writing to disk!");
+//		
+//		String filename;
+//		if(ApplicationSetup.getInstance().getUseBigrams())
+//		{
+//			filename= "./dictionary/bigram_index.txt";
+//		}else filename= "./dictionary/index.txt";
+//		
+//		File outputfile= new File(filename); 
+//		writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
+//		
+//		ApplicationStatus.getInstance().setIndex(dictionary);
+//		
+//		
 	}
 	
 	private Set<String> sortTerms(HashMap<String, PostingList> dictionary)
@@ -107,40 +89,7 @@ public class Indexing extends AbstractPipeStage {
 	}
 
 	private void writeBlockToDisk(File file, Set<String> sortedTerms, HashMap<String, PostingList> dictionary){
-		//System.out.println("write to block");
-		PrintWriter out=null;
-		try{
-			out = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
-
-
-			Iterator<String> it= sortedTerms.iterator();
-			String term;
-			String s="";
-			while(it.hasNext()){
-
-				term= it.next();
-				s="{"+term+ dictionary.get(term).toString()+"}";
-				//for debug reason currently
-				//System.out.println(s);
-
-				//out.println(s); //append to files
-				out.println(s);
-			}
-
-		}catch (IOException e) {
-			//exception handling left as an exercise for the reader
-			e.printStackTrace();
-		}
-		finally
-		{
-			if(out!=null){
-				out.close();
-			}
-		}
-		//mark for future merge
-		//pushBlockForMerge(file.getName());
-
-		//return file;
+		
 	}
 	
 	@Override

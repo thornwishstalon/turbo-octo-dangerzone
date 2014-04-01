@@ -1,6 +1,8 @@
 package index.entities;
 
-import java.util.Dictionary;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 /***
  * 
@@ -85,5 +87,41 @@ public class PostingList {
 		
 		return out+"}";
 	}
+	
+	public Posting[] getPostings()
+	{
+		return postingList;
+	}
+	
+	public Posting[] merge(PostingList p)
+	{
+		Posting[] tmp = combine(p.getPostings(), this.postingList);
+		Arrays.sort(tmp);
+		ArrayList<Posting> merged= new ArrayList<>();
+		
+		Posting posting;
+		for(int i=0; i<tmp.length-1; i++)
+		{
+			posting= tmp[i];
+			posting.merge(tmp[i]);
+			merged.add(posting);
+		}
+		tmp= new Posting[merged.size()];
+		merged.toArray(tmp);
+		
+		return tmp;
+	}
+	
+	private  Posting[] combine(Posting[] a, Posting[] b){
+        int length = a.length + b.length;
+        Posting[] result = new Posting[length];
+        
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
+
+
+
 	
 }

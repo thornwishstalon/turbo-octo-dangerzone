@@ -10,3 +10,6 @@ logs/log.log
 dictionary/1.txt
 data/
 dictionary/index.txt
+dictionary/bigram_index_b*
+logs/log.log.1
+config.properties.rej

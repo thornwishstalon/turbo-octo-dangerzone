@@ -62,12 +62,9 @@ public class ApplicationSetup {
 			
 		} catch ( FileNotFoundException e) {
 			logger.error("properties file not found ");
-		} catch(IOException e)
-		{
+		} catch(IOException e) {
 			logger.error("IO Exception occured");
-			
-		}finally
-		{
+		} finally {
 			if(in!=null)
 			{
 				try {

@@ -9,6 +9,7 @@ import main.input.command.commands.EnableStopwords;
 import main.input.command.commands.Print;
 import main.input.command.commands.SetupInfo;
 import main.input.command.commands.SetupSetPath;
+import main.input.command.commands.Testing;
 
 /**
  * 
@@ -31,7 +32,7 @@ public class ApplicationCommandList implements ICommandList {
 
 		// commands.put("!process", new main.input.command.commands.Process());
 		commands.put("!buildVoc", new BuildVoc());
-
+		commands.put("!test", new Testing());
 	}
 
 	@Override

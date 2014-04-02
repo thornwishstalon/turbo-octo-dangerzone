@@ -1,8 +1,6 @@
 package index.entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.json.JSONObject;
 import org.json.JSONString;
 
@@ -10,8 +8,9 @@ import org.json.JSONString;
 /***
  * 
  * @author F
- *
+ * 
  */
+
 public class PostingList implements JSONString{
 	
 	private int currentPosition=0;
@@ -25,8 +24,7 @@ public class PostingList implements JSONString{
 		postingList= new ArrayList<>();
 	}
 	
-	public void addToList(Posting p)
-	{
+	public void addToList(Posting p){
 		//System.out.println("added "+p.toString()+"to dictionary");
 		
 //		if(currentPosition >= SIZE)
@@ -46,46 +44,40 @@ public class PostingList implements JSONString{
 			currentPosition++;	
 		}
 		overallFrequency++;
-		
-		//System.out.println(postingList[currentPosition].toString());
-		
+
+		// System.out.println(postingList[currentPosition].toString());
+
 	}
-	
-	public int getDocumentFrequency(String term, int docID)
-	{
-		for(Posting p:postingList)
-		{
-			if(p.getDocID() == docID)
+
+	public int getDocumentFrequency(String term, int docID) {
+		for (Posting p : postingList) {
+			if (p.getDocID().equals(docID))
 				return p.getDocumentFrequency();
 		}
 		return -1; // not found
 	}
-	
-	public int getOverallFrequency(String term)
-	{
+
+	public int getOverallFrequency(String term) {
 		return overallFrequency;
 	}
+
 	
 	
-	
-	public String toString()
-	{
+	public String toString(){
 		String out="{"+overallFrequency+" ";
 		
 		for(Posting p: postingList){
 			out+= p.toString();
 		}
-		
-		return out+"}";
+
+		return out + "}";
 	}
 	
-	public ArrayList<Posting> getPostings()
-	{
+	public ArrayList<Posting> getPostings(){
 		return postingList;
 	}
 	
-	public Posting[] merge(PostingList p)
-	{
+	public Posting[] merge(PostingList p){
 //		Posting[] tmp = combine(p.getPostings(), this.postingList);
 //		Arrays.sort(tmp);
 //		ArrayList<Posting> merged= new ArrayList<>();
@@ -103,16 +95,6 @@ public class PostingList implements JSONString{
 //		return tmp;
 		return null;
 	}
-	
-	private  Posting[] combine(Posting[] a, Posting[] b){
-        int length = a.length + b.length;
-        Posting[] result = new Posting[length];
-        
-        System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
-        return result;
-    }
-
 	
 	@Override
 	public String toJSONString() {
@@ -132,6 +114,14 @@ public class PostingList implements JSONString{
 	}
 
 
+	private Posting[] combine(Posting[] a, Posting[] b) {
+		int length = a.length + b.length;
+		Posting[] result = new Posting[length];
 
-	
+
+		System.arraycopy(a, 0, result, 0, a.length);
+		System.arraycopy(b, 0, result, a.length, b.length);
+		return result;
+	}
+
 }

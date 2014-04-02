@@ -7,16 +7,16 @@ public class ApplicationMain {
 	/**
 	 * 
 	 * @author f
-	 *
+	 * 
 	 */
 	public static void main(String[] args) {
-		
-		//create
+
+		// create
 		ApplicationSetup.getInstance();
-		InputThread input= new InputThread();
-		
-		input.start(); //blocks until ended by !end as input
-		
+		InputThread input = new InputThread();
+
+		input.start(); // blocks until ended by !end as input
+
 	}
 
 }

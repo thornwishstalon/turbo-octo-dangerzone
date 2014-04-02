@@ -18,30 +18,30 @@ public class Process implements ICommand {
 
 	@Override
 	public String execute(String[] params) {
-		
+
 		String NEWSGROUP_PATH = ApplicationSetup.getInstance().getCorporaPath();
-		
+
 		try {
-			//arrayList will hold all documents
+			// arrayList will hold all documents
 			ArrayList<File> documents = new ArrayList<>();
 			System.out.println("Reading directory: " + NEWSGROUP_PATH);
 			Reader reader = new Reader(NEWSGROUP_PATH);
-			
-			//stores all files in the arrayList
+
+			// stores all files in the arrayList
 			reader.readFiles(documents);
-			//System.out.println(documents.get(0).getName() + "," + documents.get(0).getParent());
-			
-			//test read - just 1 file
+			// System.out.println(documents.get(0).getName() + "," +
+			// documents.get(0).getParent());
+
+			// test read - just 1 file
 			DocumentProcessor documentProcessor = new DocumentProcessor();
-			//String text = documentProcessor.readDocument(documents.get(0));
-			//save index as documentID
-			//text holds information for later use - to be discussed 
-			//Document doc = new Document(0, text);
-		}
-		catch (Exception ex){
+			// String text = documentProcessor.readDocument(documents.get(0));
+			// save index as documentID
+			// text holds information for later use - to be discussed
+			// Document doc = new Document(0, text);
+		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
-		
+
 		return "";
 	}
 

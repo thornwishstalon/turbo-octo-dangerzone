@@ -13,28 +13,25 @@ import main.input.command.commands.SetupSetPath;
 /**
  * 
  * @author f
- *
+ * 
  */
 public class ApplicationCommandList implements ICommandList {
 	private HashMap<String, ICommand> commands;
-	
-	
-	public ApplicationCommandList()
-	{
-		commands= new HashMap<>();
-		
+
+	public ApplicationCommandList() {
+		commands = new HashMap<>();
+
 		commands.put("!info", new SetupInfo());
 		commands.put("!setPath", new SetupSetPath());
 		commands.put("!print", new Print());
-		
+
 		commands.put("!bigram", new EnableBigrams());
 		commands.put("!stemmer", new EnableStemmer());
 		commands.put("!stopwords", new EnableStopwords());
-		
-		
-		//commands.put("!process", new main.input.command.commands.Process());
+
+		// commands.put("!process", new main.input.command.commands.Process());
 		commands.put("!buildVoc", new BuildVoc());
-		
+
 	}
 
 	@Override

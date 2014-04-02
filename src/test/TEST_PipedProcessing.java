@@ -28,67 +28,61 @@ public class TEST_PipedProcessing {
 
 	@Test
 	public void test() {
-		//fail("Not yet implemented");
-		
-		
+		// fail("Not yet implemented");
+
 		try {
-			
-			
-			PipedWriter writer= new PipedWriter();
-			
+
+			PipedWriter writer = new PipedWriter();
+
 			try {
-				CaseFolding folding= new CaseFolding(new PipedReader(writer), new PipedWriter());
-				StopWordRemoval stopwords = new StopWordRemoval(new PipedReader(folding.getOut()), new PipedWriter());
-				Stemming stemming= new Stemming(new PipedReader(stopwords.getOut()), new PipedWriter());
-				Indexing indexing = new Indexing(new PipedReader(stemming.getOut()), new PipedWriter()); 
-				
-				
+				CaseFolding folding = new CaseFolding(new PipedReader(writer),
+						new PipedWriter());
+				StopWordRemoval stopwords = new StopWordRemoval(
+						new PipedReader(folding.getOut()), new PipedWriter());
+				Stemming stemming = new Stemming(new PipedReader(
+						stopwords.getOut()), new PipedWriter());
+				Indexing indexing = new Indexing(new PipedReader(
+						stemming.getOut()), new PipedWriter());
+
 				folding.start();
 				stopwords.start();
 				stemming.start();
-				
+
 				indexing.setCurrentDocID("1");
 				indexing.start();
-				
-				
+
 				System.out.println("STARTING");
-				
+
 				writer.write("TEST\n");
 				writer.write("PONY\n");
 				writer.write("PONIES\n");
 				writer.write("as\n");
 				writer.write("I\n");
 				writer.write("am\n");
-				
+
 				writer.close();
-				
+
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
-			
-			
-			
-			
+
 			Thread.sleep(2000);
-			
+
 			try {
 				writer.close();
-				
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+
 			//
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
 
 }

@@ -11,57 +11,50 @@ import org.apache.log4j.Logger;
 public abstract class AbstractPipeStage extends Thread {
 	protected PipedReader in;
 	protected PipedWriter out;
-	protected AbstractPipeStage waitingFor= null;
-	protected boolean isDone=false;
-	
+	protected AbstractPipeStage waitingFor = null;
+	protected boolean isDone = false;
+
 	private static Logger logger = LogManager.getLogger("AbstractPipeStage");
 
-	public AbstractPipeStage(PipedReader in, PipedWriter out)
-	{
+	public AbstractPipeStage(PipedReader in, PipedWriter out) {
 		this.in = in;
-		this.out= out;
+		this.out = out;
 	}
-	
-	public PipedWriter getOut()
-	{
+
+	public PipedWriter getOut() {
 		return out;
 	}
 
-	public void run()
-	{
-		
-		String input=null;
-		String intermediateResult=null;
-		
+	public void run() {
+
+		String input = null;
+		String intermediateResult = null;
+
 		try {
-			
-			BufferedReader reader= new BufferedReader(in);
-			
-			while((input= reader.readLine())!=null)
-			{
-				
-				intermediateResult=process(input);
-				if(intermediateResult!=null)
-				{
-					if(intermediateResult.length() > 0){
-						out.write(intermediateResult+"\n");
+
+			BufferedReader reader = new BufferedReader(in);
+
+			while ((input = reader.readLine()) != null) {
+
+				intermediateResult = process(input);
+				if (intermediateResult != null) {
+					if (intermediateResult.length() > 0) {
+						out.write(intermediateResult + "\n");
 						out.flush();
 					}
 				}
 			}
-			System.out.println("\n\n");
-			isDone=true;
-			
-			
+		
+			isDone=true;		
+		
+
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
-		}finally
-		{
+		} finally {
 			success();
-			while(!waitingFor.isDone())
-			{
-				//waiting
+			while (!waitingFor.isDone()) {
+				// waiting
 				try {
 					sleep(100);
 				} catch (InterruptedException e) {
@@ -69,44 +62,37 @@ public abstract class AbstractPipeStage extends Thread {
 					e.printStackTrace();
 				}
 			}
-			
+
 			backup();
-			
+
 			try {
-				if(out!=null){
+				if (out != null) {
 					out.close();
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
+
 		}
 	}
-	protected void success()
-	{
+
+	protected void success() {
 		//
 	}
-	
-	public void setWaitingFor(AbstractPipeStage a)
-	{
-		this.waitingFor=a;
+
+	public void setWaitingFor(AbstractPipeStage a) {
+		this.waitingFor = a;
 	}
-	
-	
-	protected boolean isDone()
-	{
+
+	protected boolean isDone() {
 		return isDone;
 	}
 
 	protected void backup() {
-		//backup hook
+		// backup hook
 	}
 
 	public abstract String process(String input);
-
-
-
 
 }

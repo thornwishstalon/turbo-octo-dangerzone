@@ -6,7 +6,7 @@ import main.input.settings.ApplicationSetup;
 /**
  * 
  * @author f
- *
+ * 
  */
 public class SetupSetPath implements ICommand {
 
@@ -19,8 +19,8 @@ public class SetupSetPath implements ICommand {
 	@Override
 	public String execute(String[] params) {
 		ApplicationSetup.getInstance().setCorporaPath(params[0]);
-		
-		return "!print corporate path changed to: "+params[0];
+
+		return "!print corporate path changed to: " + params[0];
 	}
 
 }

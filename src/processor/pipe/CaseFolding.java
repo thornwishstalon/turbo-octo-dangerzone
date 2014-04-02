@@ -1,20 +1,19 @@
 package processor.pipe;
 
-
 import java.io.PipedReader;
 import java.io.PipedWriter;
 
 public class CaseFolding extends AbstractPipeStage {
 
 	public CaseFolding(PipedReader in, PipedWriter out) {
-		super(in,out);
+		super(in, out);
 	}
 
 	@Override
 	public String process(String input) {
 		//System.out.println("folding processing: "+input);
 		if(input!=null)
-		return input.toLowerCase();
+			return input.toLowerCase();
 		else return "";
 	}
 

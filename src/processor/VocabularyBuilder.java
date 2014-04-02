@@ -40,29 +40,31 @@ public class VocabularyBuilder {
 
 	public void build() {
 
-		long start= System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 
-		//all lower case
+		// all lower case
 		completeText = completeText.toLowerCase();
 
-		//read stop words from file
+		// read stop words from file
 		ArrayList<String> stopWords = getStopWords();
 
-		//stemming
-		SnowballStemmerWrapper stemmerWrapper = new SnowballStemmerWrapper(completeText);
+		// stemming
+		SnowballStemmerWrapper stemmerWrapper = new SnowballStemmerWrapper(
+				completeText);
 		completeText = stemmerWrapper.runStringInput();
 
-		//split by space
+		// split by space
 		String[] tokens = completeText.split(" ");
 		System.out.println("Number of tokens: " + tokens.length);
 
-		//remove stop words
+		// remove stop words
 		ArrayList<String> vocsAll = new ArrayList<>();
 		int step = 10000;
 		int count = 0;
-		for (int i = count*step; i < Math.min((count+1)*step, tokens.length); i++) {
+		for (int i = count * step; i < Math.min((count + 1) * step,
+				tokens.length); i++) {
 			String token = tokens[i];
-			boolean isStopWord = false; 
+			boolean isStopWord = false;
 			for (String stopWord : stopWords) {
 				if (token.equals(stopWord)) {
 					isStopWord = true;
@@ -70,8 +72,8 @@ public class VocabularyBuilder {
 				}
 			}
 			if (!isStopWord) {
-				//remove special characters
-				//token = token.replaceAll("[^a-z]", "");
+				// remove special characters
+				// token = token.replaceAll("[^a-z]", "");
 				token = token.replaceAll("[\\W]", "");
 				token = token.trim();
 				vocsAll.add(token);
@@ -80,7 +82,7 @@ public class VocabularyBuilder {
 		}
 		System.out.println("Number of total vocs: " + vocsAll.size());
 
-		//get unique values
+		// get unique values
 		ArrayList<String> vocs = new ArrayList<>();
 		for (String voc : vocsAll) {
 			if (!vocs.contains(voc))
@@ -88,13 +90,14 @@ public class VocabularyBuilder {
 		}
 		System.out.println("Number of vocs: " + vocs.size());
 
-		long finished= System.currentTimeMillis();
+		long finished = System.currentTimeMillis();
 
-		System.out.println("in "+ (finished-start)/1000+"seconds");
+		System.out.println("in " + (finished - start) / 1000 + "seconds");
 
-		//write Vocabulary to file
+		// write Vocabulary to file
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(vocabularyPath));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(
+					vocabularyPath));
 			for (String voc : vocs) {
 				writer.write(voc);
 				writer.write("\n");
@@ -107,29 +110,31 @@ public class VocabularyBuilder {
 
 	}
 
-	public void buildWithPipe()
-	{
+	public void buildWithPipe() {
 		long start = System.currentTimeMillis();
 		ArrayList<File> documents = new ArrayList<>();
-		String path=ApplicationSetup.getInstance().getCorporaPath();
+		String path = ApplicationSetup.getInstance().getCorporaPath();
 		System.out.println("Reading directory: " + path);
 		Reader reader = new Reader(path);
 
-		//stores all files in the arrayList
+		// stores all files in the arrayList
 		reader.readFiles(documents);
 
-
-		PipedWriter inputFileWriter=null;
+		PipedWriter inputFileWriter = null;
 
 		try {
 			System.out.println("STARTING");
-			
-			inputFileWriter= new PipedWriter();
 
-			CaseFolding folding= new CaseFolding(new PipedReader(inputFileWriter), new PipedWriter());
-			StopWordRemoval stopwords = new StopWordRemoval(new PipedReader(folding.getOut()), new PipedWriter());
-			Stemming stemming= new Stemming(new PipedReader(stopwords.getOut()), new PipedWriter());
-			Indexing indexing = new Indexing(new PipedReader(stemming.getOut()), new PipedWriter()); 
+			inputFileWriter = new PipedWriter();
+
+			CaseFolding folding = new CaseFolding(new PipedReader(
+					inputFileWriter), new PipedWriter());
+			StopWordRemoval stopwords = new StopWordRemoval(new PipedReader(
+					folding.getOut()), new PipedWriter());
+			Stemming stemming = new Stemming(
+					new PipedReader(stopwords.getOut()), new PipedWriter());
+			Indexing indexing = new Indexing(
+					new PipedReader(stemming.getOut()), new PipedWriter());
 
 			folding.start();
 			stopwords.start();
@@ -139,53 +144,39 @@ public class VocabularyBuilder {
 			BufferedReader br;
 			String line;
 			String[] tokens;
-			int id=0; //for testing
-			for(File f: documents)
-			{
-				//System.out.println(f.getAbsolutePath());
-				indexing.setCurrentDocID(""+id++);
-				br = new BufferedReader(new FileReader(f)); 
-				while((line = br.readLine())!=null)
-				{
-					tokens= line.split("\\s");
-					for(int i=0; i<tokens.length;i++)
-					{
-						inputFileWriter.write(tokens[i]+"\n");
+			int id = 0; // for testing
+			for (File f : documents) {
+				// System.out.println(f.getAbsolutePath());
+				indexing.setCurrentDocID("" + id++);
+				br = new BufferedReader(new FileReader(f));
+				while ((line = br.readLine()) != null) {
+					tokens = line.split("\\s");
+					for (int i = 0; i < tokens.length; i++) {
+						inputFileWriter.write(tokens[i] + "\n");
 						inputFileWriter.flush();
 					}
 				}
-				
-
 
 			}
-			
+
 			indexing.backup();
 
-
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally
-		{
+		} finally {
 			try {
-				if(inputFileWriter!=null)
+				if (inputFileWriter != null)
 					inputFileWriter.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			long end= System.currentTimeMillis();
+
+			long end = System.currentTimeMillis();
 			System.out.println("DONE");
-			System.out.println((end-start)/1000 + " seconds");
-			
+			System.out.println((end - start) / 1000 + " seconds");
+
 		}
-
-
-
-
-
-
-
 
 	}
 
@@ -194,14 +185,14 @@ public class VocabularyBuilder {
 
 		try {
 			Path path = Paths.get(stopWordsDocPath);
-			BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
+			BufferedReader reader = Files.newBufferedReader(path,
+					StandardCharsets.UTF_8);
 			String line = "";
 			while ((line = reader.readLine()) != null) {
 				if (!line.startsWith("?"))
 					stopWords.add(line);
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 
 		}
 

@@ -10,11 +10,11 @@ public class TEST_PIPED_VocBuilder {
 
 	@Test
 	public void test() {
-		//fail("Not yet implemented");
-		
-		VocabularyBuilder builder= new VocabularyBuilder("");
+		// fail("Not yet implemented");
+
+		VocabularyBuilder builder = new VocabularyBuilder("");
 		builder.buildWithPipe();
-		
+
 	}
 
 }

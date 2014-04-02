@@ -12,18 +12,14 @@ public class EnableStopwords implements ICommand {
 
 	@Override
 	public String execute(String[] params) {
-		ApplicationSetup setup= ApplicationSetup.getInstance();
-		if(setup.getUseStopwords())
-		{
+		ApplicationSetup setup = ApplicationSetup.getInstance();
+		if (setup.getUseStopwords()) {
 			setup.setUseStopwords(false);
 			return "!print disabled stopwords!";
-		}
-		else
-		{
+		} else {
 			setup.setUseStopwords(true);
 			return "!print enabled stopwords!";
 		}
-		
 
 	}
 

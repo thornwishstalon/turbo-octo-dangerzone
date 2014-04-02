@@ -8,54 +8,50 @@ import org.json.JSONString;
 /***
  * 
  * @author F
- *
+ * 
  */
+
 public class Posting implements Comparable<Posting>, JSONString {
-	private int docID;
-	private int documentFrequency=1;
-	
-	public Posting(int docID)
-	{
-		this.docID=docID;
+
+	private String docID;
+	private int documentFrequency = 1;
+
+	public Posting(String docID) {
+		this.docID = docID;
 	}
-	
-	public int getDocID() {
+
+	public String getDocID() {
 		return docID;
 	}
-	
+
 	public int getDocumentFrequency() {
 		return documentFrequency;
 	}
-	
-	public void updateDocumentFrequency(){
+
+	public void updateDocumentFrequency() {
 		documentFrequency++;
 	}
-	
-	public String toString(){
-		return "{"+docID+" , " + documentFrequency+"}";
-		
+
+	public String toString() {
+		return "{" + docID + " , " + documentFrequency + "}";
+
 	}
-	
-	public Posting merge(Posting p)
-	{
-		if(p.getDocID() == this.docID)
-		{
+
+	public Posting merge(Posting p) {
+		if (p.getDocID().equals(this.docID)) {
 			this.documentFrequency += p.getDocumentFrequency();
 			return this;
 
 		}
 		return null;
 	}
+	
 
 	@Override
 	public int compareTo(Posting o) {
-		if(o.getDocID() == this.docID)
-			return 0;
-		else if(o.getDocID() > this.docID)
-			return 1;
-		else return -1;
-		
+		return o.getDocID().compareTo(this.docID);
 	}
+
 
 	@Override
 	public String toJSONString() {
@@ -67,4 +63,5 @@ public class Posting implements Comparable<Posting>, JSONString {
 		return json.toString();
 	}
 	
+
 }

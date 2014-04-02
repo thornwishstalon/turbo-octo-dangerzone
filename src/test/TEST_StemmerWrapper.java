@@ -20,17 +20,19 @@ public class TEST_StemmerWrapper {
 
 	@Test
 	public void test() {
-		//fail("Not yet implemented");
+		// fail("Not yet implemented");
 
-
-		BufferedReader reader=null;
+		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader("testData/stemmerTest.txt"));
-			OutputStream out = new FileOutputStream("testData/stemmerTestResult.txt");
+			reader = new BufferedReader(new FileReader(
+					"testData/stemmerTest.txt"));
+			OutputStream out = new FileOutputStream(
+					"testData/stemmerTestResult.txt");
 
-			SnowballStemmerWrapper stemmer= new SnowballStemmerWrapper(reader, out);
-			
-			while(stemmer.isAlive()){
+			SnowballStemmerWrapper stemmer = new SnowballStemmerWrapper(reader,
+					out);
+
+			while (stemmer.isAlive()) {
 				// wait
 			}
 
@@ -45,27 +47,24 @@ public class TEST_StemmerWrapper {
 			e.printStackTrace();
 		}
 
-
-
 	}
 
-	private boolean checkFiles()
-	{
-		boolean check=true;
-		BufferedReader reader=null;
-		BufferedReader refReader=null;
+	private boolean checkFiles() {
+		boolean check = true;
+		BufferedReader reader = null;
+		BufferedReader refReader = null;
 		try {
-			reader= new BufferedReader(new FileReader("testData/stemmerTestResult.txt"));
-			refReader= new BufferedReader(new FileReader("testData/stemmerTestReference.txt"));
-			String input= null;
-			String reference= null;
-			while((input= reader.readLine())!=null)
-			{
-				input= input.trim();
-				reference= refReader.readLine().trim();
-				if(!input.equals(reference))
-				{
-					check= false;
+			reader = new BufferedReader(new FileReader(
+					"testData/stemmerTestResult.txt"));
+			refReader = new BufferedReader(new FileReader(
+					"testData/stemmerTestReference.txt"));
+			String input = null;
+			String reference = null;
+			while ((input = reader.readLine()) != null) {
+				input = input.trim();
+				reference = refReader.readLine().trim();
+				if (!input.equals(reference)) {
+					check = false;
 					break;
 				}
 			}
@@ -73,14 +72,12 @@ public class TEST_StemmerWrapper {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			check= false;
+			check = false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			check= false;
-		}
-		finally
-		{
+			check = false;
+		} finally {
 			try {
 				reader.close();
 				refReader.close();

@@ -3,32 +3,29 @@ package index;
 import java.io.IOException;
 import java.io.PipedWriter;
 
-public class IndexFeeder extends Thread{
-	//private AbstractBlockedIndexCreator index;
+public class IndexFeeder extends Thread {
+	// private AbstractBlockedIndexCreator index;
 	private PipedWriter writer;
 
-	public IndexFeeder(AbstractBlockedIndexCreator index)
-	{
-		//this.index= index;
+	public IndexFeeder(AbstractBlockedIndexCreator index) {
+		// this.index= index;
 		try {
 			writer = new PipedWriter();
 			writer.connect(index.getReader());
-		
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
-	
-	public void feedIndex(String token)
-	{
-		
+
+	public void feedIndex(String token) {
+
 		try {
-			if(token!=null && token.length() > 0){
+			if (token != null && token.length() > 0) {
 				writer.write(token, 0, token.length());
-				
+
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -36,12 +33,11 @@ public class IndexFeeder extends Thread{
 		}
 	}
 
-	public void close()
-	{
-		if(writer!= null){
+	public void close() {
+		if (writer != null) {
 			try {
 				writer.close();
-				writer= null;
+				writer = null;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -52,12 +48,10 @@ public class IndexFeeder extends Thread{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while(writer!=null){
-			
-			//do stuff
+		while (writer != null) {
+
+			// do stuff
 		}
 	}
-
-
 
 }

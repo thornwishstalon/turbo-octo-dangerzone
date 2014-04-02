@@ -1,5 +1,6 @@
 package index;
 
+import index.entities.IndexFileWriter;
 import index.entities.Posting;
 import index.entities.PostingList;
 import index.entities.Token;
@@ -19,7 +20,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 public class InvertedIndex {
-	private ArrayList<TreeMap<String, PostingList>> indices;
+	private ArrayList<String> indices;
 	private TreeMap<String, PostingList> currentIndex;
 	private static Logger logger = LogManager.getLogger("InvertedIndex");
 
@@ -28,12 +29,11 @@ public class InvertedIndex {
 	private final int MAX_SIZE = 1024 * 8;
 
 	public InvertedIndex() {
-		indices = new ArrayList<TreeMap<String, PostingList>>();
+		indices = new ArrayList<String>();
 		currentIndex = new TreeMap<>();
 	}
 
-	public void addTerm(String term, String docID) {
-
+	private void addTerm(String term, String docID){
 		PostingList list = null;
 		Posting posting = null;
 
@@ -56,14 +56,21 @@ public class InvertedIndex {
 		list.addToList(posting);
 
 		logger.info("posting list: " + list.toString());
+	}
+	
+	public void addTermDuringCreation(String term, String docID) {
+
+		addTerm(term, docID);
 
 		if (count > MAX_SIZE) {
 
 			// System.out.println("\n\nSWITCHING BLOCK\n\n"+ indices.size());
 			System.out.println("\n\nSWITCHING BLOCK\n\n" + block);
-			writeToDisk(currentIndex, block++);
+			String filename;
+			filename= IndexFileWriter.writeToDisk(currentIndex, block++);
 
-			// indices.add(currentIndex);
+			indices.add(filename);
+			
 			currentIndex = new TreeMap<>();
 			count = 0;
 
@@ -71,60 +78,15 @@ public class InvertedIndex {
 		}
 		
 	}
-
-	private void writeToDisk(TreeMap<String, PostingList> block, int blockID) {
-		//System.out.println("write to block");
-				PrintWriter out=null;
-				try{
-					String filename;
-					if(ApplicationSetup.getInstance().getUseBigrams())
-					{
-						filename= "./dictionary/bigram_index_b"+blockID+".txt";
-					}else filename= "./dictionary/index_b"+blockID+".txt";
-					
-					File outputfile= new File(filename); 
-					
-					out = new PrintWriter(new BufferedWriter(new FileWriter(outputfile, false)));
-
-
-					Iterator<String> it= block.keySet().iterator();
-					String term;
-					String s="";
-					while(it.hasNext()){
-
-						term= it.next();
-						//s="{"+term+ block.get(term).toString()+"}";
-						s= block.get(term).toJSONString();
-						//for debug reason currently
-						//System.out.println(s);
-
-						//out.println(s); //append to files
-						out.println(s);
-					}
-
-				}catch (IOException e) {
-					//exception handling left as an exercise for the reader
-					e.printStackTrace();
-				}
-				finally
-				{
-					if(out!=null){
-						out.close();
-					}
-				}
-				//mark for future merge
-				//pushBlockForMerge(file.getName());
-
-				//return file;
-		
+	
+	public void addTermDuringMerge(String term, String docID) {
+		addTerm(term, docID);
 	}
 
-	public void mergeIndices() {
-		logger.info("merge indices");
-		System.out.println("index n: " + indices.size());
-		// for(int i= 0; i<indices.size(); i++)
-		// {
-		//
-		// }
+	
+
+
+	public ArrayList<String> getBlockList() {
+		return indices;
 	}
 }

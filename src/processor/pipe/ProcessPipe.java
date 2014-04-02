@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import processor.BlockMerger;
 import main.input.settings.ApplicationSetup;
 import reader.Reader;
 
@@ -60,11 +61,11 @@ public class ProcessPipe extends Thread {
 		}
 
 		indexing = new Indexing(new PipedReader(stages.get(stages.size() - 1)
-				.getOut()), new PipedWriter());
+				.getOut()), new PipedWriter(), this);
 
 		stages.add(indexing);
 
-		pool = Executors.newFixedThreadPool(stages.size());
+		pool = Executors.newFixedThreadPool(stages.size()+1);
 
 		AbstractPipeStage stage;
 		for (int i = 0; i < stages.size(); i++) {
@@ -124,7 +125,7 @@ public class ProcessPipe extends Thread {
 
 			}
 
-			indexing.backup();
+			//indexing.backup();
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -137,12 +138,19 @@ public class ProcessPipe extends Thread {
 				e.printStackTrace();
 			}
 
+			mergeBlocks(indexing.getBlocks());
+			
 			long end = System.currentTimeMillis();
 			System.out.println("DONE");
 			System.out.println((end - start) / 1000 + " seconds");
 			isRunning = false;
 		}
 
+	}
+	
+	public void mergeBlocks(ArrayList<String> blocks){
+		BlockMerger merger= new BlockMerger(blocks);
+		pool.execute(merger);
 	}
 
 }

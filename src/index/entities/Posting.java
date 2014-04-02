@@ -19,6 +19,11 @@ public class Posting implements Comparable<Posting>, JSONString {
 	public Posting(String docID) {
 		this.docID = docID;
 	}
+	
+	public Posting(JSONObject json){
+		docID = json.getString("docID");
+		documentFrequency= json.getInt("docFrequency");
+	} 
 
 	public String getDocID() {
 		return docID;
@@ -37,13 +42,11 @@ public class Posting implements Comparable<Posting>, JSONString {
 
 	}
 
-	public Posting merge(Posting p) {
+	public void merge(Posting p) {
+		
 		if (p.getDocID().equals(this.docID)) {
 			this.documentFrequency += p.getDocumentFrequency();
-			return this;
-
 		}
-		return null;
 	}
 	
 

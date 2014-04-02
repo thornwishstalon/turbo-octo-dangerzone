@@ -2,8 +2,10 @@ package processor.pipe;
 
 
 import index.InvertedIndex;
+
 import java.io.PipedReader;
 import java.io.PipedWriter;
+import java.util.ArrayList;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -14,11 +16,12 @@ public class Indexing extends AbstractPipeStage {
 	private String currentDocID;
 	private InvertedIndex index;
 	private static Logger logger = LogManager.getLogger("Index");
+	private ProcessPipe pipe;
 
-	public Indexing(PipedReader in, PipedWriter out) {
+	public Indexing(PipedReader in, PipedWriter out, ProcessPipe pipe) {
 		super(in, out);
 		index = new InvertedIndex();
-
+		this.pipe= pipe;
 	}
 
 	public void setCurrentDocID(String newID) {
@@ -31,7 +34,7 @@ public class Indexing extends AbstractPipeStage {
 		// System.out.println("indexing processing: "+ input+ " _ ID: " +
 		// currentDocID);
 
-		index.addTerm(input, currentDocID);
+		index.addTermDuringCreation(input, currentDocID);
 
 		return "";
 	}
@@ -39,7 +42,7 @@ public class Indexing extends AbstractPipeStage {
 	@Override
 	public void backup() {
 		System.out.println("BACKUP");
-		index.mergeIndices();
+		//index.mergeIndices();
 		//
 		// //System.out.println("\n BACKUP!!!++++++++++++\n");
 		// logger.info("writing to disk!");
@@ -61,7 +64,11 @@ public class Indexing extends AbstractPipeStage {
 	protected void success() {
 		super.success();
 		System.out.println("indexing done");
+		pipe.mergeBlocks(index.getBlockList());
+	}
 
+	public ArrayList<String> getBlocks() {
+		return index.getBlockList();
 	}
 
 }

@@ -111,72 +111,72 @@ public class VocabularyBuilder {
 	}
 
 	public void buildWithPipe() {
-		long start = System.currentTimeMillis();
-		ArrayList<File> documents = new ArrayList<>();
-		String path = ApplicationSetup.getInstance().getCorporaPath();
-		System.out.println("Reading directory: " + path);
-		Reader reader = new Reader(path);
-
-		// stores all files in the arrayList
-		reader.readFiles(documents);
-
-		PipedWriter inputFileWriter = null;
-
-		try {
-			System.out.println("STARTING");
-
-			inputFileWriter = new PipedWriter();
-
-			CaseFolding folding = new CaseFolding(new PipedReader(
-					inputFileWriter), new PipedWriter());
-			StopWordRemoval stopwords = new StopWordRemoval(new PipedReader(
-					folding.getOut()), new PipedWriter());
-			Stemming stemming = new Stemming(
-					new PipedReader(stopwords.getOut()), new PipedWriter());
-			Indexing indexing = new Indexing(
-					new PipedReader(stemming.getOut()), new PipedWriter());
-
-			folding.start();
-			stopwords.start();
-			stemming.start();
-			indexing.start();
-
-			BufferedReader br;
-			String line;
-			String[] tokens;
-			int id = 0; // for testing
-			for (File f : documents) {
-				// System.out.println(f.getAbsolutePath());
-				indexing.setCurrentDocID("" + id++);
-				br = new BufferedReader(new FileReader(f));
-				while ((line = br.readLine()) != null) {
-					tokens = line.split("\\s");
-					for (int i = 0; i < tokens.length; i++) {
-						inputFileWriter.write(tokens[i] + "\n");
-						inputFileWriter.flush();
-					}
-				}
-
-			}
-
-			indexing.backup();
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		} finally {
-			try {
-				if (inputFileWriter != null)
-					inputFileWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			long end = System.currentTimeMillis();
-			System.out.println("DONE");
-			System.out.println((end - start) / 1000 + " seconds");
-
-		}
+//		long start = System.currentTimeMillis();
+//		ArrayList<File> documents = new ArrayList<>();
+//		String path = ApplicationSetup.getInstance().getCorporaPath();
+//		System.out.println("Reading directory: " + path);
+//		Reader reader = new Reader(path);
+//
+//		// stores all files in the arrayList
+//		reader.readFiles(documents);
+//
+//		PipedWriter inputFileWriter = null;
+//
+//		try {
+//			System.out.println("STARTING");
+//
+//			inputFileWriter = new PipedWriter();
+//
+//			CaseFolding folding = new CaseFolding(new PipedReader(
+//					inputFileWriter), new PipedWriter());
+//			StopWordRemoval stopwords = new StopWordRemoval(new PipedReader(
+//					folding.getOut()), new PipedWriter());
+//			Stemming stemming = new Stemming(
+//					new PipedReader(stopwords.getOut()), new PipedWriter());
+//			Indexing indexing = new Indexing(
+//					new PipedReader(stemming.getOut()), new PipedWriter());
+//
+//			folding.start();
+//			stopwords.start();
+//			stemming.start();
+//			indexing.start();
+//
+//			BufferedReader br;
+//			String line;
+//			String[] tokens;
+//			int id = 0; // for testing
+//			for (File f : documents) {
+//				// System.out.println(f.getAbsolutePath());
+//				indexing.setCurrentDocID("" + id++);
+//				br = new BufferedReader(new FileReader(f));
+//				while ((line = br.readLine()) != null) {
+//					tokens = line.split("\\s");
+//					for (int i = 0; i < tokens.length; i++) {
+//						inputFileWriter.write(tokens[i] + "\n");
+//						inputFileWriter.flush();
+//					}
+//				}
+//
+//			}
+//
+//			indexing.backup();
+//
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//		} finally {
+//			try {
+//				if (inputFileWriter != null)
+//					inputFileWriter.close();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//			long end = System.currentTimeMillis();
+//			System.out.println("DONE");
+//			System.out.println((end - start) / 1000 + " seconds");
+//
+//		}
 
 	}
 

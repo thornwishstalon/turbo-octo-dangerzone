@@ -1,6 +1,8 @@
 package index.entities;
 
 import java.util.ArrayList;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONString;
 
@@ -22,6 +24,22 @@ public class PostingList implements JSONString{
 	public PostingList(String term){
 		this.term = term;
 		postingList= new ArrayList<>();
+	}
+	
+	public PostingList(JSONObject json){
+		this.term = json.getString("term");
+		this.overallFrequency = json.getInt("overallFrequency");
+		
+		JSONArray tmp=json.getJSONArray("postings");		
+		postingList = new ArrayList<>();
+		Posting p;
+		for(int i=0; i< tmp.length();i++){
+			p = new Posting(tmp.getJSONObject(i));
+			postingList.add(p);
+		}
+		currentPosition = postingList.size();
+		
+		
 	}
 	
 	public void addToList(Posting p){
@@ -47,6 +65,10 @@ public class PostingList implements JSONString{
 
 		// System.out.println(postingList[currentPosition].toString());
 
+	}
+	
+	public String getTerm(){
+		return term;
 	}
 
 	public int getDocumentFrequency(String term, int docID) {
@@ -77,23 +99,18 @@ public class PostingList implements JSONString{
 		return postingList;
 	}
 	
-	public Posting[] merge(PostingList p){
-//		Posting[] tmp = combine(p.getPostings(), this.postingList);
-//		Arrays.sort(tmp);
-//		ArrayList<Posting> merged= new ArrayList<>();
-//		
-//		Posting posting;
-//		for(int i=0; i<tmp.length-1; i++)
-//		{
-//			posting= tmp[i];
-//			posting.merge(tmp[i]);
-//			merged.add(posting);
-//		}
-//		tmp= new Posting[merged.size()];
-//		merged.toArray(tmp);
-//		
-//		return tmp;
-		return null;
+	public void merge(PostingList p){
+		System.out.println("try to merge posting");
+		System.out.println("B:\n"+p.toString());
+		
+		for(Posting postingA: postingList){
+			for(Posting postingB: p.getPostings()){
+				if(postingA.getDocID().equals(postingB.getDocID())){
+					postingA.merge(postingB);
+					System.out.println("merged a and b");
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -114,14 +131,5 @@ public class PostingList implements JSONString{
 	}
 
 
-	private Posting[] combine(Posting[] a, Posting[] b) {
-		int length = a.length + b.length;
-		Posting[] result = new Posting[length];
-
-
-		System.arraycopy(a, 0, result, 0, a.length);
-		System.arraycopy(b, 0, result, a.length, b.length);
-		return result;
-	}
 
 }

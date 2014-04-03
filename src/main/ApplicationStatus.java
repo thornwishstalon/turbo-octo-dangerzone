@@ -43,5 +43,12 @@ public class ApplicationStatus {
 		}
 		
 	}
+	
+	public PostingList getPostingsFor(String term){
+		if(index.containsKey(term.trim()))
+		{
+			return index.get(term);
+		}else return null;
+	}
 
 }

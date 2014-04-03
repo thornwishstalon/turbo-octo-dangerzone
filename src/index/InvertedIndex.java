@@ -89,4 +89,15 @@ public class InvertedIndex {
 	public ArrayList<String> getBlockList() {
 		return indices;
 	}
+
+	public void writeToDisk() {
+		String filename;
+		if(ApplicationSetup.getInstance().getUseBigrams())
+		{
+			filename= "./dictionary/bigram_index.txt";
+		}else filename= "./dictionary/index.txt";
+		
+		IndexFileWriter.writeToDisk(currentIndex, filename );
+		
+	}
 }

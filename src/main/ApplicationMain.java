@@ -13,7 +13,9 @@ public class ApplicationMain {
 
 		// create
 		ApplicationSetup.getInstance();
+		System.out.println("searching for existing index");
 		ApplicationStatus.getInstance().readIndex();
+		
 		InputThread input = new InputThread();
 
 		input.start(); // blocks until ended by !end as input

@@ -3,6 +3,7 @@ package main;
 import index.entities.IndexFileReader;
 import index.entities.PostingList;
 
+
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -12,6 +13,7 @@ public class ApplicationStatus {
 	private static ApplicationStatus instance = null;
 	private TreeMap<String, PostingList> index;
 	private boolean indexIsSet=false;
+
 
 	private ArrayList<PostingList> lists;
 
@@ -25,10 +27,7 @@ public class ApplicationStatus {
 		return instance;
 	}
 
-
-	public void setIndex(TreeMap<String, PostingList> index) {
-		this.index = index;
-	}
+	
 
 	public void readIndex()
 	{
@@ -74,6 +73,7 @@ public class ApplicationStatus {
 	public boolean indexIsSet(){
 		return indexIsSet;
 	}
+	
 	public PostingList getPostingsFor(String term){
 		if(index.containsKey(term.trim()))
 		{
@@ -81,5 +81,6 @@ public class ApplicationStatus {
 		}else return null;
 
 	}
+
 
 }

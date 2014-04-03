@@ -17,7 +17,7 @@ import java.util.TreeMap;
 import main.ApplicationStatus;
 import main.input.settings.ApplicationSetup;
 
-import org.json.JSONObject;
+
 
 public class BlockMerger extends Thread {
 	private ArrayList<String> list;
@@ -31,7 +31,7 @@ public class BlockMerger extends Thread {
 	public void run(){
 		System.out.println("merging blocks...");
 		long start = System.currentTimeMillis();
-		
+
 		TreeMap<String, PostingList> a;
 		TreeMap<String, PostingList> b;
 		String merged="";
@@ -47,7 +47,7 @@ public class BlockMerger extends Thread {
 		while(map.size()>1){
 			if(list.size()==1){
 				break;
-				
+
 			}
 
 			l= map.keySet();
@@ -69,7 +69,7 @@ public class BlockMerger extends Thread {
 					a.get(key).merge(b.get(key));
 				}
 				else{
-				//	System.out.println("add posting");
+					//	System.out.println("add posting");
 					a.put(key, b.get(key));
 				}
 			}
@@ -78,49 +78,50 @@ public class BlockMerger extends Thread {
 			map.remove(afile);
 			map.remove(bfile);
 
-			if(map.size()>2){
-				toBeRemoved.add(afile);
-				toBeRemoved.add(bfile);
-			}else
-			{
-				toBeRemoved.add(bfile);
 
-			}
-			
+			toBeRemoved.add(afile);
+			toBeRemoved.add(bfile);
+
+
 
 			map.put(merged, true);
-			
+
 		}
-		
+
 		//removing merged block files and renaming final block to index.txt
 		System.out.println("FINAL ::"+merged);
 		String filename;
-		
+
 		if(ApplicationSetup.getInstance().getUseBigrams())
 		{
 			filename= "./dictionary/bigram_index.txt";
 		}else filename= "./dictionary/index.txt";
+
+		//remove existing index
+		File oldIndex= new File(filename);
+		if(oldIndex.exists())
+			oldIndex.delete();
 		
 		File index = new File(merged);
 		index.renameTo(new File(filename));
-		
+
 		for(String s: toBeRemoved )
 		{
 			if(!s.equals(merged) || !s.equals(filename)){
-			//	remove files!!
+				//	remove files!!
 				File f= new File(s);
 				f.delete();
 			}
-			
-			
+
+
 		}
-		
+
 		long end = System.currentTimeMillis();
 		System.out.println("merging blocks in "+(end-start)/1000 + " seconds");
-		
+
 		ApplicationStatus.getInstance().readIndex();
 		System.out.println("ready for queries!");
-		
+
 	}
 
 	public TreeMap<String, PostingList> readBlock(String filePath){

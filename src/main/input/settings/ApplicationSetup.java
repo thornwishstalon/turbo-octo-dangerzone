@@ -40,7 +40,6 @@ public class ApplicationSetup {
 
 	private ApplicationSetup() {
 		load();
-		//initStatus();
 	}
 
 	public static ApplicationSetup getInstance() {
@@ -69,11 +68,10 @@ public class ApplicationSetup {
 					// nothing to do here
 				}
 			}
-			
+
 		}
 	}
-	
-	
+
 	private String getValue(String key) {
 		if (props != null)
 			return (String) props.get(key);

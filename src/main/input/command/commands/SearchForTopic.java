@@ -25,6 +25,7 @@ public class SearchForTopic implements ICommand {
 		
 		System.out.println("parsing...");
 		pipe.run();
+		
 		System.out.println("done...");
 		
 		return "";

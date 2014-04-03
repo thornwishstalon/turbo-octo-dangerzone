@@ -7,8 +7,6 @@ import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.util.ArrayList;
 
-import main.ApplicationStatus;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -46,6 +44,7 @@ public class Indexing extends AbstractPipeStage {
 
 		index.writeCurrentToDisk();
 		//ApplicationStatus.getInstance().readIndex();
+		System.out.println("BACKUP");
 
 		//index.mergeIndices();
 		//

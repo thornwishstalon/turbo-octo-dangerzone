@@ -25,6 +25,7 @@ public class EnableBigrams implements ICommand {
 			System.out.println("enabled bigrams!");
 			ApplicationStatus.getInstance().readIndex();
 			return "";
+
 		}
 	}
 

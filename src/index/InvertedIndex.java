@@ -92,12 +92,10 @@ public class InvertedIndex {
 
 	public void writeCurrentToDisk() {
 		String filename;
-		if(ApplicationSetup.getInstance().getUseBigrams())
-		{
-			filename= "./dictionary/bigram_index.txt";
-		}else filename= "./dictionary/index.txt";
 		
-		IndexFileWriter.writeToDisk(currentIndex, block++ );
+		filename=IndexFileWriter.writeToDisk(currentIndex, block++ );
+		indices.add(filename);
 		
+		System.out.println("n blocks: "+ indices.size());
 	}
 }

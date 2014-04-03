@@ -45,7 +45,7 @@ public class Indexing extends AbstractPipeStage {
 	public void backup() {
 
 		index.writeCurrentToDisk();
-		ApplicationStatus.getInstance().readIndex();
+		//ApplicationStatus.getInstance().readIndex();
 
 		//index.mergeIndices();
 		//

@@ -29,6 +29,7 @@ public class BlockMerger extends Thread {
 	}
 
 	public void run(){
+		System.out.println("merging blocks...");
 		long start = System.currentTimeMillis();
 		
 		TreeMap<String, PostingList> a;
@@ -83,6 +84,7 @@ public class BlockMerger extends Thread {
 			}else
 			{
 				toBeRemoved.add(bfile);
+
 			}
 			
 
@@ -91,7 +93,7 @@ public class BlockMerger extends Thread {
 		}
 		
 		//removing merged block files and renaming final block to index.txt
-		//System.out.println("FINAL ::"+merged);
+		System.out.println("FINAL ::"+merged);
 		String filename;
 		
 		if(ApplicationSetup.getInstance().getUseBigrams())
@@ -104,10 +106,11 @@ public class BlockMerger extends Thread {
 		
 		for(String s: toBeRemoved )
 		{
-		
-			//remove files!!
-			File f= new File(s);
-			f.delete();
+			if(!s.equals(merged) || !s.equals(filename)){
+			//	remove files!!
+				File f= new File(s);
+				f.delete();
+			}
 			
 			
 		}

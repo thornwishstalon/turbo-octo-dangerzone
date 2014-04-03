@@ -27,6 +27,8 @@ import reader.Reader;
 
 public class QueryPipe extends Thread {
 
+	
+	
 	private ExecutorService pool;
 	private boolean isRunning = false;
 	private ArrayList<AbstractPipeStage> stages;
@@ -157,7 +159,7 @@ public class QueryPipe extends Thread {
 				}
 			}
 
-			querystage.doSearch();
+		
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -179,6 +181,9 @@ public class QueryPipe extends Thread {
 			long end = System.currentTimeMillis();
 			System.out.println("reading files DONE in ");
 			System.out.println((end - start) / 1000 + " seconds");
+			
+			//querystage.doSearch();
+			
 			isRunning = false;
 
 			try {

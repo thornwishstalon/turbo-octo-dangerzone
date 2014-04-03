@@ -73,10 +73,6 @@ public class ApplicationSetup {
 		}
 	}
 	
-	private void initStatus()
-	{
-		ApplicationStatus.getInstance().readIndex();
-	}
 	
 	private String getValue(String key) {
 		if (props != null)
@@ -116,6 +112,12 @@ public class ApplicationSetup {
 				+ "\n" + CONFIG_ID_USE_STEMMER + " " + getUseStemmer() + "\n"
 				+ CONFIG_ID_USE_BIGRAMS + " " + getUseBigrams() + "\n";
 
+		if(!ApplicationStatus.getInstance().indexIsSet()){
+			s += "\nWARNING: index-file needs to be created first!";
+			
+		}else{
+			s+= "\nindex-file is present!";
+		}
 		return s;
 	}
 

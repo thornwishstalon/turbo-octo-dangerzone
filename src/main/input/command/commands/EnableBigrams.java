@@ -17,12 +17,14 @@ public class EnableBigrams implements ICommand {
 		ApplicationSetup setup = ApplicationSetup.getInstance();
 		if (setup.getUseBigrams()) {
 			setup.setUseBigrams(false);
+			System.out.println("disabled bigrams!");
 			ApplicationStatus.getInstance().readIndex();
-			return "!print disabled bigrams!";
+			return "";
 		} else {
 			setup.setUseBigrams(true);
+			System.out.println("enabled bigrams!");
 			ApplicationStatus.getInstance().readIndex();
-			return "!print enabled bigrams!";
+			return "";
 		}
 	}
 

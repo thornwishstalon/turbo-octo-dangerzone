@@ -11,6 +11,7 @@ import main.input.settings.ApplicationSetup;
 public class ApplicationStatus {
 	private static ApplicationStatus instance = null;
 	private TreeMap<String, PostingList> index;
+	private boolean indexIsSet=false;
 
 	private ApplicationStatus() {
 
@@ -39,9 +40,16 @@ public class ApplicationStatus {
 		index= IndexFileReader.readBlock(filename);
 		if(index.size() == 0)
 		{
-			System.out.println("you need to initialize your indices first! use the '!buildVoc' command");
+			System.out.println("WARNING: you need to initialize your indices first! use the '!buildVoc' command");
+		}else{
+			System.out.println("index-file read. ready for queries!");
+			indexIsSet=true;
 		}
 		
+	}
+	
+	public boolean indexIsSet(){
+		return indexIsSet;
 	}
 
 }

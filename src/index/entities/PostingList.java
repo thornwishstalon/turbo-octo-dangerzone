@@ -1,7 +1,10 @@
 package index.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONString;
@@ -19,7 +22,7 @@ public class PostingList implements JSONString{
 	private int overallFrequency=0;
 	private String term;
 	private ArrayList<Posting> postingList;
-	
+	private static Logger log= LogManager.getLogger("PostingLIST");
 	
 	public PostingList(String term){
 		this.term = term;
@@ -100,18 +103,68 @@ public class PostingList implements JSONString{
 	}
 	
 	public void merge(PostingList p){
-		System.out.println("try to merge posting");
-		System.out.println("B:\n"+p.toString());
+		try{
+		//System.out.println("try to merge posting");
+		//System.out.println("B:\n"+p.toString());
 		
-		for(Posting postingA: postingList){
-			for(Posting postingB: p.getPostings()){
-				if(postingA.getDocID().equals(postingB.getDocID())){
-					postingA.merge(postingB);
-					System.out.println("merged a and b");
-				}
+		//init stuff
+		HashMap<String, Posting> mapA= new HashMap<String, Posting>();
+		HashMap<String, Posting> mapB= new HashMap<String, Posting>();
+		
+		for(Posting tmp: postingList)
+		{
+			mapA.put(tmp.getDocID(), tmp);
+		}
+		
+		for(Posting tmp: p.getPostings())
+		{
+			mapB.put(tmp.getDocID(), tmp);
+		}
+		
+		
+		//actual merging
+		Posting tmp;
+		for(String key: mapB.keySet())
+		{
+			tmp= mapB.get(key);
+			//System.out.println("tmp: "+tmp.toString());
+			
+			if(mapA.containsKey(key)){
+				mapA.get(key).merge(tmp);
+				//System.out.println("merged postings");
+			}else
+			{
+				
+				mapA.put(key, tmp);
 			}
+			
+			
+		}
+		postingList = new ArrayList<Posting>();
+		for(String key:mapA.keySet())
+		{
+			postingList.add(mapA.get(key));
+		}
+		
+		updateOverallFrequency();
+		}catch(Exception e)
+		{
+			log.error(e.getMessage());
+			e.printStackTrace();
 		}
 	}
+	
+	private void updateOverallFrequency()
+	{
+		int tf=0;
+		for(Posting p:postingList)
+		{
+			tf+= p.getDocumentFrequency();
+		}
+		overallFrequency= tf;
+		
+	}
+	
 	
 	@Override
 	public String toJSONString() {

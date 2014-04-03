@@ -26,7 +26,7 @@ public class InvertedIndex {
 
 	private int count = 0;
 	private int block = 0;
-	private final int MAX_SIZE = 1024 * 8;
+	private final int MAX_SIZE = 1024 * 16;
 
 	public InvertedIndex() {
 		indices = new ArrayList<String>();
@@ -65,7 +65,7 @@ public class InvertedIndex {
 		if (count > MAX_SIZE) {
 
 			// System.out.println("\n\nSWITCHING BLOCK\n\n"+ indices.size());
-			System.out.println("\n\nSWITCHING BLOCK\n\n" + block);
+			//System.out.println("\n\nSWITCHING BLOCK\n\n" + block);
 			String filename;
 			filename= IndexFileWriter.writeToDisk(currentIndex, block++);
 

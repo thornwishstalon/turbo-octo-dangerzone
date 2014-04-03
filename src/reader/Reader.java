@@ -9,7 +9,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Reader {
-
+	private int size=0;
+	
+	
 	public Reader(String newsgroup_path) {
 		this.newsgroup_path = newsgroup_path;
 	}
@@ -21,10 +23,17 @@ public class Reader {
 			File directory = new File(this.newsgroup_path);
 			listFilesForFolder(directory, allFiles);
 			System.out.println("Total number of files: " + allFiles.size());
+			size= allFiles.size();
+					
+			
 		} catch (Exception ex) {
 			System.out.println("Folder doesn't exist!");
 		}
 
+	}
+	
+	public int getSize(){
+		return size;
 	}
 
 	public void listFilesForFolder(File folder, ArrayList<File> allFiles) {

@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -114,11 +115,14 @@ public class ProcessPipe extends Thread {
 			String[] tokens;
 			int id = 0; // for testing
 			String fileID;
+			float percent;
+			int c=0;
 			
 			boolean firstBlankLineFound=false;
 			
 			for (File file : documents) {
-				//System.out.println("processing file :" + file.getAbsolutePath());
+				percent = round((c++ * 100.0f) / reader.getSize(),4);
+				System.out.println(percent+"%\t\t|| processing file :" + file.getAbsolutePath());
 				
 				//defining file ID
 				String parentName = getParentFolderName(file.getAbsolutePath());
@@ -192,6 +196,12 @@ public class ProcessPipe extends Thread {
 
 		return parentName;
 	}
+	
+	private float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
+    }
 	
 	private int getParentFolderValue(String parentName) {
 		int value = 0;

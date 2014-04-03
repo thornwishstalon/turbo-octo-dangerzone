@@ -3,6 +3,8 @@ package index.entities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONString;
@@ -20,7 +22,7 @@ public class PostingList implements JSONString{
 	private int overallFrequency=0;
 	private String term;
 	private ArrayList<Posting> postingList;
-	
+	private static Logger log= LogManager.getLogger("PostingLIST");
 	
 	public PostingList(String term){
 		this.term = term;
@@ -101,7 +103,8 @@ public class PostingList implements JSONString{
 	}
 	
 	public void merge(PostingList p){
-		System.out.println("try to merge posting");
+		try{
+		//System.out.println("try to merge posting");
 		//System.out.println("B:\n"+p.toString());
 		
 		//init stuff
@@ -144,6 +147,11 @@ public class PostingList implements JSONString{
 		}
 		
 		updateOverallFrequency();
+		}catch(Exception e)
+		{
+			log.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 	private void updateOverallFrequency()

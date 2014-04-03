@@ -1,11 +1,11 @@
 package processor;
 
+import index.entities.IndexFileReader;
 import index.entities.IndexFileWriter;
 import index.entities.PostingList;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 
+import main.ApplicationStatus;
 import main.input.settings.ApplicationSetup;
 
 import org.json.JSONObject;
@@ -28,7 +29,8 @@ public class BlockMerger extends Thread {
 	}
 
 	public void run(){
-
+		long start = System.currentTimeMillis();
+		
 		TreeMap<String, PostingList> a;
 		TreeMap<String, PostingList> b;
 		String merged="";
@@ -88,7 +90,8 @@ public class BlockMerger extends Thread {
 			
 		}
 		
-		System.out.println("FINAL ::"+merged);
+		//removing merged block files and renaming final block to index.txt
+		//System.out.println("FINAL ::"+merged);
 		String filename;
 		
 		if(ApplicationSetup.getInstance().getUseBigrams())
@@ -109,41 +112,16 @@ public class BlockMerger extends Thread {
 			
 		}
 		
+		long end = System.currentTimeMillis();
+		System.out.println("merging blocks in "+(end-start)/1000 + " seconds");
+		
+		ApplicationStatus.getInstance().readIndex();
+		System.out.println("ready for queries!");
+		
 	}
 
 	public TreeMap<String, PostingList> readBlock(String filePath){
-
-		BufferedReader br=null;
-		String line;
-		JSONObject json;
-		PostingList pl;
-		TreeMap<String, PostingList> index= new TreeMap<String, PostingList>();
-
-		try {
-			br = new BufferedReader(new FileReader(filePath));
-			while ((line = br.readLine()) != null) {
-				json= new JSONObject(line);
-				pl= new PostingList(json);
-				index.put(pl.getTerm(), pl);
-			}
-
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			if(br!=null){
-				try {
-					br.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
-
-		return index;
+		return IndexFileReader.readBlock(filePath);
 
 	}
 }

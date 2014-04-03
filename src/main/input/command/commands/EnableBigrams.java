@@ -1,5 +1,6 @@
 package main.input.command.commands;
 
+import main.ApplicationStatus;
 import main.input.command.ICommand;
 import main.input.settings.ApplicationSetup;
 
@@ -16,9 +17,11 @@ public class EnableBigrams implements ICommand {
 		ApplicationSetup setup = ApplicationSetup.getInstance();
 		if (setup.getUseBigrams()) {
 			setup.setUseBigrams(false);
+			ApplicationStatus.getInstance().readIndex();
 			return "!print disabled bigrams!";
 		} else {
 			setup.setUseBigrams(true);
+			ApplicationStatus.getInstance().readIndex();
 			return "!print enabled bigrams!";
 		}
 	}

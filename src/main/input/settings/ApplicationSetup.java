@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
+import main.ApplicationStatus;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -38,6 +40,7 @@ public class ApplicationSetup {
 
 	private ApplicationSetup() {
 		load();
+		//initStatus();
 	}
 
 	public static ApplicationSetup getInstance() {
@@ -66,10 +69,15 @@ public class ApplicationSetup {
 					// nothing to do here
 				}
 			}
-
+			
 		}
 	}
-
+	
+	private void initStatus()
+	{
+		ApplicationStatus.getInstance().readIndex();
+	}
+	
 	private String getValue(String key) {
 		if (props != null)
 			return (String) props.get(key);

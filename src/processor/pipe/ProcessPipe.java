@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.LogManager;
@@ -171,11 +172,16 @@ public class ProcessPipe extends Thread {
 			mergeBlocks(indexing.getBlocks());
 			
 			long end = System.currentTimeMillis();
-			System.out.println("DONE");
+			System.out.println("reading files DONE in ");
 			System.out.println((end - start) / 1000 + " seconds");
 			isRunning = false;
 			
-			pool.shutdown();
+			try {
+				pool.awaitTermination(2000, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -183,6 +189,7 @@ public class ProcessPipe extends Thread {
 	public void mergeBlocks(ArrayList<String> blocks){
 		BlockMerger merger= new BlockMerger(blocks);
 		pool.execute(merger);
+		
 	}
 	
 	private String getParentFolderName(String absolutePath) {

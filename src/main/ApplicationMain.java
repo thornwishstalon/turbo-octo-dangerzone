@@ -13,6 +13,7 @@ public class ApplicationMain {
 
 		// create
 		ApplicationSetup.getInstance();
+		ApplicationStatus.getInstance().readIndex();
 		InputThread input = new InputThread();
 
 		input.start(); // blocks until ended by !end as input

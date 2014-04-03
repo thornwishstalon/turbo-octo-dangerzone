@@ -16,10 +16,11 @@ fabulous documentation File!
 a pipe stage is implemented as a thread, which is managed by a thread pool in order to draw advantages from multi-CPU computers.
 
 (*)Used datastructures
-we used java's TreeMap to store postings, which is a Red-black Tree, which is a balanced binary tree after all and allows us to search pretty fast for existing terms.
+we used java's TreeMap to store postings, which is a Red-black Tree, which is a balanced binary tree after all and allows us to search 
+pretty fast for existing terms.
 
-(*)in order to avoid in-memory bottleneck the currently active index is saved and merged with the rest of the blocks later (following SPMI-indexing from the book).
-JSON ?
+(*)in order to avoid in-memory bottleneck the currently active index is saved and merged with the rest of the blocks later 
+(following SPMI-indexing from the book). JSON ?
 
 Reusable Processing pipeline... etc
 

@@ -3,7 +3,6 @@ package main;
 import index.entities.IndexFileReader;
 import index.entities.PostingList;
 
-import java.util.HashMap;
 import java.util.TreeMap;
 
 import main.input.settings.ApplicationSetup;

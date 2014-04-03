@@ -122,7 +122,7 @@ public class ProcessPipe extends Thread {
 			boolean firstBlankLineFound=false;
 			
 			for (File file : documents) {
-				percent = round((c++ * 100.0f) / reader.getSize(),4);
+				percent = round((c++ * 100.0f) / reader.getSize(),2);
 				System.out.println(percent+"%\t\t|| processing file :" + file.getAbsolutePath());
 				
 				//defining file ID
@@ -141,7 +141,7 @@ public class ProcessPipe extends Thread {
 				
 				while ((line = br.readLine()) != null) {
 					if ((line.isEmpty() || line.trim().equals("")
-							|| line.trim().equals("\n"))&&!firstBlankLineFound){
+							|| line.trim().equals("\n"))){
 						firstBlankLineFound = true;
 					}
 					

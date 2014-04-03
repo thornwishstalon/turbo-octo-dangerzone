@@ -90,14 +90,14 @@ public class InvertedIndex {
 		return indices;
 	}
 
-	public void writeToDisk() {
+	public void writeCurrentToDisk() {
 		String filename;
 		if(ApplicationSetup.getInstance().getUseBigrams())
 		{
 			filename= "./dictionary/bigram_index.txt";
 		}else filename= "./dictionary/index.txt";
 		
-		IndexFileWriter.writeToDisk(currentIndex, filename );
+		IndexFileWriter.writeToDisk(currentIndex, block++ );
 		
 	}
 }

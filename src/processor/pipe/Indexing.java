@@ -43,14 +43,10 @@ public class Indexing extends AbstractPipeStage {
 
 	@Override
 	public void backup() {
-		System.out.println("BACKUP");
-		
-		if(index.getBlockList().size() < 1)
-		{
-			index.writeToDisk();
-			ApplicationStatus.getInstance().readIndex();
-			
-		}
+
+		index.writeCurrentToDisk();
+		ApplicationStatus.getInstance().readIndex();
+
 		//index.mergeIndices();
 		//
 		// //System.out.println("\n BACKUP!!!++++++++++++\n");

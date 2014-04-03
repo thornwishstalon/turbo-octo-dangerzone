@@ -7,6 +7,7 @@ import main.input.command.commands.EnableBigrams;
 import main.input.command.commands.EnableStemmer;
 import main.input.command.commands.EnableStopwords;
 import main.input.command.commands.Print;
+import main.input.command.commands.SearchForTopic;
 import main.input.command.commands.SetupInfo;
 import main.input.command.commands.SetupSetPath;
 
@@ -31,7 +32,7 @@ public class ApplicationCommandList implements ICommandList {
 
 		// commands.put("!process", new main.input.command.commands.Process());
 		commands.put("!buildVoc", new BuildVoc());
-
+		commands.put("!search", new SearchForTopic());
 	}
 
 	@Override

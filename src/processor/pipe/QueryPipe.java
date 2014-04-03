@@ -7,32 +7,45 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.math.BigDecimal;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import main.input.settings.ApplicationSetup;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import processor.BlockMerger;
 import processor.DocParentFolderEnum;
-import main.input.settings.ApplicationSetup;
 import reader.Reader;
 
-public class ProcessPipe extends Thread {
+public class QueryPipe extends Thread {
 
 	private ExecutorService pool;
 	private boolean isRunning = false;
 	private ArrayList<AbstractPipeStage> stages;
-	private Indexing indexing;
 	private static Logger logger = LogManager.getLogger("ProcessPipe");
+	private String topic;
+	private QueryLookStage querystage;
 
-	public ProcessPipe() {
+	public QueryPipe() {
 
 		stages = new ArrayList<AbstractPipeStage>();
 
+	}
+
+	public void setTopic(String topic){
+		this.topic= topic.trim();
+	}
+
+	public String getTopic(){
+		return topic;
 	}
 
 	private void init(PipedWriter inputStart) throws IOException {
@@ -64,10 +77,14 @@ public class ProcessPipe extends Thread {
 					stages.size() - 1).getOut()), new PipedWriter()));
 		}
 
-		indexing = new Indexing(new PipedReader(stages.get(stages.size() - 1)
-				.getOut()), new PipedWriter(), this);
-
-		stages.add(indexing);
+		QueryLookStage query= new QueryLookStage(new PipedReader(stages.get(
+				stages.size()-1).getOut()), new PipedWriter());
+		//		indexing = new Indexing(new PipedReader(stages.get(stages.size() - 1)
+		//				.getOut()), new PipedWriter(), this);
+		//
+		//		stages.add(indexing);
+		stages.add(query);
+		querystage = query;
 
 		pool = Executors.newFixedThreadPool(stages.size()+1);
 
@@ -94,74 +111,59 @@ public class ProcessPipe extends Thread {
 		isRunning = true;
 
 		long start = System.currentTimeMillis();
-		ArrayList<File> documents = new ArrayList<>();
-		String path = ApplicationSetup.getInstance().getCorporaPath();
-		System.out.println("Reading directory: " + path);
-		Reader reader = new Reader(path);
-
-		// stores all files in the arrayList
-		reader.readFiles(documents);
+//		ArrayList<File> documents = new ArrayList<>();
+//		String path = ApplicationSetup.getInstance().getTopicFilePath();
+//		System.out.println("Reading directory: " + path);
+//		Reader reader = new Reader(path);
+//
+//		// stores all files in the arrayList
+//		reader.readFiles(documents);
 
 		PipedWriter inputFileWriter = null;
-		BufferedReader br = null;
+		BufferedReader br=null;
 		try {
-			System.out.println("STARTING");
-
 			inputFileWriter = new PipedWriter();
 
 			init(inputFileWriter);
-
 			
 			String line;
 			String[] tokens;
-			int id = 0; // for testing
-			String fileID;
-			float percent;
-			int c=0;
 			
 			boolean firstBlankLineFound=false;
+			String pathString=ApplicationSetup.getInstance().getTopicFilePath()+"/topic"+topic;
 			
-			for (File file : documents) {
-				percent = round((c++ * 100.0f) / reader.getSize(),4);
-				System.out.println(percent+"%\t\t|| processing file :" + file.getAbsolutePath());
-				
-				//defining file ID
-				String parentName = getParentFolderName(file.getAbsolutePath());
-				id = getParentFolderValue(parentName);
+			File file = new File(pathString);
+			//System.out.println(path);
+			 //=path.toFile(); 
+			
+			
 
-				// id will be parentFolderNameValue + fileName
-				fileID = id + file.getName();
+			//reading file and passing tokens to next pipe stages
+			br = new BufferedReader(new FileReader(file));
+			firstBlankLineFound = false;
 
-				indexing.setCurrentDocID(fileID);
-				
-				
-				//reading file and passing tokens to next pipe stages
-				br = new BufferedReader(new FileReader(file));
-				 firstBlankLineFound = false;
-				
-				while ((line = br.readLine()) != null) {
-					if ((line.isEmpty() || line.trim().equals("")
-							|| line.trim().equals("\n"))&&!firstBlankLineFound){
-						firstBlankLineFound = true;
-					}
-					
-					if(firstBlankLineFound){
-						tokens = line.split("\\s");
-						for (int i = 0; i < tokens.length; i++) {
-							inputFileWriter.write(tokens[i] + "\n");
-							inputFileWriter.flush();
-						}
-					}
+			while ((line = br.readLine()) != null) {
+				if ((line.isEmpty() || line.trim().equals("")
+						|| line.trim().equals("\n"))){
+					firstBlankLineFound = true;
 				}
 
+				if(firstBlankLineFound){
+					tokens = line.split("\\s");
+					for (int i = 0; i < tokens.length; i++) {
+						inputFileWriter.write(tokens[i] + "\n");
+						inputFileWriter.flush();
+					}
+				}
 			}
 
-			indexing.backup();
+			querystage.doSearch();
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
 			try {
+				
 				if(br!=null){
 					br.close();
 				}
@@ -172,13 +174,13 @@ public class ProcessPipe extends Thread {
 				e.printStackTrace();
 			}
 
-			mergeBlocks(indexing.getBlocks());
 			
+
 			long end = System.currentTimeMillis();
 			System.out.println("reading files DONE in ");
 			System.out.println((end - start) / 1000 + " seconds");
 			isRunning = false;
-			
+
 			try {
 				pool.awaitTermination(2000, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
@@ -188,51 +190,8 @@ public class ProcessPipe extends Thread {
 		}
 
 	}
+
 	
-	public void mergeBlocks(ArrayList<String> blocks){
-		BlockMerger merger= new BlockMerger(blocks);
-		pool.execute(merger);
-		
-	}
-	
-	private String getParentFolderName(String absolutePath) {
-		String parentName = "";
-
-		if (absolutePath != null) {
-			// take care of OS specific path separator...
-			String[] tokens = absolutePath.split(Pattern.quote(File.separator));
-			parentName = tokens[tokens.length - 2];
-		}
-
-		return parentName;
-	}
-	
-	private float round(float d, int decimalPlace) {
-        BigDecimal bd = new BigDecimal(Float.toString(d));
-        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-        return bd.floatValue();
-    }
-	
-	private int getParentFolderValue(String parentName) {
-		int value = 0;
-
-		if (parentName != null) {
-			// to match enum values
-			parentName = parentName.replace("-", "_");
-			parentName = parentName.replace(".", "_");
-			parentName = parentName.toUpperCase();
-
-			// take value form enum
-			DocParentFolderEnum type = DocParentFolderEnum.ALT_ATHEISM;
-			try {
-				value = type.getValue(parentName);
-			} catch (java.lang.Exception ex) {
-				value = -1;
-			}
-		}
-
-		return value;
-	}
 
 
 }

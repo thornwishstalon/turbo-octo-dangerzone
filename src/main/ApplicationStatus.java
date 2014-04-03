@@ -27,16 +27,16 @@ public class ApplicationStatus {
 	public void setIndex(TreeMap<String, PostingList> index) {
 		this.index = index;
 	}
-	
+
 	public void readIndex()
 	{
 		String filename;
-		
+
 		if(ApplicationSetup.getInstance().getUseBigrams())
 		{
 			filename= "./dictionary/bigram_index.txt";
 		}else filename= "./dictionary/index.txt";
-	
+
 		index= IndexFileReader.readBlock(filename);
 		if(index.size() == 0)
 		{
@@ -45,11 +45,19 @@ public class ApplicationStatus {
 			System.out.println("index-file read. ready for queries!");
 			indexIsSet=true;
 		}
-		
+
 	}
-	
+
+
 	public boolean indexIsSet(){
 		return indexIsSet;
+	}
+	public PostingList getPostingsFor(String term){
+		if(index.containsKey(term.trim()))
+		{
+			return index.get(term);
+		}else return null;
+
 	}
 
 }

@@ -56,21 +56,26 @@ public class BlockMerger extends Thread {
 			{
 				if(a.containsKey(key))
 				{
+					System.out.println("merge posting list");
 					a.get(key).merge(b.get(key));
 				}
-				a.put(key, b.get(key));
+				else{
+					System.out.println("add posting");
+					a.put(key, b.get(key));
+				}
 			}
 			
 			merged= IndexFileWriter.writeToDisk(a, list.get(c).replaceFirst("\\.txt", "_merged.txt"));
 			map.remove(afile);
 			map.remove(bfile);
+			//remove files!! TODO
 			
 			
 			map.put(merged, true);
 			
 			
 		}
-		System.out.println(merged);
+		System.out.println("FINAL ::"+merged);
 		
 	}
 	

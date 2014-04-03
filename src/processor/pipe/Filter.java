@@ -2,40 +2,31 @@ package processor.pipe;
 
 import java.io.PipedReader;
 import java.io.PipedWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 public class Filter extends AbstractPipeStage {
 	// private String pattern="[^a-zA-Z0-9\\-\\'\\@]+";
-	private Pattern pattern;
+	private String replacePattern;
 	//private Matcher match;
 	private static Logger log = LogManager.getLogger("character filtering");
 
 	public Filter(PipedReader in, PipedWriter out) {
 		super(in, out);
 
-		pattern = Pattern.compile("[^\\w\\d]+");
+		replacePattern ="[^\\w\\d]+";
 	}
 
 	@Override
 	public String process(String input) {
-		 	//System.out.println("filter:"+input);
 		 	
-	       // match = pattern.matcher(input);
-	        String s,start;
+	        String start;
 	        start=input;
 	        
-	        input= input.replaceAll("[^\\w\\d]+", "");
-	        /*
-	        while(match.find())
-	        {
-	        	s= match.group();
-	            input=input.replaceAll( s, "");
-	        }
-	        */
+	        input= input.replaceAll(replacePattern, "");
+	        
 	       log.info(start+ "->"+input);
 	       if(input!=null)
 	    	   return input.trim();
@@ -46,7 +37,7 @@ public class Filter extends AbstractPipeStage {
 	protected void success() {
 
 		super.success();
-		System.out.println("Filter DONE");
+		//System.out.println("Filter DONE");
 	}
 
 }

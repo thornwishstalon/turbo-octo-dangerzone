@@ -1,6 +1,7 @@
 package index.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -101,17 +102,61 @@ public class PostingList implements JSONString{
 	
 	public void merge(PostingList p){
 		System.out.println("try to merge posting");
-		System.out.println("B:\n"+p.toString());
+		//System.out.println("B:\n"+p.toString());
 		
-		for(Posting postingA: postingList){
-			for(Posting postingB: p.getPostings()){
-				if(postingA.getDocID().equals(postingB.getDocID())){
-					postingA.merge(postingB);
-					System.out.println("merged a and b");
-				}
-			}
+		//init stuff
+		HashMap<String, Posting> mapA= new HashMap<String, Posting>();
+		HashMap<String, Posting> mapB= new HashMap<String, Posting>();
+		
+		for(Posting tmp: postingList)
+		{
+			mapA.put(tmp.getDocID(), tmp);
 		}
+		
+		for(Posting tmp: p.getPostings())
+		{
+			mapB.put(tmp.getDocID(), tmp);
+		}
+		
+		
+		//actual merging
+		Posting tmp;
+		for(String key: mapB.keySet())
+		{
+			tmp= mapB.get(key);
+			//System.out.println("tmp: "+tmp.toString());
+			
+			if(mapA.containsKey(key)){
+				mapA.get(key).merge(tmp);
+				//System.out.println("merged postings");
+			}else
+			{
+				
+				mapA.put(key, tmp);
+			}
+			
+			
+		}
+		postingList = new ArrayList<Posting>();
+		for(String key:mapA.keySet())
+		{
+			postingList.add(mapA.get(key));
+		}
+		
+		updateOverallFrequency();
 	}
+	
+	private void updateOverallFrequency()
+	{
+		int tf=0;
+		for(Posting p:postingList)
+		{
+			tf+= p.getDocumentFrequency();
+		}
+		overallFrequency= tf;
+		
+	}
+	
 	
 	@Override
 	public String toJSONString() {

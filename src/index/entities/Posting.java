@@ -42,11 +42,13 @@ public class Posting implements Comparable<Posting>, JSONString {
 
 	}
 
-	public void merge(Posting p) {
+	public boolean merge(Posting p) {
 		
 		if (p.getDocID().equals(this.docID)) {
 			this.documentFrequency += p.getDocumentFrequency();
+			return true;
 		}
+		else return false;
 	}
 	
 

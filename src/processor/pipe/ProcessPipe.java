@@ -9,11 +9,13 @@ import java.io.PipedWriter;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import processor.BlockMerger;
+import processor.DocParentFolderEnum;
 import main.input.settings.ApplicationSetup;
 import reader.Reader;
 
@@ -111,15 +113,39 @@ public class ProcessPipe extends Thread {
 			String line;
 			String[] tokens;
 			int id = 0; // for testing
-			for (File f : documents) {
-				System.out.println("processing file :" + f.getAbsolutePath());
-				indexing.setCurrentDocID("" + id++);
-				br = new BufferedReader(new FileReader(f));
+			String fileID;
+			
+			boolean firstBlankLineFound=false;
+			
+			for (File file : documents) {
+				//System.out.println("processing file :" + file.getAbsolutePath());
+				
+				//defining file ID
+				String parentName = getParentFolderName(file.getAbsolutePath());
+				id = getParentFolderValue(parentName);
+
+				// id will be parentFolderNameValue + fileName
+				fileID = id + file.getName();
+
+				indexing.setCurrentDocID(fileID);
+				
+				
+				//reading file and passing tokens to next pipe stages
+				br = new BufferedReader(new FileReader(file));
+				 firstBlankLineFound = false;
+				
 				while ((line = br.readLine()) != null) {
-					tokens = line.split("\\s");
-					for (int i = 0; i < tokens.length; i++) {
-						inputFileWriter.write(tokens[i] + "\n");
-						inputFileWriter.flush();
+					if ((line.isEmpty() || line.trim().equals("")
+							|| line.trim().equals("\n"))&&!firstBlankLineFound){
+						firstBlankLineFound = true;
+					}
+					
+					if(firstBlankLineFound){
+						tokens = line.split("\\s");
+						for (int i = 0; i < tokens.length; i++) {
+							inputFileWriter.write(tokens[i] + "\n");
+							inputFileWriter.flush();
+						}
 					}
 				}
 
@@ -144,6 +170,8 @@ public class ProcessPipe extends Thread {
 			System.out.println("DONE");
 			System.out.println((end - start) / 1000 + " seconds");
 			isRunning = false;
+			
+			pool.shutdown();
 		}
 
 	}
@@ -152,5 +180,39 @@ public class ProcessPipe extends Thread {
 		BlockMerger merger= new BlockMerger(blocks);
 		pool.execute(merger);
 	}
+	
+	private String getParentFolderName(String absolutePath) {
+		String parentName = "";
+
+		if (absolutePath != null) {
+			// take care of OS specific path separator...
+			String[] tokens = absolutePath.split(Pattern.quote(File.separator));
+			parentName = tokens[tokens.length - 2];
+		}
+
+		return parentName;
+	}
+	
+	private int getParentFolderValue(String parentName) {
+		int value = 0;
+
+		if (parentName != null) {
+			// to match enum values
+			parentName = parentName.replace("-", "_");
+			parentName = parentName.replace(".", "_");
+			parentName = parentName.toUpperCase();
+
+			// take value form enum
+			DocParentFolderEnum type = DocParentFolderEnum.ALT_ATHEISM;
+			try {
+				value = type.getValue(parentName);
+			} catch (java.lang.Exception ex) {
+				value = -1;
+			}
+		}
+
+		return value;
+	}
+
 
 }

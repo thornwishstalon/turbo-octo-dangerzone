@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import main.ApplicationStatus;
 import main.input.settings.ApplicationSetup;
 
 import org.apache.log4j.LogManager;
@@ -158,8 +159,8 @@ public class QueryPipe extends Thread {
 					}
 				}
 			}
-
-		
+			
+			
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -182,7 +183,17 @@ public class QueryPipe extends Thread {
 			System.out.println("reading files DONE in ");
 			System.out.println((end - start) / 1000 + " seconds");
 			
-			//querystage.doSearch();
+		
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+				
+			
+			ApplicationStatus.getInstance().doRanking();
+			ApplicationStatus.getInstance().printResults();
 			
 			isRunning = false;
 

@@ -22,9 +22,17 @@ public class QueryLookStage extends AbstractPipeStage {
 	public String process(String input) {
 		//input is term we search for
 		//System.out.println("query_token: "+input);
-		ApplicationStatus.getInstance().doSearch(input.trim());
+		ApplicationStatus.getInstance().addToQuery(input.trim());
 		
 		return "";
+	}
+	
+	@Override
+	protected void success() {
+		// TODO Auto-generated method stub
+		super.success();
+		isDone=true;
+		System.out.println("query is done");
 	}
 
 	

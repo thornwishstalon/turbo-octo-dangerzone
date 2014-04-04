@@ -1,13 +1,18 @@
 package processor.pipe;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -15,9 +20,11 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import processor.BlockMerger;
 import processor.DocParentFolderEnum;
+import main.ApplicationStatus;
 import main.input.settings.ApplicationSetup;
 import reader.Reader;
 
@@ -28,11 +35,12 @@ public class ProcessPipe extends Thread {
 	private ArrayList<AbstractPipeStage> stages;
 	private Indexing indexing;
 	private static Logger logger = LogManager.getLogger("ProcessPipe");
+	private TreeMap<String, Integer> fileN;
 
 	public ProcessPipe() {
 
 		stages = new ArrayList<AbstractPipeStage>();
-
+		fileN = new TreeMap<String, Integer>();
 	}
 
 	private void init(PipedWriter inputStart) throws IOException {
@@ -101,7 +109,9 @@ public class ProcessPipe extends Thread {
 
 		// stores all files in the arrayList
 		reader.readFiles(documents);
-
+		
+		ApplicationStatus.getInstance().setN(reader.getSize());
+		
 		PipedWriter inputFileWriter = null;
 		BufferedReader br = null;
 		try {
@@ -118,6 +128,7 @@ public class ProcessPipe extends Thread {
 			String fileID;
 			float percent;
 			int c=0;
+			int nd;
 			
 			boolean firstBlankLineFound=false;
 			
@@ -130,7 +141,7 @@ public class ProcessPipe extends Thread {
 				id = getParentFolderValue(parentName);
 
 				// id will be parentFolderNameValue + fileName
-				fileID = id + file.getName();
+				fileID = id +" "+ file.getName();
 
 				indexing.setCurrentDocID(fileID);
 				
@@ -147,6 +158,14 @@ public class ProcessPipe extends Thread {
 					
 					if(firstBlankLineFound){
 						tokens = line.split("\\s");
+						if(!fileN.containsKey(fileID)){
+							fileN.put(fileID, tokens.length);
+						}else{
+							nd = fileN.get(fileID).intValue();
+							fileN.put(fileID, tokens.length+nd);
+							
+						}
+						
 						for (int i = 0; i < tokens.length; i++) {
 							inputFileWriter.write(tokens[i] + "\n");
 							inputFileWriter.flush();
@@ -155,7 +174,8 @@ public class ProcessPipe extends Thread {
 				}
 
 			}
-
+			writeLengthFile();
+			
 			indexing.backup();
 
 		} catch (Exception e) {
@@ -186,9 +206,45 @@ public class ProcessPipe extends Thread {
 				e.printStackTrace();
 			}
 		}
-
 	}
 	
+	private void writeLengthFile() {
+		
+		System.out.println("writing lenght file");
+		PrintWriter out=null;
+
+		try{
+
+			File outputfile= new File("./dictionary/length.txt"); 
+
+			out = new PrintWriter(new BufferedWriter(new FileWriter(outputfile, false)));
+
+			
+			JSONObject json;
+			for(String id: fileN.keySet()){
+				json= new JSONObject();
+				json.put("docID", id.trim());
+				json.put("length", fileN.get(id));
+				
+				out.println(json.toString());
+			}
+			
+		}catch (IOException e) {
+			//exception handling left as an exercise for the reader
+			e.printStackTrace();
+			
+		}
+		finally
+		{
+			if(out!=null){
+				out.close();
+			}
+			
+			ApplicationStatus.getInstance().setLength(fileN);
+		}
+		
+	}
+
 	public void mergeBlocks(ArrayList<String> blocks){
 		BlockMerger merger= new BlockMerger(blocks);
 		pool.execute(merger);

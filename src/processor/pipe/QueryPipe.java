@@ -28,8 +28,8 @@ import reader.Reader;
 
 public class QueryPipe extends Thread {
 
-	
-	
+
+
 	private ExecutorService pool;
 	private boolean isRunning = false;
 	private ArrayList<AbstractPipeStage> stages;
@@ -114,13 +114,13 @@ public class QueryPipe extends Thread {
 		isRunning = true;
 
 		long start = System.currentTimeMillis();
-//		ArrayList<File> documents = new ArrayList<>();
-//		String path = ApplicationSetup.getInstance().getTopicFilePath();
-//		System.out.println("Reading directory: " + path);
-//		Reader reader = new Reader(path);
-//
-//		// stores all files in the arrayList
-//		reader.readFiles(documents);
+		//		ArrayList<File> documents = new ArrayList<>();
+		//		String path = ApplicationSetup.getInstance().getTopicFilePath();
+		//		System.out.println("Reading directory: " + path);
+		//		Reader reader = new Reader(path);
+		//
+		//		// stores all files in the arrayList
+		//		reader.readFiles(documents);
 
 		PipedWriter inputFileWriter = null;
 		BufferedReader br=null;
@@ -128,45 +128,45 @@ public class QueryPipe extends Thread {
 			inputFileWriter = new PipedWriter();
 
 			init(inputFileWriter);
-			
+
 			String line;
 			String[] tokens;
-			
+
 			boolean firstBlankLineFound=false;
 			String pathString=ApplicationSetup.getInstance().getTopicFilePath()+"/topic"+topic;
-			
+
 			File file = new File(pathString);
 			//System.out.println(path);
-			 //=path.toFile(); 
-			
-			
+			//=path.toFile(); 
+
+
 
 			//reading file and passing tokens to next pipe stages
 			br = new BufferedReader(new FileReader(file));
 			firstBlankLineFound = false;
 
 			while ((line = br.readLine()) != null) {
-				if ((line.isEmpty() || line.trim().equals("")
-						|| line.trim().equals("\n"))){
-					firstBlankLineFound = true;
+				//				if ((line.isEmpty() || line.trim().equals("")
+				//						|| line.trim().equals("\n"))){
+				//					firstBlankLineFound = true;
+				//				}
+				//
+				//				if(firstBlankLineFound){
+				tokens = line.split("\\s");
+				for (int i = 0; i < tokens.length; i++) {
+					inputFileWriter.write(tokens[i] + "\n");
+					inputFileWriter.flush();
 				}
-
-				if(firstBlankLineFound){
-					tokens = line.split("\\s");
-					for (int i = 0; i < tokens.length; i++) {
-						inputFileWriter.write(tokens[i] + "\n");
-						inputFileWriter.flush();
-					}
-				}
+				//				}
 			}
-			
-			
+
+
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
 			try {
-				
+
 				if(br!=null){
 					br.close();
 				}
@@ -177,24 +177,24 @@ public class QueryPipe extends Thread {
 				e.printStackTrace();
 			}
 
-			
+
 
 			long end = System.currentTimeMillis();
 			System.out.println("reading files DONE in ");
 			System.out.println((end - start) / 1000 + " seconds");
-			
-		
+
+
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-				
-			
+
+
 			ApplicationStatus.getInstance().doRanking();
 			ApplicationStatus.getInstance().printResults();
-			
+
 			isRunning = false;
 
 			try {
@@ -207,7 +207,7 @@ public class QueryPipe extends Thread {
 
 	}
 
-	
+
 
 
 }

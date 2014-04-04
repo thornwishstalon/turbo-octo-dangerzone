@@ -12,6 +12,11 @@ import index.entities.PostingList;
 
 
 
+
+
+
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,7 +27,12 @@ import java.util.TreeMap;
 
 import org.json.JSONObject;
 
+import processor.DocParentFolderEnum;
+
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
+
 import query.Query;
+import query.Score;
 import main.input.settings.ApplicationSetup;
 
 public class ApplicationStatus {
@@ -34,13 +44,18 @@ public class ApplicationStatus {
 
 	private ArrayList<PostingList> lists;
 	private HashMap<String, Query > queryTerms;
-	private HashMap<String, Float> scores;
+	private HashMap<String, Score> scores;
+	private String topic;
 
 	private ApplicationStatus() {
 		lists = new ArrayList<PostingList>();
 		queryTerms = new HashMap<String, Query>();
-		scores= new HashMap<String, Float>();
+		scores= new HashMap<String, Score>();
 		length= new TreeMap<String, Integer>();
+	}
+	
+	public void setTopic(String topicnr){
+		this.topic = topicnr;
 	}
 
 	public static ApplicationStatus getInstance() {
@@ -89,45 +104,54 @@ public class ApplicationStatus {
 		calculate_tf_idf_q();
 		Query q;
 		for(String term: queryTerms.keySet()){
-			System.out.println(term);
-			
+			//System.out.println(term);
+			term= term.trim();
 			q= queryTerms.get(term);
 			q.setPostings(getPostingsFor(term));
 			
-			System.out.println("found "+ q.getPostings().getPostings().size() +" for"+ term);
+			 //System.out.println("found "+ q.getPostings().getPostings().size() +" for"+ term);
 			for(Posting p: q.getPostings().getPostings()){
-				double value = q.getTf_idf() * calculate_tf_idf_d(p, q.getPostings().getOverallFrequency(term));
-				Float f = new Float(value);
+				
+				float value = (float) (q.getTf_idf() * calculate_tf_idf_d(p, q.getPostings().getOverallFrequency(term)));
+				
+				Score s= new Score();
+				s.setScore(value);
+				s.setId(p.getDocID());
+				
+				
 				if(!scores.containsKey(p.getDocID())){
-					scores.put(term, f);
+					scores.put(p.getDocID(), s);
 				}else
 				{
-					float score=scores.get(term).floatValue();
+					Score sc = scores.get(p.getDocID());
+					float score= sc.getScore();
 					score+= value;
-					scores.put(term, new Float(score));
+					sc.setScore(score);
+					scores.put(p.getDocID(),sc );
 					
 				}
 			}
+			
+			
 		}
 		
-		Float newScore,oldScore,lengthV;
-		float fnewScore,foldScore,flength;
+		float newScore,lengthV;
+		
+		Score s;
 		for(String id: scores.keySet())
 		{
-			System.out.println(id);
-			System.out.println("llll: "+ length.get(id).toString());
-			oldScore= scores.get(id);
-			if(oldScore== null)
-				oldScore=new Float(0f);
-			
+			s= scores.get(id);
 			try{
-				newScore= new Float(oldScore.floatValue() / length.get(id).floatValue());
-				scores.put(id, newScore);
-				System.out.println(newScore.floatValue());
+				newScore= s.getScore() / length.get(id).floatValue();
+				s.setScore(newScore);
+				scores.put(id, s);
+				//System.out.println(newScore.floatValue());
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
+			
+			//order by score  and select top k files
 		}
 		
 		
@@ -146,9 +170,11 @@ public class ApplicationStatus {
 			while ((line = br.readLine()) != null) {
 				json= new JSONObject(line);
 				length.put(json.getString("docID").trim(), new Integer(json.getInt("length")));
-				System.out.println(length.get(json.getString("docID").trim()));
+				//System.out.println(length.get(json.getString("docID").trim()));
+				
 			}
 
+			System.out.println("lenght size: "+length.size());
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -190,7 +216,7 @@ public class ApplicationStatus {
 		for(String term: queryTerms.keySet()){
 			q= queryTerms.get(term);
 			
-			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log(N/ q.getTF()));
+			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log(N / q.getTF() ));
 		}
 	}
 	
@@ -206,7 +232,7 @@ public class ApplicationStatus {
 	}
 	
 	public PostingList getPostingsFor(String term){
-		System.out.println("retrieve postings");
+		//System.out.println("retrieve postings");
 		if(index.containsKey(term.trim())){
 			return index.get(term);
 		}else return null;
@@ -214,12 +240,103 @@ public class ApplicationStatus {
 	}
 
 	public synchronized void printResults() {
-		System.out.println(scores.size());
+		//System.out.println(scores.size());
+		ArrayList<Score> sco= new ArrayList<Score>();
+		String TAG ="group19_experiment";
+		
 		for(String id: scores.keySet()){
-			System.out.println(id + " : "+ scores.get(id));
+			//System.out.println(id + " : "+ scores.get(id));
+			sco.add(scores.get(id));
+			
+		}
+		
+		java.util.Collections.sort(sco);
+		String filename;
+		Score score;
+		for(int i = 0; i<= 100; i++){
+			
+			score= sco.get(i);
+			if(score.getScore() == Float.NEGATIVE_INFINITY)
+				break;
+			if(sco.size()<= i)
+				break;
+			
+			filename=resolve(score.getId());
+			System.out.println("topic"+" Q0 "+topic +" "+filename+" "
+					 + i+" "+score.getScore() + TAG );
 		}
 		
 	}
-
+	
+	public String resolve(String id){
+		String[] tokens= id.split("_");
+		
+		if(tokens[0].equals("1")){
+			return "alt.atheism/"+tokens[1];
+		 
+		}else if(tokens[0].equals("2")){
+			return "comp.graphics/"+tokens[1];
+		 
+		}if(tokens[0].equals("3")){
+			return "comp.os.ms-windows.misc/"+tokens[1];
+		 
+		}else if(tokens[0].equals("4")){
+			return "comp.sys.ibm.pc.hardware/"+tokens[1];
+		 
+		}else if(tokens[0].equals("5")){
+			return "comp.sys.mac.hardware/"+tokens[1];
+		 
+		}else if(tokens[0].equals("6")){
+			return "comp.windows.x/"+tokens[1];
+		 
+		}else if(tokens[0].equals("7")){
+			return "misc.forsale/"+tokens[1];
+		 
+		}if(tokens[0].equals("8")){
+			return "rec.autos/"+tokens[1];
+		 
+		}else if(tokens[0].equals("9")){
+			return "rec.motorcycles/"+tokens[1];
+		 
+		}else if(tokens[0].equals("10")){
+			return "rec.sport.baseball/"+tokens[1];
+		 
+		}if(tokens[0].equals("11")){
+			return "rec.sport.hockey/"+tokens[1];
+		 
+		}else if(tokens[0].equals("12")){
+			return "sci.crypt/"+tokens[1];
+		 
+		}else if(tokens[0].equals("13")){
+			return "sci.electronics/"+tokens[1];
+		 
+		}if(tokens[0].equals("14")){
+			return "sci.med/"+tokens[1];
+		 
+		}else if(tokens[0].equals("15")){
+			return "sci.space/"+tokens[1];
+		 
+		}else if(tokens[0].equals("16")){
+			return "soc.religion.christian/"+tokens[1];
+		 
+		}if(tokens[0].equals("17")){
+			return "talk.politics.guns/"+tokens[1];
+		 
+		}else if(tokens[0].equals("18")){
+			return "talk.politics.mideast/"+tokens[1];
+		 
+		}else if(tokens[0].equals("19")){
+			return "talk.politics.misc/"+tokens[1];
+		 
+		}
+		else if(tokens[0].equals("19")){
+			return "talk.religion.misc/"+tokens[1];
+		 
+		}
+		
+		return id;
+		
+		
+	}
 
 }

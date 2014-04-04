@@ -141,8 +141,10 @@ public class ProcessPipe extends Thread {
 				id = getParentFolderValue(parentName);
 
 				// id will be parentFolderNameValue + fileName
-				fileID = id +" "+ file.getName();
+				fileID = (id +" "+ file.getName()).trim();
 
+				fileN.put(fileID, new Integer(0));
+				
 				indexing.setCurrentDocID(fileID);
 				
 				
@@ -151,18 +153,19 @@ public class ProcessPipe extends Thread {
 				 firstBlankLineFound = false;
 				
 				while ((line = br.readLine()) != null) {
-					if ((line.isEmpty() || line.trim().equals("")
-							|| line.trim().equals("\n"))){
-						firstBlankLineFound = true;
-					}
-					
-					if(firstBlankLineFound){
+//					if ((line.isEmpty() || line.trim().equals("")
+//							|| line.trim().equals("\n"))){
+//						firstBlankLineFound = true;
+//					}
+//					
+//					if(firstBlankLineFound){
 						tokens = line.split("\\s");
-						if(!fileN.containsKey(fileID)){
-							fileN.put(fileID, tokens.length);
+						
+						if(!fileN.containsKey(fileID.trim())){
+							fileN.put(fileID.trim(), tokens.length);
 						}else{
 							nd = fileN.get(fileID).intValue();
-							fileN.put(fileID, tokens.length+nd);
+							fileN.put(fileID.trim(), new Integer(tokens.length+nd));
 							
 						}
 						
@@ -170,12 +173,12 @@ public class ProcessPipe extends Thread {
 							inputFileWriter.write(tokens[i] + "\n");
 							inputFileWriter.flush();
 						}
-					}
+//					}
 				}
 
 			}
-			writeLengthFile();
 			
+			writeLengthFile();
 			indexing.backup();
 
 		} catch (Exception e) {
@@ -208,7 +211,7 @@ public class ProcessPipe extends Thread {
 		}
 	}
 	
-	private void writeLengthFile() {
+	private synchronized void writeLengthFile() {
 		
 		System.out.println("writing lenght file");
 		PrintWriter out=null;

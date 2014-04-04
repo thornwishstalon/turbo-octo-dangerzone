@@ -30,6 +30,7 @@ public class Query {
 
 
 	public void setTf_idf(double tf_idf){
+		//System.out.println(tf_idf);
 		this.tf_idf= tf_idf;
 	}
 	

@@ -1,6 +1,7 @@
 package main.input.command.commands;
 
 import processor.pipe.QueryPipe;
+import main.ApplicationStatus;
 import main.input.command.ICommand;
 
 public class SearchForTopic implements ICommand {
@@ -22,7 +23,7 @@ public class SearchForTopic implements ICommand {
 	public String execute(String[] params) {
 		String topicnr= params[0];
 		pipe.setTopic(topicnr);
-		
+		ApplicationStatus.getInstance().setTopic(topicnr);
 		System.out.println("parsing...");
 		pipe.run();
 		

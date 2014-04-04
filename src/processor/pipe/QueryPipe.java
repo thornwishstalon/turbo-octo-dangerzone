@@ -122,6 +122,8 @@ public class QueryPipe extends Thread {
 		//		// stores all files in the arrayList
 		//		reader.readFiles(documents);
 
+		ApplicationStatus.getInstance().clear();
+		
 		PipedWriter inputFileWriter = null;
 		BufferedReader br=null;
 		try {
@@ -193,6 +195,7 @@ public class QueryPipe extends Thread {
 
 
 			ApplicationStatus.getInstance().doRanking();
+			System.out.println("ranking computation complete!");
 			ApplicationStatus.getInstance().printResults();
 
 			isRunning = false;

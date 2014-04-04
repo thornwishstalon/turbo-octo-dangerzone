@@ -5,7 +5,7 @@ public class Score implements Comparable<Score>{
 	private float score;
 	
 	public Score(){
-		
+		score=0f;
 	}
 	
 	public String getId() {
@@ -24,9 +24,9 @@ public class Score implements Comparable<Score>{
 	@Override
 	public int compareTo(Score o) {
 		if(o.getScore() < score)
-			return -1;
-		else if(o.getScore() > score)
 			return 1;
+		else if(o.getScore() > score)
+			return -1;
 		else return 0;
 	}
 	

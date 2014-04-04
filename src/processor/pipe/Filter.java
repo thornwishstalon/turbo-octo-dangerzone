@@ -18,7 +18,7 @@ public class Filter extends AbstractPipeStage {
 	public Filter(PipedReader in, PipedWriter out) {
 		super(in, out);
 
-		pattern = "[\\W\\.\\-\\<\\>]+";
+		pattern = "[\\.\\\\+\\*\\?\\[\\^\\]\\$\\(\\)\\{\\}\\=\\!\\<\\>\\|\\:\\-]+";
 	}
 
 	@Override

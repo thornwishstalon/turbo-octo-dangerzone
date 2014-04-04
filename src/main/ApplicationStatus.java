@@ -66,6 +66,7 @@ public class ApplicationStatus {
 
 	public void setN(int n){
 		this.Nd = n;
+		System.out.println("set N "+n);
 	}
 	
 	public void setLength(TreeMap<String, Integer> map){
@@ -91,15 +92,22 @@ public class ApplicationStatus {
 		}
 		
 		readLength();
-		
+		if(Nd==0){
+			Nd= length.size();
+		}
 
 	}
 	
-	
+	public void clear(){
+		scores= new HashMap<String, Score>();
+		queryTerms = new HashMap<String, Query>();
+	}
 
 	public synchronized void doRanking()
 	{
-		System.out.println("doing ranking");
+		//System.out.println("doing ranking");
+		
+		
 		
 		calculate_tf_idf_q();
 		Query q;
@@ -112,12 +120,12 @@ public class ApplicationStatus {
 			 //System.out.println("found "+ q.getPostings().getPostings().size() +" for"+ term);
 			for(Posting p: q.getPostings().getPostings()){
 				
-				float value = (float) (q.getTf_idf() * calculate_tf_idf_d(p, q.getPostings().getOverallFrequency(term)));
+				float value = (float) (q.getTf_idf() * calculate_tf_idf_d(p, q.getPostings().getOverallFrequency()));
 				
 				Score s= new Score();
 				s.setScore(value);
 				s.setId(p.getDocID());
-				
+				//System.out.println("id"+ p.getDocID()+" -> "+value);
 				
 				if(!scores.containsKey(p.getDocID())){
 					scores.put(p.getDocID(), s);
@@ -217,12 +225,15 @@ public class ApplicationStatus {
 			q= queryTerms.get(term);
 			
 			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log(N / q.getTF() ));
+			//System.out.println(q.getTf_idf());
 		}
 	}
 	
 	private double calculate_tf_idf_d(Posting p, int termF)
 	{
-		return Math.log(1 + termF )* Math.log(Nd/p.getDocumentFrequency());
+		double v=Math.log(1 + p.getDocumentFrequency() ) * Math.log(Nd/(double)termF);
+		
+		return v;
 	}
 	
 
@@ -240,7 +251,7 @@ public class ApplicationStatus {
 	}
 
 	public synchronized void printResults() {
-		//System.out.println(scores.size());
+		System.out.println(scores.size());
 		ArrayList<Score> sco= new ArrayList<Score>();
 		String TAG ="group19_experiment";
 		
@@ -253,23 +264,24 @@ public class ApplicationStatus {
 		java.util.Collections.sort(sco);
 		String filename;
 		Score score;
+		
 		for(int i = 0; i<= 100; i++){
 			
 			score= sco.get(i);
 			if(score.getScore() == Float.NEGATIVE_INFINITY)
-				break;
+				//break;
 			if(sco.size()<= i)
 				break;
 			
 			filename=resolve(score.getId());
-			System.out.println("topic"+" Q0 "+topic +" "+filename+" "
-					 + i+" "+score.getScore() + TAG );
+			System.out.println("topic"+topic+" Q0 "+" "+filename+" "
+					 + i+" \t"+score.getScore() +" "+ TAG );
 		}
 		
 	}
 	
 	public String resolve(String id){
-		String[] tokens= id.split("_");
+		String[] tokens= id.split(" ");
 		
 		if(tokens[0].equals("1")){
 			return "alt.atheism/"+tokens[1];
@@ -329,12 +341,12 @@ public class ApplicationStatus {
 			return "talk.politics.misc/"+tokens[1];
 		 
 		}
-		else if(tokens[0].equals("19")){
+		else if(tokens[0].equals("20")){
 			return "talk.religion.misc/"+tokens[1];
 		 
 		}
 		
-		return id;
+		return "";
 		
 		
 	}

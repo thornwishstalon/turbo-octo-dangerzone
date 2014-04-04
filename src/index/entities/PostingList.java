@@ -82,7 +82,7 @@ public class PostingList implements JSONString{
 		return -1; // not found
 	}
 
-	public int getOverallFrequency(String term) {
+	public int getOverallFrequency() {
 		return overallFrequency;
 	}
 

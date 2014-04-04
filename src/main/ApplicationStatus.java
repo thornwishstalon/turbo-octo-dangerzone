@@ -39,7 +39,7 @@ public class ApplicationStatus {
 	private static ApplicationStatus instance = null;
 	private TreeMap<String, PostingList> index;
 	private boolean indexIsSet=false;
-	private int Nd=0;
+	private int Nd=8000;
 	private TreeMap<String, Integer> length;
 
 	private ArrayList<PostingList> lists;
@@ -116,7 +116,10 @@ public class ApplicationStatus {
 			term= term.trim();
 			q= queryTerms.get(term);
 			q.setPostings(getPostingsFor(term));
-			
+			if(q.getPostings()== null){
+				System.out.println("sry. no postings found");
+				continue;
+			}
 			 //System.out.println("found "+ q.getPostings().getPostings().size() +" for"+ term);
 			for(Posting p: q.getPostings().getPostings()){
 				
@@ -224,7 +227,7 @@ public class ApplicationStatus {
 		for(String term: queryTerms.keySet()){
 			q= queryTerms.get(term);
 			
-			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log(N / q.getTF() ));
+			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getTF() ));
 			//System.out.println(q.getTf_idf());
 		}
 	}

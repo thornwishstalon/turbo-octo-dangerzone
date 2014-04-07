@@ -109,9 +109,9 @@ public class ProcessPipe extends Thread {
 
 		// stores all files in the arrayList
 		reader.readFiles(documents);
-		
+
 		ApplicationStatus.getInstance().setN(reader.getSize());
-		
+
 		PipedWriter inputFileWriter = null;
 		BufferedReader br = null;
 		try {
@@ -121,7 +121,7 @@ public class ProcessPipe extends Thread {
 
 			init(inputFileWriter);
 
-			
+
 			String line;
 			String[] tokens;
 			int id = 0; // for testing
@@ -129,13 +129,13 @@ public class ProcessPipe extends Thread {
 			float percent;
 			int c=0;
 			int nd;
-			
-			boolean firstBlankLineFound=false;
-			
+
+
+
 			for (File file : documents) {
 				percent = round((c++ * 100.0f) / reader.getSize(),2);
 				System.out.println(percent+"%\t\t|| processing file :" + file.getAbsolutePath());
-				
+
 				//defining file ID
 				String parentName = getParentFolderName(file.getAbsolutePath());
 				id = getParentFolderValue(parentName);
@@ -144,40 +144,35 @@ public class ProcessPipe extends Thread {
 				fileID = (id +" "+ file.getName()).trim();
 
 				fileN.put(fileID, new Integer(0));
-				
+
 				indexing.setCurrentDocID(fileID);
-				
-				
+
+
 				//reading file and passing tokens to next pipe stages
 				br = new BufferedReader(new FileReader(file));
-				 firstBlankLineFound = false;
-				
+
+
 				while ((line = br.readLine()) != null) {
-//					if ((line.isEmpty() || line.trim().equals("")
-//							|| line.trim().equals("\n"))){
-//						firstBlankLineFound = true;
-//					}
-//					
-//					if(firstBlankLineFound){
+					if((line.length() > 0) && !line.startsWith("\\w+\\:\\s")){
 						tokens = line.split("\\s");
-						
+
 						if(!fileN.containsKey(fileID.trim())){
 							fileN.put(fileID.trim(), tokens.length);
 						}else{
 							nd = fileN.get(fileID).intValue();
 							fileN.put(fileID.trim(), new Integer(tokens.length+nd));
-							
+
 						}
-						
+
 						for (int i = 0; i < tokens.length; i++) {
 							inputFileWriter.write(tokens[i] + "\n");
 							inputFileWriter.flush();
 						}
-//					}
+					}
 				}
 
 			}
-			
+
 			writeLengthFile();
 			indexing.backup();
 
@@ -196,12 +191,12 @@ public class ProcessPipe extends Thread {
 			}
 
 			mergeBlocks(indexing.getBlocks());
-			
+
 			long end = System.currentTimeMillis();
 			System.out.println("reading files DONE in ");
 			System.out.println((end - start) / 1000 + " seconds");
 			isRunning = false;
-			
+
 			try {
 				pool.awaitTermination(2000, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
@@ -210,9 +205,9 @@ public class ProcessPipe extends Thread {
 			}
 		}
 	}
-	
+
 	private synchronized void writeLengthFile() {
-		
+
 		System.out.println("writing lenght file");
 		PrintWriter out=null;
 
@@ -222,38 +217,38 @@ public class ProcessPipe extends Thread {
 
 			out = new PrintWriter(new BufferedWriter(new FileWriter(outputfile, false)));
 
-			
+
 			JSONObject json;
 			for(String id: fileN.keySet()){
 				json= new JSONObject();
 				json.put("docID", id.trim());
 				json.put("length", fileN.get(id));
-				
+
 				out.println(json.toString());
 			}
-			
+
 		}catch (IOException e) {
 			//exception handling left as an exercise for the reader
 			e.printStackTrace();
-			
+
 		}
 		finally
 		{
 			if(out!=null){
 				out.close();
 			}
-			
+
 			ApplicationStatus.getInstance().setLength(fileN);
 		}
-		
+
 	}
 
 	public void mergeBlocks(ArrayList<String> blocks){
 		BlockMerger merger= new BlockMerger(blocks);
 		pool.execute(merger);
-		
+
 	}
-	
+
 	private String getParentFolderName(String absolutePath) {
 		String parentName = "";
 
@@ -265,13 +260,13 @@ public class ProcessPipe extends Thread {
 
 		return parentName;
 	}
-	
+
 	private float round(float d, int decimalPlace) {
-        BigDecimal bd = new BigDecimal(Float.toString(d));
-        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-        return bd.floatValue();
-    }
-	
+		BigDecimal bd = new BigDecimal(Float.toString(d));
+		bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+		return bd.floatValue();
+	}
+
 	private int getParentFolderValue(String parentName) {
 		int value = 0;
 

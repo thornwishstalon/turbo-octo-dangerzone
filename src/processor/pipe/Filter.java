@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 public class Filter extends AbstractPipeStage {
 	// private String pattern="[^a-zA-Z0-9\\-\\'\\@]+";
-	private String replacePattern = "[\\W]";
+	private String replacePattern = "[\\W_-]+";
 	private String pattern;
 	//private Matcher match;
 	private static Logger log = LogManager.getLogger("character filtering");
@@ -18,7 +18,7 @@ public class Filter extends AbstractPipeStage {
 	public Filter(PipedReader in, PipedWriter out) {
 		super(in, out);
 
-		pattern = "[\\.\\\\+\\*\\?\\[\\^\\]\\$\\(\\)\\{\\}\\=\\!\\<\\>\\|\\:\\-/]+";
+		pattern = "[\\.\\\\+\\*\\?\\[\\^\\]\\$\\(\\)\\{\\}\\=\\!\\<\\>\\|\\:\\-/_~]+";
 		//pattern = "[\\.\\\\+\\*\\?\\[\\^\\]\\$\\(\\)\\{\\}\\=\\!\\<\\>\\|\\:\\-/]+";
 	}
 
@@ -35,7 +35,13 @@ public class Filter extends AbstractPipeStage {
 //	        	return "";
 //	        else return input;
 //	        
-	        return input.replaceAll(replacePattern, "");
+	        input= input.replaceAll(replacePattern, "");
+	        
+	        //ignore terms with digits in it
+	        if(input.matches(".*\\d+.*"))
+	        	input="";
+	        
+	        return input;
 	        
 	        /*
 	        while(match.find())

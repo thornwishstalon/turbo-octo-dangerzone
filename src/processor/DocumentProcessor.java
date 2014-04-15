@@ -19,7 +19,7 @@ public class DocumentProcessor {
 	public DocumentProcessor() {
 
 	}
-
+	
 	public String process(ArrayList<File> documents,
 			List<TextDocument> documentList) {
 		String completeText = "";
@@ -39,8 +39,7 @@ public class DocumentProcessor {
 					String id = value + file.getName();
 
 					// create Document
-					TextDocument doc = new TextDocument(id, fileText,
-							parentName);
+					TextDocument doc = new TextDocument(id, fileText,parentName);
 					documentList.add(doc);
 
 					// added by f:

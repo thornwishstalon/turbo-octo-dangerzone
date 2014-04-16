@@ -31,6 +31,8 @@ public class ApplicationSetup {
 	private final String CONFIG_ID_USE_BIGRAMS = "use_bigrams";
 	private final String CONFIG_ID_DOCUMENTLOOKUPTABLE_PATH = "document_lookup_table_path";
 	private final String CONFIG_ID_LUCENE_INDEX_PATH = "lucene_index_path";
+	private final String CONFIG_ID_USE_LUCENE = "use_lucene";
+	private final String CONFIG_ID_USE_BM25 = "use_bm25";
 
 	// .... more to come
 
@@ -107,11 +109,13 @@ public class ApplicationSetup {
 				+ CONFIG_ID_STOPWORDS_PATH + ": " + getStopwordsPath() + "\n"
 				+ CONFIG_ID_TOPIC_PATH + ": " + getTopicFilePath() + "\n";
 
-		s += "****STAGES\n" + CONFIG_ID_USE_STOPWORDS + " " + getUseStopwords()
+		s += "\n" + CONFIG_ID_USE_STOPWORDS + " " + getUseStopwords()
 				+ "\n" + CONFIG_ID_USE_STEMMER + " " + getUseStemmer() + "\n"
 				+ CONFIG_ID_USE_BIGRAMS + " " + getUseBigrams() + "\n";
 		
 		s += CONFIG_ID_LUCENE_INDEX_PATH +": "+ getLuceneIndexPath()+"\n";
+		s += CONFIG_ID_USE_LUCENE +": "+ getUseLucene()+"\n";
+		s += CONFIG_ID_USE_BM25 +": "+ getUseBM25()+"\n";
 
 		if(!ApplicationStatus.getInstance().indexIsSet()){
 			s += "\nWARNING: index-file needs to be created first!";
@@ -161,6 +165,22 @@ public class ApplicationSetup {
 
 	public void setStopwordsPath(String value) {
 		setValue(CONFIG_ID_STOPWORDS_PATH, value);
+	}
+	
+	public boolean getUseLucene() {
+		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_LUCENE));
+	}
+
+	public void setUseLucene(boolean value) {
+		setValue(CONFIG_ID_USE_LUCENE, Boolean.toString(value));
+	}
+	
+	public boolean getUseBM25() {
+		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_BM25));
+	}
+
+	public void setUseBM25(boolean value) {
+		setValue(CONFIG_ID_USE_BM25, Boolean.toString(value));
 	}
 
 	public boolean getUseBigrams() {

@@ -17,3 +17,5 @@ lib/JSON-java/org/json/*.java
 lib/JSON-java/org/json/zip/
 lib/JSON-java/org/json/MANIFEST.txt
 lib/JSON-java/org/json/README
+lib/lucene-4.7.1/docs*
+lib/lucene-4.7.1/

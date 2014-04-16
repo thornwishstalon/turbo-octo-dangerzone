@@ -30,6 +30,7 @@ public class ApplicationSetup {
 	private final String CONFIG_ID_USE_STOPWORDS = "use_stopwords";
 	private final String CONFIG_ID_USE_BIGRAMS = "use_bigrams";
 	private final String CONFIG_ID_DOCUMENTLOOKUPTABLE_PATH = "document_lookup_table_path";
+	private final String CONFIG_ID_LUCENE_INDEX_PATH = "lucene_index_path";
 
 	// .... more to come
 
@@ -109,6 +110,8 @@ public class ApplicationSetup {
 		s += "****STAGES\n" + CONFIG_ID_USE_STOPWORDS + " " + getUseStopwords()
 				+ "\n" + CONFIG_ID_USE_STEMMER + " " + getUseStemmer() + "\n"
 				+ CONFIG_ID_USE_BIGRAMS + " " + getUseBigrams() + "\n";
+		
+		s += CONFIG_ID_LUCENE_INDEX_PATH +": "+ getLuceneIndexPath()+"\n";
 
 		if(!ApplicationStatus.getInstance().indexIsSet()){
 			s += "\nWARNING: index-file needs to be created first!";
@@ -118,6 +121,15 @@ public class ApplicationSetup {
 		}
 		return s;
 	}
+	
+	public String getLuceneIndexPath() {
+		return getValue(CONFIG_ID_LUCENE_INDEX_PATH);
+	}
+
+	public void setLuceneIndexPath(String value) {
+		setValue(CONFIG_ID_LUCENE_INDEX_PATH, value);
+	}
+	
 
 	public String getTopicFilePath() {
 		return getValue(CONFIG_ID_TOPIC_PATH);

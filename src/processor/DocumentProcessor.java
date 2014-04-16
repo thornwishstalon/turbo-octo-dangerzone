@@ -53,7 +53,7 @@ public class DocumentProcessor {
 		return completeText;
 	}
 
-	private String readDocument(File file) {
+	public String readDocument(File file) {
 
 		String text = "";
 

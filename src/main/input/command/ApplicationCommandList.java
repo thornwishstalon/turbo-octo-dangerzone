@@ -38,7 +38,7 @@ public class ApplicationCommandList implements ICommandList {
         commands.put("!search", new SearchForTopic());
         
         // Lucene commands!!!!
-        commands.put("!luceneBouildVoc", new LucBuildVoc());
+        commands.put("!luceneBuildVoc", new LucBuildVoc());
 
 	}
 

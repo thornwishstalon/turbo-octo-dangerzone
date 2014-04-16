@@ -33,7 +33,9 @@ public class ApplicationSetup {
 	private final String CONFIG_ID_LUCENE_INDEX_PATH = "lucene_index_path";
 	private final String CONFIG_ID_USE_LUCENE = "use_lucene";
 	private final String CONFIG_ID_USE_BM25 = "use_bm25";
-
+	private final String CONFIG_ID_TREC_TAG = "trec_tag";
+	private final String CONFIG_ID_RESULTFILE_PATH = "result_path";
+	
 	// .... more to come
 
 	private static ApplicationSetup instance = null;
@@ -116,6 +118,8 @@ public class ApplicationSetup {
 		s += CONFIG_ID_LUCENE_INDEX_PATH +": "+ getLuceneIndexPath()+"\n";
 		s += CONFIG_ID_USE_LUCENE +": "+ getUseLucene()+"\n";
 		s += CONFIG_ID_USE_BM25 +": "+ getUseBM25()+"\n";
+		
+		s += "\n"+CONFIG_ID_TREC_TAG +":"+ getTrecTag()+"\n";
 
 		if(!ApplicationStatus.getInstance().indexIsSet()){
 			s += "\nWARNING: index-file needs to be created first!";
@@ -205,6 +209,22 @@ public class ApplicationSetup {
 
 	public void setUseStemmer(boolean value) {
 		setValue(CONFIG_ID_USE_STEMMER, Boolean.toString(value));
+	}
+	
+	public String getTrecTag() {
+		return getValue(CONFIG_ID_TREC_TAG);
+	}
+
+	public void setTrecTag(String value) {
+		setValue(CONFIG_ID_TREC_TAG, value);
+	}
+	
+	public String getResultPath() {
+		return getValue(CONFIG_ID_RESULTFILE_PATH);
+	}
+
+	public void setResultPath(String value) {
+		setValue(CONFIG_ID_RESULTFILE_PATH, value);
 	}
 
 }

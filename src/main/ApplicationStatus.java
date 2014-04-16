@@ -17,12 +17,24 @@ import index.entities.PostingList;
 
 
 
+
+
+
+
+
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.json.JSONObject;
@@ -36,6 +48,11 @@ import query.Score;
 import main.input.settings.ApplicationSetup;
 
 public class ApplicationStatus {
+	public final static int TFID=0;
+	public final static int DEFAULT_LUCENE=1;
+	public final static int BM25=2;
+	
+	
 	private static ApplicationStatus instance = null;
 	private TreeMap<String, PostingList> index;
 	private boolean indexIsSet=false;
@@ -252,11 +269,12 @@ public class ApplicationStatus {
 		}else return null;
 
 	}
-
+	
 	public synchronized void printResults() {
 		System.out.println(scores.size());
 		ArrayList<Score> sco= new ArrayList<Score>();
-		String TAG ="group19_experiment";
+		String TAG =ApplicationSetup.getInstance().getTrecTag();
+		String resultLine,result="";
 		
 		for(String id: scores.keySet()){
 			//System.out.println(id + " : "+ scores.get(id));
@@ -277,12 +295,67 @@ public class ApplicationStatus {
 				break;
 			
 			filename=resolve(score.getId());
-			System.out.println("topic"+topic+" Q0 "+" "+filename+" "
-					 + i+" \t"+score.getScore() +" "+ TAG );
+			resultLine= "topic"+topic+" Q0 "+" "+filename+" "
+					 + i+" \t"+score.getScore() +" "+ TAG ;
+			System.out.println(resultLine);
+			result += resultLine+"\n";
 		}
+		
+		//store result in file
+		storeInFile(result, 0,""+topic);
 		
 	}
 	
+	public void storeInFile(String result, int from, String topic) {
+		System.out.println("writing result to file");
+		String filename="";
+		switch (from) {
+		case TFID:
+			filename= "tfidf_result_t"+topic+".txt";
+			break;
+		case DEFAULT_LUCENE:
+			filename= "defaultLucene_result_t"+topic+".txt";
+			break;
+		case BM25:
+			filename= "bm25_result_t"+topic+".txt";
+			break;
+			
+		default:
+			filename="result.txt";
+			break;
+		}
+		
+		
+		File file= new File( ApplicationSetup.getInstance().getResultPath());
+		if(!Files.exists(file.toPath(), LinkOption.NOFOLLOW_LINKS)){
+			file.mkdir();
+		}
+		
+		PrintWriter out=null;
+
+		try{
+
+			File outputfile= new File(file.getAbsolutePath()+"/"+filename); 
+			out = new PrintWriter(new BufferedWriter(new FileWriter(outputfile, false)));
+			out.print(result);
+
+		}catch (IOException e) {
+			//exception handling left as an exercise for the reader
+			e.printStackTrace();
+		}
+		finally
+		{
+			if(out!=null){
+				out.close();
+			}
+
+		}
+		
+		
+		
+		
+	}
+
 	public String resolve(String id){
 		String[] tokens= id.split(" ");
 		

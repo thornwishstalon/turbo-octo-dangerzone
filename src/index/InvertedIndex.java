@@ -1,20 +1,13 @@
 package index;
 
+import java.util.ArrayList;
+import java.util.TreeMap;
+
+import main.input.settings.ApplicationSetup;
 import index.entities.IndexFileWriter;
 import index.entities.Posting;
 import index.entities.PostingList;
 import index.entities.Token;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.TreeMap;
-
-import main.input.settings.ApplicationSetup;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -92,10 +85,10 @@ public class InvertedIndex {
 
 	public void writeCurrentToDisk() {
 		String filename;
-		if(ApplicationSetup.getInstance().getUseBigrams())
-		{
+		if(ApplicationSetup.getInstance().getUseBigrams()) {
 			filename= "./dictionary/bigram_index.txt";
-		}else filename= "./dictionary/index.txt";
+		}
+		else filename= "./dictionary/index.txt";
 		
 		IndexFileWriter.writeToDisk(currentIndex, block++ );
 		

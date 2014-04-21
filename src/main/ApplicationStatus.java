@@ -4,24 +4,6 @@ import index.entities.IndexFileReader;
 import index.entities.Posting;
 import index.entities.PostingList;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,21 +13,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.TreeMap;
+
+import main.input.settings.ApplicationSetup;
 
 import org.json.JSONObject;
 
-import processor.DocParentFolderEnum;
-
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
-
 import query.Query;
 import query.Score;
-import main.input.settings.ApplicationSetup;
 
 public class ApplicationStatus {
 	public final static int TFID=0;
@@ -333,26 +310,20 @@ public class ApplicationStatus {
 		
 		PrintWriter out=null;
 
-		try{
+		try {
 
 			File outputfile= new File(file.getAbsolutePath()+"/"+filename); 
 			out = new PrintWriter(new BufferedWriter(new FileWriter(outputfile, false)));
 			out.print(result);
 
-		}catch (IOException e) {
+		} catch (IOException e) {
 			//exception handling left as an exercise for the reader
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			if(out!=null){
 				out.close();
 			}
-
 		}
-		
-		
-		
 		
 	}
 

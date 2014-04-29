@@ -3,7 +3,6 @@ package index;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import main.input.settings.ApplicationSetup;
 import index.entities.IndexFileWriter;
 import index.entities.Posting;
 import index.entities.PostingList;
@@ -84,11 +83,6 @@ public class InvertedIndex {
 	}
 
 	public void writeCurrentToDisk() {
-		String filename;
-		if(ApplicationSetup.getInstance().getUseBigrams()) {
-			filename= "./dictionary/bigram_index.txt";
-		}
-		else filename= "./dictionary/index.txt";
 		
 		IndexFileWriter.writeToDisk(currentIndex, block++ );
 		

@@ -20,7 +20,6 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -45,7 +44,7 @@ public class LuceneSearch {
 
 
 			if(ApplicationSetup.getInstance().getUseBM25()){
-				//TODO
+				//TODO 
 				//searcher.setSimilarity(new BM25Similarity....);
 			}
 		} catch (IOException e) {

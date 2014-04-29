@@ -22,6 +22,7 @@ public class Indexing extends AbstractPipeStage {
 		super(in, out);
 		index = new InvertedIndex();
 		this.pipe= pipe;
+		logger.info("indexer active");
 	}
 
 	public void setCurrentDocID(String newID) {
@@ -30,10 +31,6 @@ public class Indexing extends AbstractPipeStage {
 
 	@Override
 	public String process(String input) {
-		// index.doSPIMIInvert(currentDocID);
-		// System.out.println("indexing processing: "+ input+ " _ ID: " +
-		// currentDocID);
-
 		index.addTermDuringCreation(input, currentDocID);
 
 		return "";
@@ -43,26 +40,8 @@ public class Indexing extends AbstractPipeStage {
 	public void backup() {
 
 		index.writeCurrentToDisk();
-		//ApplicationStatus.getInstance().readIndex();
 		System.out.println("BACKUP");
 
-		//index.mergeIndices();
-		//
-		// //System.out.println("\n BACKUP!!!++++++++++++\n");
-		// logger.info("writing to disk!");
-		//
-		// String filename;
-		// if(ApplicationSetup.getInstance().getUseBigrams())
-		// {
-		// filename= "./dictionary/bigram_index.txt";
-		// }else filename= "./dictionary/index.txt";
-		//
-		// File outputfile= new File(filename);
-		// writeBlockToDisk(outputfile,sortTerms(dictionary), dictionary);
-		//
-		// ApplicationStatus.getInstance().setIndex(dictionary);
-		//
-		//
 	}
 
 	protected void success() {

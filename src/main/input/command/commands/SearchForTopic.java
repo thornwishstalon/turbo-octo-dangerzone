@@ -1,13 +1,5 @@
 package main.input.command.commands;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-
 import processor.pipe.QueryPipe;
 import main.ApplicationStatus;
 import main.input.command.ICommand;

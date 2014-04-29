@@ -6,25 +6,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
-import java.math.BigDecimal;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
+
 
 import main.ApplicationStatus;
 import main.input.settings.ApplicationSetup;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
-import processor.BlockMerger;
-import processor.DocParentFolderEnum;
-import reader.Reader;
 
 public class QueryPipe extends Thread {
 
@@ -134,7 +126,7 @@ public class QueryPipe extends Thread {
 			String line;
 			String[] tokens;
 
-			boolean firstBlankLineFound=false;
+		
 			String pathString=ApplicationSetup.getInstance().getTopicFilePath()+"/topic"+topic;
 
 			File file = new File(pathString);
@@ -198,6 +190,7 @@ public class QueryPipe extends Thread {
 
 			try {
 				pool.awaitTermination(2000, TimeUnit.MILLISECONDS);
+				pool.shutdown();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

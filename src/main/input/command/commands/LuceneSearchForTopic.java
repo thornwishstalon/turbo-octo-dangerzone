@@ -1,5 +1,7 @@
 package main.input.command.commands;
 
+import java.io.IOException;
+
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import lucene.LuceneSearch;
@@ -20,7 +22,11 @@ public class LuceneSearchForTopic implements ICommand {
 		
 		try {
 			search.search(params[0]);
+			
 		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

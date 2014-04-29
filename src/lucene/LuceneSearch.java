@@ -4,21 +4,27 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import main.ApplicationStatus;
 import main.input.settings.ApplicationSetup;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 
 
 public class LuceneSearch {
@@ -37,7 +43,7 @@ public class LuceneSearch {
 			searcher   = new IndexSearcher(reader);
 			analyzer = new StandardAnalyzer(Version.LUCENE_47);
 
-			
+
 			if(ApplicationSetup.getInstance().getUseBM25()){
 				//TODO
 				//searcher.setSimilarity(new BM25Similarity....);
@@ -50,24 +56,78 @@ public class LuceneSearch {
 	}
 
 
-	public void search(String topic) throws ParseException{
+	public void search(String topic) throws ParseException, IOException{
 		String text= readTopic(topic);
-		
+		ApplicationStatus.getInstance().setTopic(topic);
+
 		queryParser = new QueryParser(Version.LUCENE_47,"docText" , analyzer); //docTest is field name
 		
-		queryParser.parse(text);
+		ArrayList<String> terms= new ArrayList<String>();
+		String queryText="docTest:";
+		String operator= " OR "; 
 		
-		//System.out.println(q.toString());
+		TokenStream tokenStream = analyzer.tokenStream("", text);
+		//OffsetAttribute offsetAttribute = tokenStream.addAttribute(OffsetAttribute.class);
+		CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
+		
+		tokenStream.reset();
+		while (tokenStream.incrementToken()) {
+		   
+		    String term = charTermAttribute.toString();
+		    terms.add(term);
+		    queryText += "\""+term+"\""+operator;
+		    
+		}
+		queryText = queryText.substring(0, queryText.length() - operator.length());
+		tokenStream.close(); 
+		
+		TopScoreDocCollector collector= TopScoreDocCollector.create(100, true);
+		//System.out.println(queryText);
+		Query q= queryParser.parse(queryText);
+
+		// get 100 top documents
+		 searcher.search(q, collector);
+		
+		printResult(collector);
+		
+		
 
 	}
+
+	private void printResult(TopScoreDocCollector collector) {
+		ScoreDoc[] hits = collector.topDocs().scoreDocs;
+		Document d;
+		String docName;
+		float score;
+		ApplicationStatus status= ApplicationStatus.getInstance();
+		
+		status.clear();
+				
+		for(int i=0; i<100; i++){
+			int docId = hits[i].doc;
+		    try {
+				d = searcher.doc(docId);
+				docName= d.get("docID");
+				score= hits[i].score;
+				status.addScoreFromLucene(docName,score);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		status.printResults();
+		
+		
+	}
+
 
 	private String readTopic(String topic){
 		String pathString=ApplicationSetup.getInstance().getTopicFilePath()+"/topic"+topic;
 		String pattern= "^[\\w-]+:\\s.*"; //header
-		
+
 		File file = new File(pathString);
-		//System.out.println(path);
-		//=path.toFile(); 
+
 		String line,searchString="";
 		BufferedReader br=null;
 		try{
@@ -75,15 +135,15 @@ public class LuceneSearch {
 			//reading file and passing tokens to next pipe stages
 			br = new BufferedReader(new FileReader(file));
 
-			
+
 			while ((line = br.readLine()) != null) {
 				if(line.length() > 0){
 					if(!line.matches(pattern))
 						searchString += line;
+				}
 			}
-			}
-			System.out.println(searchString);
-
+			
+			
 
 
 		} catch (Exception e) {

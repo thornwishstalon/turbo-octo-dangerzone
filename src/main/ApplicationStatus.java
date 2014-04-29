@@ -247,11 +247,46 @@ public class ApplicationStatus {
 
 	}
 	
+	public void clearScoreList()
+	{
+		clear();
+	}
+	
+	public void addScoreFromLucene(String docID, float score)
+	{
+		Score s= new Score();
+		s.setId(docID);
+		s.setScore(score);
+		
+		scores.put(docID, s);
+	}
+	
+	
 	public synchronized void printResults() {
-		System.out.println(scores.size());
+		//System.out.println(scores.size());
 		ArrayList<Score> sco= new ArrayList<Score>();
 		String TAG =ApplicationSetup.getInstance().getTrecTag();
 		String resultLine,result="";
+		
+
+		int from;
+		
+		ApplicationSetup setup=ApplicationSetup.getInstance();
+		if(!setup.getUseLucene()){
+			from= TFID;
+			TAG+="_tfidf";
+		}
+		else if(setup.getUseBM25()){
+			from= BM25;
+			TAG+="_bm25";
+		}
+		else{
+			from= DEFAULT_LUCENE;
+			TAG+="_lucene";
+		}
+		
+		
+		
 		
 		for(String id: scores.keySet()){
 			//System.out.println(id + " : "+ scores.get(id));
@@ -263,7 +298,7 @@ public class ApplicationStatus {
 		String filename;
 		Score score;
 		
-		for(int i = 0; i<= 100; i++){
+		for(int i = 0; i< 100; i++){
 			
 			score= sco.get(i);
 			if(score.getScore() == Float.NEGATIVE_INFINITY)
@@ -278,8 +313,9 @@ public class ApplicationStatus {
 			result += resultLine+"\n";
 		}
 		
+		
 		//store result in file
-		storeInFile(result, 0,""+topic);
+		storeInFile(result, from,""+topic);
 		
 	}
 	

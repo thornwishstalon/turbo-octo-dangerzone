@@ -1,6 +1,6 @@
 package main.input.command.commands;
 
-import lucene.LuceneTester;
+import lucene.LuceneIndexer;
 import main.input.command.ICommand;
 
 public class LucBuildVoc implements ICommand{
@@ -14,7 +14,7 @@ public class LucBuildVoc implements ICommand{
 	@Override
 	public String execute(String[] params) {
 		System.out.println("testing....");
-		LuceneTester t= new LuceneTester();
+		LuceneIndexer t= new LuceneIndexer();
 		t.test();
 		
 		return "";

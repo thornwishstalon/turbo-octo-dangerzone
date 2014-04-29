@@ -1,8 +1,17 @@
 package main.input.command.commands;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+
 import processor.pipe.QueryPipe;
 import main.ApplicationStatus;
 import main.input.command.ICommand;
+import main.input.settings.ApplicationSetup;
 
 public class SearchForTopic implements ICommand {
 
@@ -21,6 +30,8 @@ public class SearchForTopic implements ICommand {
 
 	@Override
 	public String execute(String[] params) {
+		
+		if(!ApplicationSetup.getInstance().getUseLucene()){
 		String topicnr= params[0];
 		pipe.setTopic(topicnr);
 		ApplicationStatus.getInstance().setTopic(topicnr);
@@ -28,7 +39,13 @@ public class SearchForTopic implements ICommand {
 		pipe.run();
 		
 		System.out.println("done...");
-		
+		}else{
+			
+			
+			
+			
+			
+		}
 		return "";
 	}
 

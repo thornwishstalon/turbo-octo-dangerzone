@@ -123,7 +123,7 @@ public class QueryPipe extends Thread {
 		//		reader.readFiles(documents);
 
 		ApplicationStatus.getInstance().clear();
-		
+
 		PipedWriter inputFileWriter = null;
 		BufferedReader br=null;
 		try {
@@ -145,19 +145,15 @@ public class QueryPipe extends Thread {
 
 			//reading file and passing tokens to next pipe stages
 			br = new BufferedReader(new FileReader(file));
-			firstBlankLineFound = false;
+			String pattern= "^[\\w-]+:\\s.*";
 
 			while ((line = br.readLine()) != null) {
-				//				if ((line.isEmpty() || line.trim().equals("")
-				//						|| line.trim().equals("\n"))){
-				//					firstBlankLineFound = true;
-				//				}
-				//
-				//				if(firstBlankLineFound){
-				tokens = line.split("\\s");
-				for (int i = 0; i < tokens.length; i++) {
-					inputFileWriter.write(tokens[i] + "\n");
-					inputFileWriter.flush();
+				if(line.length()>0 && !line.matches(pattern)){
+					tokens = line.split("\\s");
+					for (int i = 0; i < tokens.length; i++) {
+						inputFileWriter.write(tokens[i] + "\n");
+						inputFileWriter.flush();
+					}
 				}
 				//				}
 			}

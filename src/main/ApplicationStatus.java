@@ -307,7 +307,7 @@ public class ApplicationStatus {
 	}
 	
 	public void storeInFile(String result, int from, String topic) {
-		System.out.println("writing result to file");
+		System.out.println("\nwriting result to file");
 		String filename="";
 		switch (from) {
 		case TFID:

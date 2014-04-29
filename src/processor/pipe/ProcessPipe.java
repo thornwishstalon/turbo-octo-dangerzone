@@ -150,23 +150,25 @@ public class ProcessPipe extends Thread {
 
 				//reading file and passing tokens to next pipe stages
 				br = new BufferedReader(new FileReader(file));
-
+				String pattern= "^[\\w-]+:\\s.*";
 
 				while ((line = br.readLine()) != null) {
-					if((line.length() > 0) && !line.startsWith("\\w+\\:\\s")){
-						tokens = line.split("\\s");
+					if(line.length() > 0){
+						if(!line.matches(pattern)){
+							tokens = line.split("\\s");
 
-						if(!fileN.containsKey(fileID.trim())){
-							fileN.put(fileID.trim(), tokens.length);
-						}else{
-							nd = fileN.get(fileID).intValue();
-							fileN.put(fileID.trim(), new Integer(tokens.length+nd));
+							if(!fileN.containsKey(fileID.trim())){
+								fileN.put(fileID.trim(), tokens.length);
+							}else{
+								nd = fileN.get(fileID).intValue();
+								fileN.put(fileID.trim(), new Integer(tokens.length+nd));
 
-						}
+							}
 
-						for (int i = 0; i < tokens.length; i++) {
-							inputFileWriter.write(tokens[i] + "\n");
-							inputFileWriter.flush();
+							for (int i = 0; i < tokens.length; i++) {
+								inputFileWriter.write(tokens[i] + "\n");
+								inputFileWriter.flush();
+							}
 						}
 					}
 				}

@@ -9,6 +9,7 @@ import main.input.command.commands.EnableLucene;
 import main.input.command.commands.EnableStemmer;
 import main.input.command.commands.EnableStopwords;
 import main.input.command.commands.LucBuildVoc;
+import main.input.command.commands.LuceneSearchForTopic;
 import main.input.command.commands.Print;
 import main.input.command.commands.SearchForTopic;
 import main.input.command.commands.SetupInfo;
@@ -43,6 +44,7 @@ public class ApplicationCommandList implements ICommandList {
         commands.put("!luceneBuildVoc", new LucBuildVoc());
         commands.put("!enableLucene", new EnableLucene());
         commands.put("!enableBM25", new EnableBM25());
+        commands.put("!lucSearch", new LuceneSearchForTopic());
 
 	}
 

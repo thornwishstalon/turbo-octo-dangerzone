@@ -42,7 +42,6 @@ public class DocumentProcessor {
 					TextDocument doc = new TextDocument(id, fileText,parentName);
 					documentList.add(doc);
 
-					// added by f:
 
 					// store text
 					completeText += fileText;

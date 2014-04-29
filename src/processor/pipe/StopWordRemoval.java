@@ -1,8 +1,6 @@
 package processor.pipe;
 
 import java.io.BufferedReader;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.nio.charset.StandardCharsets;

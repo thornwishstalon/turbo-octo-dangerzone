@@ -1,31 +1,15 @@
 package processor;
 
-import java.util.ArrayList;
-import java.util.List;
-//import java.util.regex.Matcher;
-//import java.util.regex.Pattern;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PipedReader;
-import java.io.PipedWriter;
-import java.lang.Exception;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.lang.Math;
+import java.util.ArrayList;
 
-import processor.pipe.CaseFolding;
-import processor.pipe.Indexing;
-import processor.pipe.Stemming;
-import processor.pipe.StopWordRemoval;
-import main.input.settings.ApplicationSetup;
-import reader.Reader;
 import stemming.SnowballStemmerWrapper;
 
 public class VocabularyBuilder {

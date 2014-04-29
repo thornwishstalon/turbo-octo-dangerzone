@@ -2,8 +2,6 @@ package query;
 
 import index.entities.PostingList;
 
-import java.util.ArrayList;
-
 public class Query {
 	//private String query;
 	private double tf_idf = 0.0;;

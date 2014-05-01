@@ -25,7 +25,7 @@ public class BuildVoc implements ICommand {
 			return "!print Still processing! have some patience!";
 		else {
 			pipe = new ProcessPipe();
-			pipe.start();
+			pipe.run();
 			return "!print building index....";
 		}
 	}

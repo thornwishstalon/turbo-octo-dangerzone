@@ -32,7 +32,7 @@ public class ApplicationSetup {
 	private final String CONFIG_ID_DOCUMENTLOOKUPTABLE_PATH = "document_lookup_table_path";
 	private final String CONFIG_ID_LUCENE_INDEX_PATH = "lucene_index_path";
 	private final String CONFIG_ID_USE_LUCENE = "use_lucene";
-	private final String CONFIG_ID_USE_BM25 = "use_bm25";
+	private final String CONFIG_ID_USE_BM25L = "use_bm25l";
 	private final String CONFIG_ID_TREC_TAG = "trec_tag";
 	private final String CONFIG_ID_RESULTFILE_PATH = "result_path";
 	
@@ -117,7 +117,7 @@ public class ApplicationSetup {
 		
 		s += CONFIG_ID_LUCENE_INDEX_PATH +": "+ getLuceneIndexPath()+"\n";
 		s += CONFIG_ID_USE_LUCENE +": "+ getUseLucene()+"\n";
-		s += CONFIG_ID_USE_BM25 +": "+ getUseBM25()+"\n";
+		s += CONFIG_ID_USE_BM25L +": "+ getUseBM25()+"\n";
 		
 		s += "\n"+CONFIG_ID_TREC_TAG +":"+ getTrecTag()+"\n";
 
@@ -180,11 +180,11 @@ public class ApplicationSetup {
 	}
 	
 	public boolean getUseBM25() {
-		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_BM25));
+		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_BM25L));
 	}
 
 	public void setUseBM25(boolean value) {
-		setValue(CONFIG_ID_USE_BM25, Boolean.toString(value));
+		setValue(CONFIG_ID_USE_BM25L, Boolean.toString(value));
 	}
 
 	public boolean getUseBigrams() {

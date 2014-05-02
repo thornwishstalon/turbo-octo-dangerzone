@@ -1,6 +1,7 @@
 package main.input.command.commands;
 
 import lucene.LuceneIndexer;
+import main.ApplicationStatus;
 import main.input.command.ICommand;
 
 public class LucBuildVoc implements ICommand{
@@ -16,7 +17,7 @@ public class LucBuildVoc implements ICommand{
 		System.out.println("testing....");
 		LuceneIndexer t= new LuceneIndexer();
 		t.test();
-		
+		ApplicationStatus.getInstance().notifyObservers();
 		return "";
 	}
 

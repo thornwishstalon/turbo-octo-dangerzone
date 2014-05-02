@@ -1,5 +1,6 @@
 package main.input.command.commands;
 
+import main.ApplicationStatus;
 import main.input.command.ICommand;
 import main.input.settings.ApplicationSetup;
 
@@ -19,7 +20,7 @@ public class SetupSetPath implements ICommand {
 	@Override
 	public String execute(String[] params) {
 		ApplicationSetup.getInstance().setCorporaPath(params[0]);
-
+		ApplicationStatus.getInstance().notifyObservers();
 		return "!print corporate path changed to: " + params[0];
 	}
 

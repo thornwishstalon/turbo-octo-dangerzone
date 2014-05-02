@@ -1,7 +1,9 @@
 package main.input.command.commands;
 
 import processor.pipe.ProcessPipe;
+import main.ApplicationStatus;
 import main.input.command.ICommand;
+import main.input.settings.ApplicationSetup;
 
 public class BuildVoc implements ICommand {
 	private ProcessPipe pipe;
@@ -26,6 +28,9 @@ public class BuildVoc implements ICommand {
 		else {
 			pipe = new ProcessPipe();
 			pipe.run();
+			
+			ApplicationStatus.getInstance().notifyObservers();
+			
 			return "!print building index....";
 		}
 	}

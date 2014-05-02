@@ -3,7 +3,7 @@ package main.input.command;
 import java.util.HashMap;
 
 import main.input.command.commands.BuildVoc;
-import main.input.command.commands.EnableBM25;
+import main.input.command.commands.EnableBM25L;
 import main.input.command.commands.EnableBigrams;
 import main.input.command.commands.EnableLucene;
 import main.input.command.commands.EnableStemmer;
@@ -14,6 +14,8 @@ import main.input.command.commands.Print;
 import main.input.command.commands.SearchForTopic;
 import main.input.command.commands.SetupInfo;
 import main.input.command.commands.SetupSetPath;
+import main.input.command.commands.TestScript;
+import main.input.parser.CommandParser;
 
 
 /**
@@ -23,7 +25,8 @@ import main.input.command.commands.SetupSetPath;
  */
 public class ApplicationCommandList implements ICommandList {
 	private HashMap<String, ICommand> commands;
-
+	
+	
 	public ApplicationCommandList() {
 		commands = new HashMap<>();
 
@@ -41,9 +44,16 @@ public class ApplicationCommandList implements ICommandList {
         // Lucene commands!!!!
         commands.put("!luceneBuildVoc", new LucBuildVoc());
         commands.put("!enableLucene", new EnableLucene());
-        commands.put("!enableBM25", new EnableBM25());
+        commands.put("!enableBM25L", new EnableBM25L());
         commands.put("!lucSearch", new LuceneSearchForTopic());
+        
+        
 
+	}
+	
+	public void addScript(CommandParser parser){
+        // script
+        commands.put("!getAll", new TestScript(parser));
 	}
 
 	@Override

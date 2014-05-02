@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Observable;
 import java.util.TreeMap;
 
 import main.input.settings.ApplicationSetup;
@@ -24,10 +25,10 @@ import org.json.JSONObject;
 import query.Query;
 import query.Score;
 
-public class ApplicationStatus {
+public class ApplicationStatus extends Observable{
 	public final static int TFID=0;
 	public final static int DEFAULT_LUCENE=1;
-	public final static int BM25=2;
+	public final static int BM25L=2;
 	
 	
 	private static ApplicationStatus instance = null;
@@ -40,7 +41,8 @@ public class ApplicationStatus {
 	private HashMap<String, Query > queryTerms;
 	private HashMap<String, Score> scores;
 	private String topic;
-
+	private boolean iScriptRunning=false;
+	
 	private ApplicationStatus() {
 		lists = new ArrayList<PostingList>();
 		queryTerms = new HashMap<String, Query>();
@@ -277,7 +279,7 @@ public class ApplicationStatus {
 			TAG+="_tfidf";
 		}
 		else if(setup.getUseBM25()){
-			from= BM25;
+			from= BM25L;
 			TAG+="_bm25";
 		}
 		else{
@@ -329,7 +331,7 @@ public class ApplicationStatus {
 		case DEFAULT_LUCENE:
 			filename= "defaultLucene_result_t"+topic+".txt";
 			break;
-		case BM25:
+		case BM25L:
 			filename= "bm25_result_t"+topic+".txt";
 			break;
 			
@@ -430,8 +432,25 @@ public class ApplicationStatus {
 		}
 		
 		return "";
-		
-		
 	}
+	
+	public boolean isiScriptRunning() {
+		return iScriptRunning;
+	}
+
+	public void setiScriptRunning(boolean iScriptRunning) {
+		this.iScriptRunning = iScriptRunning;
+	}
+	
+	@Override
+	public void notifyObservers() {
+		//System.out.println("notify observer");
+		// TODO Auto-generated method stub
+		if(iScriptRunning){
+			setChanged();
+			super.notifyObservers();
+		}
+	}
+	
 
 }

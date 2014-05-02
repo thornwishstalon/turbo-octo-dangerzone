@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import main.ApplicationStatus;
 import main.input.settings.ApplicationSetup;
@@ -61,7 +62,8 @@ public class LuceneSearch {
 
 		queryParser = new QueryParser(Version.LUCENE_47,"docText" , analyzer); //docTest is field name
 		
-		ArrayList<String> terms= new ArrayList<String>();
+		HashMap<String,Integer> terms= new HashMap<String, Integer>();
+		
 		String queryText="docTest:";
 		String operator= " OR "; 
 		
@@ -73,10 +75,25 @@ public class LuceneSearch {
 		while (tokenStream.incrementToken()) {
 		   
 		    String term = charTermAttribute.toString();
-		    terms.add(term);
-		    queryText += "\""+term+"\""+operator;
-		    
+		    if(!terms.containsKey(term)){
+		    	terms.put(term,1);
+		    }else{
+		    	Integer i= terms.get(term) ;
+		    	i= i+1;
+		    	terms.remove(term);
+		    	terms.put(term, i);
+		    }
 		}
+		
+		Integer termFreq;
+		for(String key: terms.keySet()){
+			termFreq= terms.get(key);
+			if(termFreq <= 1 )
+				queryText += "\""+key+"\""+operator;
+			else
+				queryText += "\""+key+"\"^"+termFreq+" "+operator;
+		}
+		
 		queryText = queryText.substring(0, queryText.length() - operator.length());
 		tokenStream.close(); 
 		
@@ -89,8 +106,6 @@ public class LuceneSearch {
 		
 		printResult(collector);
 		
-		
-
 	}
 
 	private void printResult(TopScoreDocCollector collector) {
@@ -116,13 +131,13 @@ public class LuceneSearch {
 		}
 		
 		status.printResults();
-		
-		
 	}
 
 
 	private String readTopic(String topic){
 		String pathString=ApplicationSetup.getInstance().getTopicFilePath()+"/topic"+topic;
+		pathString = pathString.trim();
+		
 		String pattern= "^[\\w-]+:\\s.*"; //header
 
 		File file = new File(pathString);
@@ -141,9 +156,6 @@ public class LuceneSearch {
 						searchString += line;
 				}
 			}
-			
-			
-
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

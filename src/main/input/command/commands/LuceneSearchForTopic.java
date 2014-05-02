@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import lucene.LuceneSearch;
+import main.ApplicationStatus;
 import main.input.command.ICommand;
 
 public class LuceneSearchForTopic implements ICommand {
@@ -22,6 +23,7 @@ public class LuceneSearchForTopic implements ICommand {
 		
 		try {
 			search.search(params[0]);
+			ApplicationStatus.getInstance().notifyObservers();
 			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

@@ -1,5 +1,6 @@
 package main.input.command.commands;
 
+import main.ApplicationStatus;
 import main.input.command.ICommand;
 import main.input.settings.ApplicationSetup;
 
@@ -16,9 +17,11 @@ public class EnableStemmer implements ICommand {
 		ApplicationSetup setup = ApplicationSetup.getInstance();
 		if (setup.getUseStemmer()) {
 			setup.setUseStemmer(false);
+			ApplicationStatus.getInstance().notifyObservers();
 			return "!print disabled stemmer!";
 		} else {
 			setup.setUseStemmer(true);
+			ApplicationStatus.getInstance().notifyObservers();
 			return "!print enabled stemmer!";
 		}
 	}

@@ -34,11 +34,16 @@ public class CommandParser {
 
 	public void setCommandList(ICommandList list) {
 		this.commandList = list;
+		list.addScript(this);
 	}
 
 	public String parse(String inputLine) {
 		// System.out.println(inputLine);
 		inputLine = inputLine.trim();
+		if(!inputLine.startsWith("!")){
+			return "";
+		}
+		
 		String commandKey;
 		try {
 			commandKey = getCommandKey(inputLine);

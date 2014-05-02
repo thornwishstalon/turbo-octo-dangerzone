@@ -1,5 +1,6 @@
 package main.input.command.commands;
 
+import main.ApplicationStatus;
 import main.input.command.ICommand;
 
 /**
@@ -18,7 +19,7 @@ public class Print implements ICommand {
 	@Override
 	public String execute(String[] params) {
 		System.out.println(params[0]);
-
+		ApplicationStatus.getInstance().notifyObservers();
 		return "";
 	}
 

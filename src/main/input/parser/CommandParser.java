@@ -41,7 +41,7 @@ public class CommandParser {
 		// System.out.println(inputLine);
 		inputLine = inputLine.trim();
 		if(!inputLine.startsWith("!")){
-			return "";
+			//return "";
 		}
 		
 		String commandKey;

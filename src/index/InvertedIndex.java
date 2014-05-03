@@ -28,7 +28,7 @@ public class InvertedIndex {
 	private void addTerm(String term, String docID){
 		PostingList list = null;
 		Posting posting = null;
-
+		//System.out.println("term added to index");
 		Token token = new Token(term, docID);
 
 		logger.info("received: " + token.toString());
@@ -51,7 +51,7 @@ public class InvertedIndex {
 	}
 	
 	public void addTermDuringCreation(String term, String docID) {
-
+		logger.info("try to add: "+term+ "from "+docID);
 		addTerm(term, docID);
 
 		if (count > MAX_SIZE) {

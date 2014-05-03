@@ -14,7 +14,7 @@ public class BigramBufferStage extends AbstractPipeStage {
 
 	@Override
 	public String process(String input) {
-
+		
 		if (last == null) {
 			last = input;
 			return "";

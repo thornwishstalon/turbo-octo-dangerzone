@@ -7,6 +7,7 @@ public class CaseFolding extends AbstractPipeStage {
 
 	public CaseFolding(PipedReader in, PipedWriter out) {
 		super(in, out);
+		
 	}
 
 	@Override

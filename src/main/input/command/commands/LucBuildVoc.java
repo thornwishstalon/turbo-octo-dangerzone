@@ -18,7 +18,9 @@ public class LucBuildVoc implements ICommand{
 		LuceneIndexer t= new LuceneIndexer();
 		t.test();
 		ApplicationStatus.getInstance().notifyObservers();
-		return "";
+		
+		
+		return "!print indexing done";
 	}
 
 }

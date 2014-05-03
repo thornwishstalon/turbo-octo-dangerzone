@@ -31,6 +31,7 @@ public class Indexing extends AbstractPipeStage {
 
 	@Override
 	public String process(String input) {
+		//System.out.println("term added");
 		index.addTermDuringCreation(input, currentDocID);
 
 		return "";

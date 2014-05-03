@@ -73,6 +73,8 @@ public class LuceneIndexer {
 			
 			w.commit();			
 			w.close();
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

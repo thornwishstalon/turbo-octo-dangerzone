@@ -39,7 +39,8 @@ public class Reader {
 			if (entry.isDirectory()) {
 				listFilesForFolder(entry, allFiles);
 			} else if (entry.isFile()) {
-				allFiles.add(entry);
+				if(!entry.getName().startsWith(".")) //ignore hidden files
+					allFiles.add(entry);
 			}
 		}
 	}

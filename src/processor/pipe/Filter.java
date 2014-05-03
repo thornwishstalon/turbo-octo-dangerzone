@@ -19,7 +19,7 @@ public class Filter extends AbstractPipeStage {
 
 	@Override
 	public String process(String input) {
-		    
+		    //System.out.println("filtering "  + input);
 	        input= input.replaceAll(replacePattern, "");
 	        
 	        //ignore terms with digits in it

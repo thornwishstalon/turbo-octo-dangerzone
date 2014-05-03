@@ -54,9 +54,7 @@ public class ProcessPipe extends Thread {
 
 		stages.add(new CaseFolding(new PipedReader(stages
 				.get(stages.size() - 1).getOut()), new PipedWriter()));
-		// stages.add(new CaseFolding(new PipedReader(inputStart), new
-		// PipedWriter()));
-
+		
 		if (ApplicationSetup.getInstance().getUseStopwords()) {
 			stages.add(new StopWordRemoval(new PipedReader(stages.get(
 					stages.size() - 1).getOut()), new PipedWriter()));
@@ -89,7 +87,6 @@ public class ProcessPipe extends Thread {
 
 			pool.execute(stage);
 		}
-
 	}
 
 	public boolean isRunning() {
@@ -132,6 +129,7 @@ public class ProcessPipe extends Thread {
 
 
 			for (File file : documents) {
+
 				percent = round((c++ * 100.0f) / reader.getSize(),2);
 				System.out.println(percent+"%\t\t|| processing file :" + file.getAbsolutePath());
 
@@ -152,34 +150,45 @@ public class ProcessPipe extends Thread {
 				String pattern= "^[\\w-]+:\\s.*";
 
 				while ((line = br.readLine()) != null) {
-					if(line.length() > 0){
-						if(!line.matches(pattern)){
-							tokens = line.split("\\s");
 
-							if(!fileN.containsKey(fileID.trim())){
-								fileN.put(fileID.trim(), tokens.length);
-							}else{
-								nd = fileN.get(fileID).intValue();
-								fileN.put(fileID.trim(), new Integer(tokens.length+nd));
+					//if(line.length() >= 0){
+					if(!line.matches(pattern)){
+						tokens = line.split("\\s");
 
-							}
+						if(!fileN.containsKey(fileID.trim())){
+							fileN.put(fileID.trim(), tokens.length);
+						}else{
+							nd = fileN.get(fileID).intValue();
+							fileN.put(fileID.trim(), new Integer(tokens.length+nd));
 
-							for (int i = 0; i < tokens.length; i++) {
+						}
+
+						for (int i = 0; i < tokens.length; i++) {
+							if(tokens[i].length() > 0){
+								//System.out.println(tokens[i]);
+
 								inputFileWriter.write(tokens[i] + "\n");
 								inputFileWriter.flush();
 							}
 						}
 					}
+
 				}
+				//}
 
 			}
 
 			writeLengthFile();
 			indexing.backup();
 
+			System.out.println("pipe done");
+			ApplicationStatus.getInstance().notifyObservers();
+
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 		} finally {
+			System.out.println("closing pipe");
 			try {
 				if(br!=null){
 					br.close();

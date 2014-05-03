@@ -186,7 +186,8 @@ public class ApplicationStatus extends Observable{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			//logger.error(e.getMessage());
-			e.printStackTrace();
+			//e.printStackTrace();
+			//System.out.println("build your index first! use the !buildVoc command");
 		}finally{
 			if(br!=null){
 				try {
@@ -276,15 +277,15 @@ public class ApplicationStatus extends Observable{
 		ApplicationSetup setup=ApplicationSetup.getInstance();
 		if(!setup.getUseLucene()){
 			from= TFID;
-			TAG+="_tfidf";
+			//TAG+="_tfidf";
 		}
 		else if(setup.getUseBM25()){
 			from= BM25L;
-			TAG+="_bm25";
+			//TAG+="_bm25";
 		}
 		else{
 			from= DEFAULT_LUCENE;
-			TAG+="_lucene";
+			//TAG+="_lucene";
 		}
 		
 		
@@ -300,7 +301,7 @@ public class ApplicationStatus extends Observable{
 		String filename;
 		Score score;
 		
-		for(int i = 0; i< 100; i++){
+		for(int i = 0; i< sco.size(); i++){
 			
 			score= sco.get(i);
 			if(score.getScore() == Float.NEGATIVE_INFINITY)
@@ -310,7 +311,7 @@ public class ApplicationStatus extends Observable{
 			
 			filename=resolve(score.getId());
 			resultLine= "topic"+topic+" Q0 "+" "+filename+" "
-					 + i+" \t"+score.getScore() +" "+ TAG ;
+					 + i+score.getScore() +" "+ TAG ;
 			System.out.println(resultLine);
 			result += resultLine+"\n";
 		}

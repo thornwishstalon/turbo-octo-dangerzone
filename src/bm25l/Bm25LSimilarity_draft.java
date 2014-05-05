@@ -1,17 +1,17 @@
-package bm25;
+package bm25l;
 
 
 import org.apache.lucene.search.similarities.BasicStats;
 import org.apache.lucene.search.similarities.SimilarityBase;
 
-public class Bm25LSimilarity extends SimilarityBase {
+public class Bm25LSimilarity_draft extends SimilarityBase {
 	private float k3 = 1000; //like in paper (introduction of section 3)
 	private float k1 = 1.2f;
 	private float b = 0.75f;
 	private float sigma = 0.5f;
 	
 	
-	public Bm25LSimilarity(float sigma){
+	public Bm25LSimilarity_draft(float sigma){
 		this.sigma= sigma;
 	}
 	

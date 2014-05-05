@@ -301,7 +301,7 @@ public class ApplicationStatus extends Observable{
 		String filename;
 		Score score;
 		
-		for(int i = 0; i< sco.size(); i++){
+		for(int i = 0; i< Math.min(sco.size(),100); i++){
 			
 			score= sco.get(i);
 			if(score.getScore() == Float.NEGATIVE_INFINITY)
@@ -311,7 +311,7 @@ public class ApplicationStatus extends Observable{
 			
 			filename=resolve(score.getId());
 			resultLine= "topic"+topic+" Q0 "+" "+filename+" "
-					 + i+score.getScore() +" "+ TAG ;
+					 + i + " "+score.getScore() +" "+ TAG ;
 			System.out.println(resultLine);
 			result += resultLine+"\n";
 		}

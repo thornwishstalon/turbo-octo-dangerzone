@@ -18,13 +18,17 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+
+import bm25l.BM25LSimilarity;
 
 
 public class LuceneSearch {
@@ -46,7 +50,7 @@ public class LuceneSearch {
 
 			if(ApplicationSetup.getInstance().getUseBM25()){
 				//TODO 
-				//searcher.setSimilarity(new BM25Similarity....);
+				searcher.setSimilarity(new BM25LSimilarity());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -66,6 +70,7 @@ public class LuceneSearch {
 		
 		String queryText="docTest:";
 		String operator= " OR "; 
+		
 		
 		TokenStream tokenStream = analyzer.tokenStream("", text);
 		//OffsetAttribute offsetAttribute = tokenStream.addAttribute(OffsetAttribute.class);
@@ -104,11 +109,12 @@ public class LuceneSearch {
 		// get 100 top documents
 		 searcher.search(q, collector);
 		
-		printResult(collector);
+		
+		printResult(collector,q);
 		
 	}
 
-	private void printResult(TopScoreDocCollector collector) {
+	private void printResult(TopScoreDocCollector collector,Query q) {
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 		Document d;
 		String docName;
@@ -117,13 +123,18 @@ public class LuceneSearch {
 		
 		status.clear();
 				
-		for(int i=0; i<100; i++){
+		for(int i=0; i<Math.min(100,hits.length); i++){
 			int docId = hits[i].doc;
 		    try {
 				d = searcher.doc(docId);
 				docName= d.get("docID");
 				score= hits[i].score;
 				status.addScoreFromLucene(docName,score);
+				if(i==0){
+					Explanation e= searcher.explain(q, docId);
+					System.out.println("\n"+ e.toString());
+				}
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

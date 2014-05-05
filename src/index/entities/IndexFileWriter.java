@@ -12,7 +12,7 @@ import main.input.settings.ApplicationSetup;
 
 public class IndexFileWriter {
 
-	public static String writeToDisk(TreeMap<String, PostingList> block, String filename) {
+	public static synchronized String writeToDisk(TreeMap<String, PostingList> block, String filename) {
 		//System.out.println("write to block");
 		PrintWriter out=null;
 

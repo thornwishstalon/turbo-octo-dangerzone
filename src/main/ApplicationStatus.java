@@ -230,7 +230,7 @@ public class ApplicationStatus extends Observable{
 			
 			// ADDED BY PARIS
 			q.setPostings(getPostingsFor(term));
-			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getPostings().getOverallFrequency() ));
+			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( Nd / q.getPostings().getOverallFrequency() ));
 			
 			//System.out.println(q.getTf_idf());
 		}

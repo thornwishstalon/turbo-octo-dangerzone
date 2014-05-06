@@ -225,7 +225,13 @@ public class ApplicationStatus extends Observable{
 		for(String term: queryTerms.keySet()){
 			q= queryTerms.get(term);
 			
-			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getTF() ));
+			// ORIGINAL
+			//q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getTF() ));
+			
+			// ADDED BY PARIS
+			q.setPostings(getPostingsFor(term));
+			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getPostings().getOverallFrequency() ));
+			
 			//System.out.println(q.getTf_idf());
 		}
 	}

@@ -1,0 +1,83 @@
+fry:trec_eval.9.0 fry$ ./trec_eval -q -m map -c qrels.txt res/bm25l_results.txt  
+map                   	topic1	0.0475
+map                   	topic10	0.5000
+map                   	topic11	0.0053
+map                   	topic13	0.0746
+map                   	topic14	0.0932
+map                   	topic15	0.0325
+map                   	topic16	0.3080
+map                   	topic17	0.2000
+map                   	topic18	0.2776
+map                   	topic19	0.3475
+map                   	topic2	0.0961
+map                   	topic3	0.0324
+map                   	topic4	0.5000
+map                   	topic5	0.0111
+map                   	topic6	0.5000
+map                   	topic7	0.1332
+map                   	topic9	0.5213
+map                   	all	0.2165
+fry:trec_eval.9.0 fry$ 
+
+fry:trec_eval.9.0 fry$ ./trec_eval -q -m map -c qrels.txt res/bm25_results.txt 
+map                   	topic1	0.1535
+map                   	topic10	0.5152
+map                   	topic11	0.2064
+map                   	topic13	0.4643
+map                   	topic14	0.4376
+map                   	topic15	0.0640
+map                   	topic16	0.4750
+map                   	topic17	0.2667
+map                   	topic18	0.4141
+map                   	topic19	0.6667
+map                   	topic2	0.3383
+map                   	topic3	0.3245
+map                   	topic4	0.5000
+map                   	topic5	0.5000
+map                   	topic6	0.5000
+map                   	topic7	0.3395
+map                   	topic9	0.6429
+map                   	all	0.4005
+fry:trec_eval.9.0 fry$ 
+
+fry:trec_eval.9.0 fry$ ./trec_eval -q -m map -c qrels.txt res/tfidf_results.txt 
+map                   	topic1	0.0183
+map                   	topic10	0.0000
+map                   	topic11	0.0588
+map                   	topic13	0.0006
+map                   	topic14	0.0007
+map                   	topic15	0.0000
+map                   	topic16	0.0000
+map                   	topic17	0.0000
+map                   	topic18	0.0278
+map                   	topic19	0.0000
+map                   	topic2	0.0000
+map                   	topic3	0.0049
+map                   	topic4	0.0072
+map                   	topic5	0.0000
+map                   	topic6	0.0000
+map                   	topic7	0.0010
+map                   	topic9	0.0000
+map                   	all	0.0070
+fry:trec_eval.9.0 fry$ 
+
+fry:trec_eval.9.0 fry$ ./trec_eval -q -m map -c qrels.txt res/defaultLucene_results.txt
+map                   	topic1	0.1187
+map                   	topic10	0.5000
+map                   	topic11	0.1597
+map                   	topic13	0.2518
+map                   	topic14	0.2715
+map                   	topic15	0.0523
+map                   	topic16	0.4750
+map                   	topic17	0.2080
+map                   	topic18	0.4247
+map                   	topic19	0.4286
+map                   	topic2	0.2539
+map                   	topic3	0.1966
+map                   	topic4	0.5000
+map                   	topic5	0.2993
+map                   	topic6	0.5000
+map                   	topic7	0.2408
+map                   	topic9	0.5556
+map                   	all	0.3198
+fry:trec_eval.9.0 fry$ 

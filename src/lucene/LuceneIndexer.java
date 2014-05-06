@@ -14,6 +14,8 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.apache.lucene.document.*;
@@ -37,10 +39,14 @@ public class LuceneIndexer {
 		
 
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_47, analyzer);
-		if(ApplicationSetup.getInstance().getUseBM25()){
+		config.setOpenMode(OpenMode.CREATE);
+		
+		if(ApplicationSetup.getInstance().getUseBM25L()){
 			config.setSimilarity(new BM25LSimilarity());
+		}else if(ApplicationSetup.getInstance().getUseBM25()){
+			config.setSimilarity(new BM25Similarity());
 		}
-
+		
 		IndexWriter w;
 		String parentName,fileID,text;
 		int id;

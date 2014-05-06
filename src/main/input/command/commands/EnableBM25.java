@@ -4,7 +4,7 @@ import main.ApplicationStatus;
 import main.input.command.ICommand;
 import main.input.settings.ApplicationSetup;
 
-public class EnableLucene implements ICommand{
+public class EnableBM25 implements ICommand {
 
 	@Override
 	public int numberOfParams() {
@@ -15,18 +15,17 @@ public class EnableLucene implements ICommand{
 	@Override
 	public String execute(String[] params) {
 		ApplicationSetup setup = ApplicationSetup.getInstance();
-		if (setup.getUseLucene()) {
-			setup.setUseLucene(false);
+		if (setup.getUseBM25()) {
 			setup.setUseBM25(false);
 			setup.setUseBM25L(false);
 			ApplicationStatus.getInstance().notifyObservers();
-			return "!print disabled Lucene!";
+			
+			return "!print disabled bm25 silmilarity!";
 		} else {
-			setup.setUseLucene(true);
-			setup.setUseBM25(false);
+			setup.setUseBM25(true);
 			setup.setUseBM25L(false);
 			ApplicationStatus.getInstance().notifyObservers();
-			return "!print enabled Lucene!";
+			return "!print enabled bm25 silmilarity!";
 		}
 	}
 

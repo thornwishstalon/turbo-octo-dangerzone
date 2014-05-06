@@ -281,8 +281,12 @@ public class ApplicationStatus extends Observable{
 			//TAG+="_tfidf";
 		}
 		else if(setup.getUseBM25()){
-			from= BM25L;
+			from= BM25;
 			//TAG+="_bm25";
+		}
+		else if(setup.getUseBM25L()){
+			from= BM25L;
+			//TAG+="_bm25l";
 		}
 		else{
 			from= DEFAULT_LUCENE;

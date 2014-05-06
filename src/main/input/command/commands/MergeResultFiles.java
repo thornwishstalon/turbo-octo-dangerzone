@@ -20,27 +20,33 @@ public class MergeResultFiles implements ICommand {
 
 	@Override
 	public String execute(String[] params) {
-		String pattern= ".*tfidf.*";
+		
+		
+		String pattern= ".*tfidf_result_.*";
 		String path= ApplicationSetup.getInstance().getResultPath();
+		
+		File f= new File(path+"/res");
+		if(!f.exists())
+			f.mkdir();
 		
 		String[] files= getFiles(path, pattern);
 		String text=get(files);
-		write(text,"./queries/tfidf_results.txt");
+		write(text,"./queries/res/tfidf_results.txt");
 		
-		pattern=".*bm25l.*";
+		pattern=".*bm25l_result_.*";
 		files= getFiles(path, pattern);
 		text=get(files);
-		write(text,"./queries/bm25l_results.txt");
+		write(text,"./queries/res/bm25l_results.txt");
 		
 		pattern=".*bm25_result_t.*";
 		files= getFiles(path, pattern);
 		text=get(files);
-		write(text,"./queries/bm25_results.txt");
+		write(text,"./queries/res/bm25_results.txt");
 		
-		pattern=".*default.*";
+		pattern=".*defaultLucene_result_.*";
 		files= getFiles(path, pattern);
 		text=get(files);
-		write(text,"./queries/defaultLucene_results.txt");
+		write(text,"./queries/res/defaultLucene_results.txt");
 		
 		
 		return "!print merging results done";

@@ -3,6 +3,7 @@ package main.input.command;
 import java.util.HashMap;
 
 import main.input.command.commands.BuildVoc;
+import main.input.command.commands.EnableBM25;
 import main.input.command.commands.EnableBM25L;
 import main.input.command.commands.EnableBigrams;
 import main.input.command.commands.EnableLucene;
@@ -46,6 +47,7 @@ public class ApplicationCommandList implements ICommandList {
         commands.put("!luceneBuildVoc", new LucBuildVoc());
         commands.put("!enableLucene", new EnableLucene());
         commands.put("!enableBM25L", new EnableBM25L());
+        commands.put("!enableBM25", new EnableBM25());
         commands.put("!lucSearch", new LuceneSearchForTopic());
         
         

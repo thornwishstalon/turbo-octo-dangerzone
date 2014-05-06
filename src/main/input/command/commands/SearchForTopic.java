@@ -33,7 +33,7 @@ public class SearchForTopic implements ICommand {
 			System.out.println("done...");
 			ApplicationStatus.getInstance().notifyObservers();
 		}else{
-			System.out.println("direct to lucene");
+			System.out.println("directed to lucene");
 			return "!lucSearch "+params[0];
 		}
 		return "";

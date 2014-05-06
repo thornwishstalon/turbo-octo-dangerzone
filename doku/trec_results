@@ -40,6 +40,7 @@ map                   	topic9	0.6429
 map                   	all	0.4005
 fry:trec_eval.9.0 fry$ 
 
+######## old values
 fry:trec_eval.9.0 fry$ ./trec_eval -q -m map -c qrels.txt res/tfidf_results.txt 
 map                   	topic1	0.0183
 map                   	topic10	0.0000
@@ -60,6 +61,29 @@ map                   	topic7	0.0010
 map                   	topic9	0.0000
 map                   	all	0.0070
 fry:trec_eval.9.0 fry$ 
+########  old values end
+
+
+fry:trec_eval.9.0 fry$ ./trec_eval -q -m map -c qrels.txt res/tfidf_results.txt 
+map                   	topic1	0.0235
+map                   	topic10	0.0000
+map                   	topic11	0.0602
+map                   	topic13	0.0008
+map                   	topic14	0.0025
+map                   	topic15	0.0000
+map                   	topic16	0.0000
+map                   	topic17	0.0000
+map                   	topic18	0.0556
+map                   	topic19	0.0000
+map                   	topic2	0.0008
+map                   	topic3	0.0167
+map                   	topic4	0.0000
+map                   	topic5	0.0000
+map                   	topic6	0.0000
+map                   	topic7	0.0022
+map                   	topic9	0.0000
+map                   	all	0.0095
+
 
 fry:trec_eval.9.0 fry$ ./trec_eval -q -m map -c qrels.txt res/defaultLucene_results.txt
 map                   	topic1	0.1187

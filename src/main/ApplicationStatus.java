@@ -143,7 +143,7 @@ public class ApplicationStatus extends Observable{
 			
 		}
 		
-		float newScore,lengthV;
+		float newScore;
 		
 		Score s;
 		for(String id: scores.keySet())
@@ -224,8 +224,9 @@ public class ApplicationStatus extends Observable{
 		
 		for(String term: queryTerms.keySet()){
 			q= queryTerms.get(term);
-			
-			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getTF() ));
+			double overallTermFrequency = getTermFrequency(term) ;
+			//q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getTF() ));
+			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( Nd / (overallTermFrequency) ));
 			//System.out.println(q.getTf_idf());
 		}
 	}
@@ -237,6 +238,12 @@ public class ApplicationStatus extends Observable{
 		return v;
 	}
 	
+	private double getTermFrequency(String term){
+		if(index.get(term)!=null)
+		 return index.get(term).getOverallFrequency();
+		else return 1;
+
+	}
 
 
 	public boolean indexIsSet(){

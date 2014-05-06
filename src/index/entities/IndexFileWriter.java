@@ -27,7 +27,6 @@ public class IndexFileWriter {
 			String term;
 			String s="";
 			while(it.hasNext()){
-
 				term= it.next();
 				//s="{"+term+ block.get(term).toString()+"}";
 				s= block.get(term).toJSONString();
@@ -60,7 +59,7 @@ public class IndexFileWriter {
 
 	}
 
-	public static String writeToDisk(TreeMap<String, PostingList> block, int blockID) {
+	public static synchronized String writeToDisk(TreeMap<String, PostingList> block, int blockID) {
 
 		String filename;
 

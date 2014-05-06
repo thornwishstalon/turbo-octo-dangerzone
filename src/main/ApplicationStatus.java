@@ -29,6 +29,7 @@ public class ApplicationStatus extends Observable{
 	public final static int TFID=0;
 	public final static int DEFAULT_LUCENE=1;
 	public final static int BM25L=2;
+	public final static int BM25=3;
 	
 	
 	private static ApplicationStatus instance = null;
@@ -324,6 +325,8 @@ public class ApplicationStatus extends Observable{
 	
 	public void storeInFile(String result, int from, String topic) {
 		System.out.println("\nwriting result to file");
+		topic= topic.trim();
+		
 		String filename="";
 		switch (from) {
 		case TFID:
@@ -333,6 +336,9 @@ public class ApplicationStatus extends Observable{
 			filename= "defaultLucene_result_t"+topic+".txt";
 			break;
 		case BM25L:
+			filename= "bm25l_result_t"+topic+".txt";
+			break;
+		case BM25:
 			filename= "bm25_result_t"+topic+".txt";
 			break;
 			

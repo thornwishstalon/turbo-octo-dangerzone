@@ -24,6 +24,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -48,9 +49,10 @@ public class LuceneSearch {
 			analyzer = new StandardAnalyzer(Version.LUCENE_47);
 
 
-			if(ApplicationSetup.getInstance().getUseBM25()){
-				//TODO 
+			if(ApplicationSetup.getInstance().getUseBM25L()){
 				searcher.setSimilarity(new BM25LSimilarity());
+			}else if(ApplicationSetup.getInstance().getUseBM25()){
+				searcher.setSimilarity(new BM25Similarity());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -130,7 +132,7 @@ public class LuceneSearch {
 				docName= d.get("docID");
 				score= hits[i].score;
 				status.addScoreFromLucene(docName,score);
-				if(i==0){
+				if(i==0 || i==1){
 					Explanation e= searcher.explain(q, docId);
 					System.out.println("\n"+ e.toString());
 				}

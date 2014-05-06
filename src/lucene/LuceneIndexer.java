@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+
 import main.input.settings.ApplicationSetup;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -17,6 +18,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.apache.lucene.document.*;
 
+import bm25l.BM25LSimilarity;
 import processor.DocParentFolderEnum;
 import processor.DocumentProcessor;
 import reader.Reader;
@@ -32,10 +34,12 @@ public class LuceneIndexer {
 	public void test() {
 
 		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_47);
-
+		
 
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_47, analyzer);
-		
+		if(ApplicationSetup.getInstance().getUseBM25()){
+			config.setSimilarity(new BM25LSimilarity());
+		}
 
 		IndexWriter w;
 		String parentName,fileID,text;

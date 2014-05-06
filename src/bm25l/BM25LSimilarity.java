@@ -43,8 +43,7 @@ public class BM25LSimilarity extends Similarity {
 	private final float b;
 	private final float k3;
 	private final float delta;
-	// TODO: should we add a delta like sifaka.cs.uiuc.edu/~ylv2/pub/sigir11-bm25l.pdf ?
-
+	
 	/**
 	 * BM25 with the supplied parameter values.
 	 * @param k1 Controls non-linear term frequency normalization (saturation).
@@ -81,7 +80,7 @@ public class BM25LSimilarity extends Similarity {
 	/** Implemented as <code>log(1 + (numDocs - docFreq + 0.5)/(docFreq + 0.5))</code>. */
 	protected float idf(long docFreq, long numDocs) {
 		//return (float) Math.log(1 + (numDocs - docFreq + 0.5D)/(docFreq + 0.5D));
-		return (float) Math.log( (1f + numDocs) / (docFreq + 0.5f) ); //edited by f
+		return (float) Math.log( (1D + numDocs) / (docFreq + 0.5D) ); //edited by f
 	}
 
 	/** Implemented as <code>1 / (distance + 1)</code>. */
@@ -111,7 +110,7 @@ public class BM25LSimilarity extends Similarity {
 	 * Lucene's default implementation.  If you change this, then you should 
 	 * change {@link #decodeNormValue(byte)} to match. */
 	protected byte encodeNormValue(float boost, int fieldLength) {
-		return SmallFloat.floatToByte315(boost / (float) Math.sqrt(fieldLength));
+		return SmallFloat.floatToByte315(fieldLength);
 		//return SmallFloat.floatToByte315(fieldLength);
 	}
 
@@ -156,7 +155,9 @@ public class BM25LSimilarity extends Similarity {
 	@Override
 	public final long computeNorm(FieldInvertState state) {
 		final int numTerms = discountOverlaps ? state.getLength() - state.getNumOverlap() : state.getLength();
+		System.out.println(numTerms);
 		return encodeNormValue(state.getBoost(), numTerms);
+		//return state.getLength();  
 	}
 
 	/**
@@ -227,7 +228,7 @@ public class BM25LSimilarity extends Similarity {
 		for (int i = 0; i < cache.length; i++) {
 			//docLength = docLength(collectionStats);
 			//cache[i] = k1 * ((1 - b) + b * decodeNormValue((byte)i) / avgdl);
-			cache[i] =  1 / ((1 - b) + b * (decodeNormValue((byte)i) / avgdl)); //edited by f
+			cache[i] =  ((1 - b) + b * (decodeNormValue((byte)i) / avgdl)); //edited by f
 		}
 		return new BM25Stats(collectionStats.field(), idf, queryBoost, avgdl, cache);
 	}
@@ -261,7 +262,7 @@ public class BM25LSimilarity extends Similarity {
 			float norm = norms == null ? k1 : cache[(byte)norms.get(doc) & 0xFF];
 			//System.out.println("score");
 			float fD;
-			norm *= freq;
+			norm =  freq/norm;
 			if(norm > 0){
 				fD = ( (k1 + 1) * (norm + delta) ) / (k1 + norm + delta);
 			}else{
@@ -300,7 +301,7 @@ public class BM25LSimilarity extends Similarity {
 		private float weight;
 		/** field name, for pulling norms */
 		private final String field;
-		/** precomputed norm[256] with 1 / ((1 - b) + b * dl / avgdl) */
+		/** precomputed norm[256] with  ((1 - b) + b * dl / avgdl) */
 		private final float cache[];
 
 		BM25Stats(String field, Explanation idf, float queryBoost, float avgdl, float cache[]) {
@@ -315,7 +316,7 @@ public class BM25LSimilarity extends Similarity {
 		public float getValueForNormalization() {
 			// we return a TF-IDF like normalization to be nice, but we don't actually normalize ourselves.
 			final float queryWeight = idf.getValue() * queryBoost;
-			return queryWeight * queryWeight;
+			return  queryWeight;// * queryWeight;
 		}
 
 		@Override
@@ -330,35 +331,35 @@ public class BM25LSimilarity extends Similarity {
 		Explanation result = new Explanation();
 		result.setDescription("score(doc="+doc+",freq="+freq+"), product of:");
 
-		//Explanation boostExpl = new Explanation(stats.queryBoost * stats.topLevelBoost, "boost");
-		Explanation boostExpl = new Explanation(((k3 +1) * stats.queryBoost) / (k3 + stats.queryBoost), "boost");
+		Explanation boostExpl = new Explanation(stats.queryBoost * stats.topLevelBoost, "boost");
+		//Explanation boostExpl = new Explanation(((k3 +1) * stats.queryBoost) / (k3 + stats.queryBoost), "boost");
 		if (boostExpl.getValue() != 1.0f)
 			result.addDetail(boostExpl);
 
 		result.addDetail(stats.idf);
 
 		Explanation tfNormExpl = new Explanation();
-		tfNormExpl.setDescription("tfNorm, computed from:");
+		tfNormExpl.setDescription("sub-tfNorm, computed from:");
 		tfNormExpl.addDetail(freq);
 		tfNormExpl.addDetail(new Explanation(k1, "parameter k1"));
 		if (norms == null) {
 			tfNormExpl.addDetail(new Explanation(0, "parameter b (norms omitted for field)"));
 			tfNormExpl.setValue((freq.getValue() * (k1 + 1)) / (freq.getValue() + k1));
 		} else {
-			float doclen = decodeNormValue((byte)norms.get(doc));
+			float c = decodeNormValue((byte)norms.get(doc));
 			tfNormExpl.addDetail(new Explanation(b, "parameter b"));
 			tfNormExpl.addDetail(new Explanation(stats.avgdl, "avgFieldLength"));
-			tfNormExpl.addDetail(new Explanation(doclen, "fieldLength"));
+			tfNormExpl.addDetail(new Explanation(c, "1 - b + b*(doclen/avdl)"));
 			tfNormExpl.addDetail(new Explanation(delta, "parameter delta")); //by f
 
-			float cD= doclen;//(freq.getValue() / ((1 - b) + b * (doclen / stats.avgdl)));
+			float cD= freq.getValue() / c;
 			if(cD > 0){
 				float fD= ((k1 + 1) * (cD + delta)) / (k1 + (cD + delta));
 				tfNormExpl.setValue(fD);  
-				tfNormExpl.addDetail(new Explanation(fD, "c' > 0"));
+				tfNormExpl.addDetail(new Explanation(fD, "normalized sub-linear TF"));
 			}else{
 				tfNormExpl.setValue(0); //cD is smaller than zero! by f
-				tfNormExpl.addDetail(new Explanation(0f, "c' < 0"));
+				tfNormExpl.addDetail(new Explanation(0f, "normalized sub-linear TF"));
 			}
 
 

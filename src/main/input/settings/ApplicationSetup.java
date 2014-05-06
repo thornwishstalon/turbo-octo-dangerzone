@@ -1,3 +1,4 @@
+
 package main.input.settings;
 
 import java.io.FileInputStream;
@@ -33,6 +34,7 @@ public class ApplicationSetup {
 	private final String CONFIG_ID_LUCENE_INDEX_PATH = "lucene_index_path";
 	private final String CONFIG_ID_USE_LUCENE = "use_lucene";
 	private final String CONFIG_ID_USE_BM25L = "use_bm25l";
+	private final String CONFIG_ID_USE_BM25 = "use_bm25";
 	private final String CONFIG_ID_TREC_TAG = "trec_tag";
 	private final String CONFIG_ID_RESULTFILE_PATH = "result_path";
 	
@@ -117,7 +119,8 @@ public class ApplicationSetup {
 		
 		s += CONFIG_ID_LUCENE_INDEX_PATH +": "+ getLuceneIndexPath()+"\n";
 		s += CONFIG_ID_USE_LUCENE +": "+ getUseLucene()+"\n";
-		s += CONFIG_ID_USE_BM25L +": "+ getUseBM25()+"\n";
+		s += CONFIG_ID_USE_BM25L +": "+ getUseBM25L()+"\n";
+		s += CONFIG_ID_USE_BM25 +": "+ getUseBM25()+"\n";
 		
 		s += "\n"+CONFIG_ID_TREC_TAG +":"+ getTrecTag()+"\n";
 
@@ -179,12 +182,20 @@ public class ApplicationSetup {
 		setValue(CONFIG_ID_USE_LUCENE, Boolean.toString(value));
 	}
 	
-	public boolean getUseBM25() {
+	public boolean getUseBM25L() {
 		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_BM25L));
 	}
 
-	public void setUseBM25(boolean value) {
+	public void setUseBM25L(boolean value) {
 		setValue(CONFIG_ID_USE_BM25L, Boolean.toString(value));
+	}
+	
+	public boolean getUseBM25() {
+		return Boolean.parseBoolean(getValue(CONFIG_ID_USE_BM25));
+	}
+
+	public void setUseBM25(boolean value) {
+		setValue(CONFIG_ID_USE_BM25, Boolean.toString(value));
 	}
 
 	public boolean getUseBigrams() {
@@ -210,6 +221,8 @@ public class ApplicationSetup {
 	public void setUseStemmer(boolean value) {
 		setValue(CONFIG_ID_USE_STEMMER, Boolean.toString(value));
 	}
+	
+	
 	
 	public String getTrecTag() {
 		return getValue(CONFIG_ID_TREC_TAG);

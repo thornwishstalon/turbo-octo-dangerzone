@@ -224,9 +224,22 @@ public class ApplicationStatus extends Observable{
 		
 		for(String term: queryTerms.keySet()){
 			q= queryTerms.get(term);
-			double overallTermFrequency = getTermFrequency(term) ;
+			/*
+<<<<<<< HEAD
+			
 			//q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getTF() ));
 			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( Nd / (overallTermFrequency) ));
+=======
+*/
+			
+			// ORIGINAL
+			//q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( N / q.getTF() ));
+			
+			// ADDED BY PARIS
+			double overallTermFrequency = getTermFrequency(term) ;
+			q.setTf_idf(Math.log(1 + q.getTF() ) * Math.log( Nd / overallTermFrequency ));
+			
+//>>>>>>> 26bee01f93b1cb087e87e9f42197c02bdb91bc62
 			//System.out.println(q.getTf_idf());
 		}
 	}
@@ -241,7 +254,7 @@ public class ApplicationStatus extends Observable{
 	private double getTermFrequency(String term){
 		if(index.get(term)!=null)
 		 return index.get(term).getOverallFrequency();
-		else return 1;
+		else return 1; // avoid divide by zero if term is not in corpus
 
 	}
 
